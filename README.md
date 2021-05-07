@@ -26,12 +26,12 @@ fee and Rate based fee.
 -   Items are unique
 -   Items have 3 properties: description, quantity and the total fees
 -   There are 2 types of fees: flat fees and rate-based fees
--   Fees represent the total cost of each item.
+-   Fee is the total cost of each flat fee item or total cost of rate based items.
 
 As a user, I can add a company so that I can bill them for my services
 ----------------------------------------------------------------------
 
-### Details {#details-2}
+### Details
 
 Every Company should be unique and have invoice number(unique), name,
 address, contact(name, title, phone number)
@@ -53,7 +53,7 @@ address, contact(name, title, phone number)
 As a user, I can update company information
 -------------------------------------------
 
-### Details {#details-3}
+### Details
 
 A user should be able to update Company any or all property(s) with
 current information without loosing its relationship to invoices
@@ -77,7 +77,7 @@ current information without loosing its relationship to invoices
 As a user, I can view a list of unpaid invoices by company
 ----------------------------------------------------------
 
-### Details {#details-4}
+### Details
 
 An invoice is an itemized billable list of products and services that a
 company has purchased.
@@ -92,28 +92,28 @@ company has purchased.
 -   Invoice lists must be paginated with a limit of 10 items per
     request.
 
-As a user I would like to find an invoice by searching with the invoice number so that I can help customers {#as-a-user-i-would-like-to-find-an-invoice-by-searching-with-the-invoice-number-so-that-i-can--help-customers}
+As a user I would like to find an invoice by searching with the invoice number so that I can help customers
 -----------------------------------------------------------------------------------------------------------
 
-### Details {#details-5}
+### Details
 
 The invoice number is used by the customer to call and ask the user
 about a particular invoice
 
-### Acceptance Tests {#acceptance-tests-5}
+### Acceptance Tests
 
 -   Must be able to retrieve invoices by invoice number
 
 As a user, I can create invoices
 --------------------------------
 
-### Details {#details-6}
+### Details
 
 An invoice is a billable itemized list of products and services that a
 company has purchased and has a unique invoice number for the customer
 to reference
 
-### Acceptance Tests {#acceptance-tests-6}
+### Acceptance Tests
 
 -   Invoices are unique
 -   Invoices have unique invoice number visible to customer as a
@@ -121,45 +121,46 @@ to reference
 -   Invoices must have one or more line items.
 -   Must be associated with a company.
 -   Must provide the total cost of all line items.
--   The date and author of the invoice should be tracked.
+-   The date the invoice was created should be tracked.
+-   The date the invoice was modified should be tracked.
 
 As a user, I can modify invoices
 --------------------------------
 
-### Details {#details-7}
+### Details
 
 An invoice is an itemized list of products and services with a unique
 invoice number as a reference.
 
-### Acceptance Tests {#acceptance-tests-7}
+### Acceptance Tests
 
--   As long as the status of the invoice is `unpaid`{tabindex="0"}, it
+-   As long as the status of the invoice is unpaid, it
     can be modified.
 -   The date it was last modified should be recorded.
--   `paid`{tabindex="0"} invoices cannot be changed.
+-   paid invoices cannot be changed.
 
-As a user, I can delete invoices so that I can focus only on current and recent work. {#as-a-user-i-can-delete-invoices-so-that-i-can-focus-only-on-current-and-recent-work}
+As a user, I can delete invoices so that I can focus only on current and recent work.
 -------------------------------------------------------------------------------------
 
-### Details {#details-8}
+### Details
 
 An invoice is a unique billable itemized list of products and services.
 
-### Acceptance Tests {#acceptance-tests-8}
+### Acceptance Tests
 
--   Invoices older \> 1 year and are marked "paid" can be removed, with
+-   Invoices older > 1 year and are marked "paid" can be removed, with
     all related items.
 -   Invoices marked "unpaid" cannot be deleted
 
 As a user, I can view a list of invoices
 ----------------------------------------
 
-### Details {#details-9}
+### Details
 
 An invoice is a unique billable itemized list of products and services
 that a company has purchased.
 
-### Acceptance Tests {#acceptance-tests-9}
+### Acceptance Tests
 
 -   Must have a list view which contains a creation date, total and paid
     status.
@@ -169,14 +170,14 @@ that a company has purchased.
 -   Invoice lists must be paginated with a limit of 10 items per
     request.
 
-As a user, I can view a list of companies that I work with. {#as-a-user-i-can-view-a-list-of-companies-that-i-work-with}
+As a user, I can view a list of companies that I work with.
 -----------------------------------------------------------
 
-### Details {#details-10}
+### Details
 
 User should be able to retrieve a list of all the companies
 
-### Acceptance Tests {#acceptance-tests-10}
+### Acceptance Tests
 
 -   Must have a list view which contains all company details including
     addresses.
