@@ -18,15 +18,14 @@ public class Invoice {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long invoiceId;
+	@ManyToOne
+	@JoinColumn(name="companyId")
 	private Company company;
 	private Float totalCost;
 	private String author;
 	private Boolean paid;
-	@ManyToMany(cascade = CascadeType.REMOVE,
-			fetch = FetchType.LAZY)
-	@JoinTable(name = "item_invoice",
-			joinColumns = @JoinColumn(name = "invoice_id"),
-			inverseJoinColumns = @JoinColumn(name = "item_id"))
+	@OneToMany(cascade = CascadeType.REMOVE)
+	@JoinColumn(name="itemId")
 	private List<Item> item;
 	@CreationTimestamp
 	@Column(nullable = false, updatable = false, insertable = false)
