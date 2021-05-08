@@ -1,6 +1,8 @@
-package com.groot.invoicify.company;
+package com.groot.invoicify.service;
 
+import com.groot.invoicify.dto.CompanyDto;
 import com.groot.invoicify.entity.Company;
+import com.groot.invoicify.repository.CompanyRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

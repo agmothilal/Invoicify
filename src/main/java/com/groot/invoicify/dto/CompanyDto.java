@@ -1,4 +1,4 @@
-package com.groot.invoicify.company;
+package com.groot.invoicify.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

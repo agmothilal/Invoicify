@@ -1,5 +1,7 @@
-package com.groot.invoicify.company;
+package com.groot.invoicify.controller;
 
+import com.groot.invoicify.dto.CompanyDto;
+import com.groot.invoicify.service.CompanyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

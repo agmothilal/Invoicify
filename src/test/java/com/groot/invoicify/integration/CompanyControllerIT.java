@@ -1,8 +1,8 @@
-package com.groot.invoicify.companyTesting;
+package com.groot.invoicify.integration;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.groot.invoicify.company.CompanyDto;
+import com.groot.invoicify.dto.CompanyDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -26,9 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-@Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
-
 public class CompanyControllerIT {
 
     @Autowired

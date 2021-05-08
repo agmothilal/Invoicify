@@ -1,8 +1,8 @@
-package com.groot.invoicify.companyTesting;
+package com.groot.invoicify.unitTests;
 
-import com.groot.invoicify.company.CompanyDto;
-import com.groot.invoicify.company.CompanyRepository;
-import com.groot.invoicify.company.CompanyService;
+import com.groot.invoicify.dto.CompanyDto;
+import com.groot.invoicify.repository.CompanyRepository;
+import com.groot.invoicify.service.CompanyService;
 import com.groot.invoicify.entity.Company;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
