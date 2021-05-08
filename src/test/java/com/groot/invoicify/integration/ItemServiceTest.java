@@ -33,7 +33,7 @@ public class ItemServiceTest {
 		var itemDto = new ItemDto("description", 1, 1.1f, 1.1f);
 
 		this.mockMvc.perform(MockMvcRequestBuilders.post("/item")
-				.contentType(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(itemDto)))
 				.andExpect(MockMvcResultMatchers.status().isCreated())
 				.andDo(MockMvcRestDocumentation.document("Post-Item", PayloadDocumentation.requestFields(
