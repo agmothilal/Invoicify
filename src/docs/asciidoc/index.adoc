@@ -1,10 +1,10 @@
-Get Company Single Response
+Get Company By Name Response
 
 .request
-include::{snippets}/Get-Company-One/http-request.adoc[]
+include::{snippets}/Get-Company-ByName/http-request.adoc[]
 
 .response
-include::{snippets}/Get-Company-One/http-response.adoc[]
+include::{snippets}/Get-Company-ByName/http-response.adoc[]
 
 Get Company All Response
 

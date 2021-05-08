@@ -81,9 +81,7 @@ public class CompanyControllerIT {
         mockMvc.perform(get("/company")
         ).andExpect(status().isOk())
                 .andExpect(jsonPath("length()").value(1))
-                .andExpect(jsonPath("[0].name").value("CTS"))
-                .andDo(print())
-                .andDo(document("Get-Company-One"));
+                .andExpect(jsonPath("[0].name").value("CTS"));
     }
 
     @Test
@@ -136,5 +134,23 @@ public class CompanyControllerIT {
                 .andExpect(jsonPath("[1].name").value("Google"))
                 .andDo(print())
                 .andDo(document("Get-Company-All"));
+    }
+
+
+    @Test
+    void getSingleCompanyByNameTest() throws Exception {
+
+        CompanyDto companyObject1 = new CompanyDto("CTS", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+
+        mockMvc.perform(post("/company")
+                .content(objectMapper.writeValueAsString(companyObject1))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isCreated());
+
+        mockMvc.perform(get("/company/CTS")
+        ).andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("CTS"))
+                .andDo(print())
+                .andDo(document("Get-Company-ByName"));
     }
 }
