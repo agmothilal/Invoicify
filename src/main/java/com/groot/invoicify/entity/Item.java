@@ -19,4 +19,11 @@ public class Item {
 	private Integer rateHourBilled;
 	private Float ratePrice;
 	private Float flatPrice;
+
+	public Item(String description, Integer rateHourBilled, Float ratePrice, Float flatPrice) {
+		this.description = description;
+		this.rateHourBilled = rateHourBilled;
+		this.ratePrice = ratePrice;
+		this.flatPrice = flatPrice;
+	}
 }
