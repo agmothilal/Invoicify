@@ -1,0 +1,39 @@
+Get Company By Name Response
+
+.request
+include::{snippets}/Get-Company-ByName/http-request.adoc[]
+
+.response
+include::{snippets}/Get-Company-ByName/http-response.adoc[]
+
+Get Company By Name No Content Response
+
+.request
+include::{snippets}/Get-Company-ByName-NoContent/http-request.adoc[]
+
+.response
+include::{snippets}/Get-Company-ByName-NoContent/http-response.adoc[]
+
+Get Company All Response
+
+.request
+include::{snippets}/Get-Company-All/http-request.adoc[]
+
+.response
+include::{snippets}/Get-Company-All/http-response.adoc[]
+
+Post Company Success Response
+
+.request
+include::{snippets}/Post-Company/http-request.adoc[]
+
+.response
+include::{snippets}/Post-Company/http-response.adoc[]
+
+Post Company Duplicate Response
+
+.request
+include::{snippets}/Post-Company-DuplicateRequest/http-request.adoc[]
+
+.response
+include::{snippets}/Post-Company-DuplicateRequest/http-response.adoc[]
