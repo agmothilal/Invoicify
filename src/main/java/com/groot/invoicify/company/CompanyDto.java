@@ -15,4 +15,8 @@ public class CompanyDto {
     private String contactName;
     private String contactTitle;
     private String contactPhoneNumber;
+
+    public CompanyDto(String dts) {
+        name = dts;
+    }
 }

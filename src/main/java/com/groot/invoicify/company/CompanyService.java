@@ -62,4 +62,18 @@ public class CompanyService {
                 companyFound.getState(), companyFound.getZip(), companyFound.getContactName(),
                 companyFound.getContactTitle(), companyFound.getContactPhoneNumber());
     }
+
+    public void patchCompany(long l, CompanyDto dts) {
+        Company companyEntity = companyRepos.findById(l).get();
+        companyEntity.setName(((dts.getName()!=null)? dts.getName():companyEntity.getName()));
+        companyEntity.setAddress(((dts.getAddress()!=null)? dts.getAddress():companyEntity.getAddress()));
+        companyEntity.setCity(((dts.getCity()!=null)? dts.getCity():companyEntity.getCity()));
+        companyEntity.setState(((dts.getState()!=null)? dts.getState():companyEntity.getState()));
+        companyEntity.setZip(((dts.getZip()!=null)? dts.getZip():companyEntity.getZip()));
+        companyEntity.setContactName(((dts.getContactName()!=null)? dts.getContactName():companyEntity.getContactName()));
+        companyEntity.setContactTitle(((dts.getContactTitle()!=null)? dts.getContactTitle():companyEntity.getContactTitle()));
+        companyEntity.setContactPhoneNumber(((dts.getContactPhoneNumber()!=null)? dts.getContactPhoneNumber():companyEntity.getContactPhoneNumber()));
+        companyRepos.save(companyEntity);
+
+    }
 }

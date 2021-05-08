@@ -76,4 +76,17 @@ public class CompanyServiceTest {
 
     }
 
+    @Test
+    void updateCompanyDetailsByPatchTest() {
+
+        Company company1 = new Company(1L,"CTS", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+        when(mockRepository.findById(1L)).thenReturn(java.util.Optional.of(company1));
+        when(mockRepository.save(company1)).thenReturn(company1);
+        subject.patchCompany(1L,new CompanyDto("DTS"));
+        verify(mockRepository)
+                .save(new Company(1L,"DTS","Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800"));
+
+
+    }
+
 }
