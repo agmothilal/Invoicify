@@ -50,7 +50,7 @@ public class CompanyController {
             boolean success = companyService.patchCompany(id,companyDtoObject);
 
             if (success) {
-                return new ResponseEntity<>("Update successful.", HttpStatus.OK);
+                return new ResponseEntity<>("Update successful.", HttpStatus.ACCEPTED);
             } else {
                 return new ResponseEntity<>("No Company by given Id.", HttpStatus.BAD_REQUEST);
             }
