@@ -1,23 +1,26 @@
 package com.groot.invoicify.company;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class CompanyController {
 
+    List<CompanyDto> companyList = new ArrayList<CompanyDto>();
+
     @GetMapping("company")
-    String getAllCompany()
+    public List<CompanyDto>  getAllCompany()
     {
-        return "{}";
+        return companyList;
     }
 
     @PostMapping("company")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addCompany(){
+    public void addCompany(@RequestBody CompanyDto companyDtoObject){
+        companyList.add(companyDtoObject);
 
     }
 }
