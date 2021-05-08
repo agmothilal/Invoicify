@@ -37,6 +37,19 @@ public class CompanyServiceTest {
     }
 
     @Test
+    void findSingleCompanyTest() {
+
+        CompanyDto companyObject1 = new CompanyDto("CTS", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+        Company companyObject2 = new Company("CTS", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+
+        when(mockRepository.findByName("CTS")).thenReturn(companyObject2);
+
+        CompanyDto actual = subject.findSingleCompany("CTS");
+
+        assertThat(actual).isEqualTo(companyObject1);
+    }
+
+    @Test
     void fetchAll() {
 
         CompanyDto companyObject1 = new CompanyDto("CTS", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");

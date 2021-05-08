@@ -49,4 +49,17 @@ public class CompanyService {
                 })
                 .collect(Collectors.toList());
     }
+
+    public CompanyDto findSingleCompany(String companyName) {
+
+        Company companyFound = companyRepos.findByName(companyName);
+
+        if (companyFound == null) {
+            return null;
+        }
+
+        return new CompanyDto(companyFound.getName(), companyFound.getAddress(), companyFound.getCity(),
+                companyFound.getState(), companyFound.getZip(), companyFound.getContactName(),
+                companyFound.getContactTitle(), companyFound.getContactPhoneNumber());
+    }
 }
