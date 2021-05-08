@@ -1,4 +1,4 @@
-package com.groot.invoicify.companyIT;
+package com.groot.invoicify.companyTesting;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;

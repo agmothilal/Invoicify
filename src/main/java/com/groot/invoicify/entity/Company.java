@@ -23,4 +23,15 @@ public class Company {
 	private String contactName;
 	private String contactTitle;
 	private String contactPhoneNumber;
+
+	public Company(String name, String address, String city, String state, String zip, String contactName, String contactTitle, String contactPhoneNumber) {
+		this.name = name;
+		this.address = address;
+		this.city = city;
+		this.state = state;
+		this.zip = zip;
+		this.contactName = contactName;
+		this.contactTitle = contactTitle;
+		this.contactPhoneNumber = contactPhoneNumber;
+	}
 }
