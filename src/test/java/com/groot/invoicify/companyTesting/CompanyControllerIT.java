@@ -68,9 +68,31 @@ public class CompanyControllerIT {
         ).andExpect(status().isOk())
                 .andExpect(jsonPath("length()").value(1))
                 .andExpect(jsonPath("[0].name").value("CTS"))
-
         ;
 
     }
+
+    @Test
+    void testUniqueCompanyName() throws Exception{
+
+        CompanyDto companyObject1 = new CompanyDto("CTS","Address1","city1","state1","91367","Mike","CEO","800-800-800");
+        CompanyDto companyObject2 = new CompanyDto("CTS","Address2","city1","state1","91367","Steve","CEO","900-800-800");
+
+        mockMvc.perform(post("/company")
+                .content(objectMapper.writeValueAsString(companyObject1))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isCreated());
+
+        mockMvc.perform(post("/company")
+                .content(objectMapper.writeValueAsString(companyObject2))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isBadRequest());
+
+        mockMvc.perform(get("/company")
+        ).andExpect(status().isOk())
+                .andExpect(jsonPath("length()").value(1));
+    }
+
+
 
 }
