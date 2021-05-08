@@ -4,21 +4,25 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Item {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long itemId;
-    private String description;
-    private Integer rateHourBilled;
-    private Float ratePrice;
-    private Float flatPrice;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long itemId;
+	private String description;
+	private Integer rateHourBilled;
+	private Float ratePrice;
+	private Float flatPrice;
+
+	public Item(String description, Integer rateHourBilled, Float ratePrice, Float flatPrice) {
+		this.description = description;
+		this.rateHourBilled = rateHourBilled;
+		this.ratePrice = ratePrice;
+		this.flatPrice = flatPrice;
+	}
 }

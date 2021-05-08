@@ -15,22 +15,22 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Invoice {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long invoiceId;
-    @ManyToOne
-    @JoinColumn(name = "companyId")
-    private Company company;
-    private Float totalCost;
-    private String author;
-    private Boolean paid;
-    @OneToMany(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "itemId")
-    private List<Item> item;
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false, insertable = false)
-    private Timestamp createDt;
-    @LastModifiedDate
-    @Column(nullable = false, insertable = false)
-    private Timestamp modifiedDt;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long invoiceId;
+	@ManyToOne
+	@JoinColumn
+	private Company company;
+	private Float totalCost;
+	private String author;
+	private Boolean paid;
+	@OneToMany(cascade = CascadeType.REMOVE)
+	@JoinColumn(insertable = false,updatable = false)
+	private List<Item> item;
+	@CreationTimestamp
+	@Column(nullable = false, updatable = false, insertable = false)
+	private Timestamp createDt;
+	@LastModifiedDate
+	@Column(nullable = false, insertable = false)
+	private Timestamp modifiedDt;
 }

@@ -37,3 +37,35 @@ include::{snippets}/Post-Company-DuplicateRequest/http-request.adoc[]
 
 .response
 include::{snippets}/Post-Company-DuplicateRequest/http-response.adoc[]
+
+Post Item Endpoint
+
+.request
+include::{snippets}/Post-Item/http-request.adoc[]
+
+.response
+include::{snippets}/Post-Item/http-response.adoc[]
+
+Get Item Endpoint
+
+.request
+include::{snippets}/Get-Item/http-request.adoc[]
+
+.response
+include::{snippets}/Get-Item/http-response.adoc[]
+
+Patch Item Endpoint
+
+.request
+include::{snippets}/Patch-Item/http-request.adoc[]
+
+.response
+include::{snippets}/Patch-Item/http-response.adoc[]
+
+Put Item Endpoint
+
+.request
+include::{snippets}/Put-Item/http-request.adoc[]
+
+.response
+include::{snippets}/Put-Item/http-response.adoc[]
