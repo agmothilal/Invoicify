@@ -93,6 +93,30 @@ public class CompanyControllerIT {
                 .andExpect(jsonPath("length()").value(1));
     }
 
+    @Test
+    void postManyCompanies() throws Exception{
 
+        CompanyDto companyObject1 = new CompanyDto("CTS","Address1","city1","state1","91367","Mike","CEO","800-800-800");
+        CompanyDto companyObject2 = new CompanyDto("Google","Address2","city1","state1","91367","Steve","CEO","900-800-800");
+        CompanyDto companyObject3 = new CompanyDto("Microsoft","Address2","city1","state1","91367","Steve","CEO","900-800-800");
 
+        mockMvc.perform(post("/company")
+                .content(objectMapper.writeValueAsString(companyObject1))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isCreated());
+
+        mockMvc.perform(post("/company")
+                .content(objectMapper.writeValueAsString(companyObject2))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isCreated());
+        mockMvc.perform(post("/company")
+                .content(objectMapper.writeValueAsString(companyObject3))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isCreated());
+
+        mockMvc.perform(get("/company")
+        ).andExpect(status().isOk())
+                .andExpect(jsonPath("length()").value(3))
+                .andExpect(jsonPath("[1].name").value("Google"));
+    }
 }
