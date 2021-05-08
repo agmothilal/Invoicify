@@ -41,6 +41,11 @@ public class ItemService {
     }
 
     public void updateItem(Long itemId, ItemDto itemDto) {
-
+        var item = this.itemRepository.findById(itemId);
+        var updatedItem = MapToEntity(itemDto);
+        if(item.isPresent()) {
+            updatedItem.setItemId(item.get().getItemId());
+            this.itemRepository.save(updatedItem);
+        }
     }
 }

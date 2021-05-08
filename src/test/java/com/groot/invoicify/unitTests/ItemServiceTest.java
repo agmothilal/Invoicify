@@ -46,7 +46,7 @@ public class ItemServiceTest {
     @Test
     public void  updateItem() {
         var itemDto = new ItemDto("Description1", 10, 14.50F, 60F);
-        var item1 = new Item(1L,"Description", 10, 14.50F, 60F);
+        var item1 = new Item(1L,"Description1", 10, 14.50F, 60F);
         when(itemRepository.findById(1L)).thenReturn(java.util.Optional.of(item1));
 
         itemService.updateItem(1L, itemDto);
