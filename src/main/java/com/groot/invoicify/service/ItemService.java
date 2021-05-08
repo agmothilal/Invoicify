@@ -39,4 +39,8 @@ public class ItemService {
     public void saveItem(ItemDto itemDto) {
         this.itemRepository.save(MapToEntity(itemDto));
     }
+
+    public void updateItem(Long itemId, ItemDto itemDto) {
+
+    }
 }
