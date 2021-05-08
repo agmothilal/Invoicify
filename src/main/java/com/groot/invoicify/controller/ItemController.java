@@ -1,6 +1,7 @@
 package com.groot.invoicify.controller;
 
 import com.groot.invoicify.dto.ItemDto;
+import com.groot.invoicify.entity.Item;
 import com.groot.invoicify.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

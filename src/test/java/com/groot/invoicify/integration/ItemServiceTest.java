@@ -77,4 +77,72 @@ public class ItemServiceTest {
 						PayloadDocumentation.fieldWithPath("[].flatPrice").description("Item flat price")
 				)));
 	}
+
+	@Test
+	public void patchItemTest() throws Exception {
+		var itemDto = new ItemDto("description", 1, 1.1f, 1.1f);
+
+		this.mockMvc.perform(MockMvcRequestBuilders.post("/item")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(this.objectMapper.writeValueAsString(itemDto)))
+				.andExpect(MockMvcResultMatchers.status().isCreated());
+
+		itemDto.setDescription("description1");
+		itemDto.setRateHourBilled(null);
+
+		this.mockMvc.perform(MockMvcRequestBuilders.patch("/item")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.param("itemId", "1")
+				.content(this.objectMapper.writeValueAsString(itemDto)))
+				.andExpect(MockMvcResultMatchers.status().isAccepted())
+				.andDo(MockMvcRestDocumentation.document("Patch-Item", PayloadDocumentation.requestFields(
+						PayloadDocumentation.fieldWithPath("description").description("Item description"),
+						PayloadDocumentation.fieldWithPath("rateHourBilled").description("Item quantity"),
+						PayloadDocumentation.fieldWithPath("ratePrice").description("Item rate price"),
+						PayloadDocumentation.fieldWithPath("flatPrice").description("Item flat price")
+				)));
+
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/item")
+				.contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("[0].description").value("description1"))
+				.andExpect(MockMvcResultMatchers.jsonPath("[0].rateHourBilled").value(1))
+				.andExpect(MockMvcResultMatchers.jsonPath("[0].ratePrice").value(1.1))
+				.andExpect(MockMvcResultMatchers.jsonPath("[0].flatPrice").value(1.1));
+
+	}
+
+	@Test
+	public void patchItemTest() throws Exception {
+		var itemDto = new ItemDto("description", 1, 1.1f, 1.1f);
+
+		this.mockMvc.perform(MockMvcRequestBuilders.post("/item")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(this.objectMapper.writeValueAsString(itemDto)))
+				.andExpect(MockMvcResultMatchers.status().isCreated());
+
+		itemDto.setDescription("description1");
+		itemDto.setRateHourBilled(null);
+
+		this.mockMvc.perform(MockMvcRequestBuilders.patch("/item")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.param("itemId", "1")
+				.content(this.objectMapper.writeValueAsString(itemDto)))
+				.andExpect(MockMvcResultMatchers.status().isAccepted())
+				.andDo(MockMvcRestDocumentation.document("Patch-Item", PayloadDocumentation.requestFields(
+						PayloadDocumentation.fieldWithPath("description").description("Item description"),
+						PayloadDocumentation.fieldWithPath("rateHourBilled").description("Item quantity"),
+						PayloadDocumentation.fieldWithPath("ratePrice").description("Item rate price"),
+						PayloadDocumentation.fieldWithPath("flatPrice").description("Item flat price")
+				)));
+
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/item")
+				.contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("[0].description").value("description1"))
+				.andExpect(MockMvcResultMatchers.jsonPath("[0].rateHourBilled").value(1))
+				.andExpect(MockMvcResultMatchers.jsonPath("[0].ratePrice").value(1.1))
+				.andExpect(MockMvcResultMatchers.jsonPath("[0].flatPrice").value(1.1));
+
+	}
 }

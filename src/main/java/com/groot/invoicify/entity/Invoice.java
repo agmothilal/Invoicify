@@ -19,7 +19,7 @@ public class Invoice {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long invoiceId;
 	@ManyToOne
-	@JoinColumn(name="companyId")
+	@JoinColumn
 	private Company company;
 	private Float totalCost;
 	private String author;

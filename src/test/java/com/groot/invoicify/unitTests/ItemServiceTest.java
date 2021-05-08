@@ -49,7 +49,7 @@ public class ItemServiceTest {
         var item1 = new Item(1L,"Description1", 10, 14.50F, 60F);
         when(itemRepository.findById(1L)).thenReturn(java.util.Optional.of(item1));
 
-        itemService.updateItem(1L, itemDto);
+        itemService.updateItem(false,1L, itemDto);
 
         verify(itemRepository, times(1)).findById(1L);
         verify(itemRepository, times(1)).save(item1);
@@ -60,7 +60,7 @@ public class ItemServiceTest {
         var itemDto = new ItemDto("Description1", 10, 14.50F, 60F);
         when(itemRepository.findById(1L)).thenReturn(java.util.Optional.empty());
 
-        itemService.updateItem(1L, itemDto);
+        itemService.updateItem(false,1L, itemDto);
 
         verify(itemRepository, times(1)).findById(1L);
         verify(itemRepository, times(0)).save(null);
