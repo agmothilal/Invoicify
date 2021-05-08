@@ -27,4 +27,10 @@ public class ItemController {
 	public List<ItemDto> getItem(){
 		return this.itemService.fetchItems();
 	}
+
+	@PatchMapping
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	public void patchItem(@RequestParam Long itemId,@RequestBody ItemDto itemDto){
+		this.itemService.updateItem(false,itemId,itemDto);
+	}
 }

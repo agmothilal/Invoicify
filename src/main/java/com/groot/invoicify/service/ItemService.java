@@ -51,8 +51,8 @@ public class ItemService {
 
 	public void updateItem(boolean put, Long itemId, ItemDto itemDto) {
 		var item = this.itemRepository.findById(itemId);
-		var updatedItem = ((put) ? MapToEntity(itemDto) : MapToEntityPatch(itemDto, item.get()));
 		if (item.isPresent()) {
+			var updatedItem = ((put) ? MapToEntity(itemDto) : MapToEntityPatch(itemDto, item.get()));
 			updatedItem.setItemId(item.get().getItemId());
 			this.itemRepository.save(updatedItem);
 		}
