@@ -25,7 +25,7 @@ public class Invoice {
 	private String author;
 	private Boolean paid;
 	@OneToMany(cascade = CascadeType.REMOVE)
-	@JoinColumn(name="itemId")
+	@JoinColumn(insertable = false,updatable = false)
 	private List<Item> item;
 	@CreationTimestamp
 	@Column(nullable = false, updatable = false, insertable = false)

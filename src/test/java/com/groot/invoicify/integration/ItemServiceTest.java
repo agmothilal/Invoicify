@@ -60,15 +60,16 @@ public class ItemServiceTest {
 		this.mockMvc.perform(MockMvcRequestBuilders.get("/item")
 		.contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(MockMvcResultMatchers.status().isOk())
-				.andExpect(MockMvcResultMatchers.jsonPath("description").value("description"))
-				.andExpect(MockMvcResultMatchers.jsonPath("rateHourBilled").value("1"))
-				.andExpect(MockMvcResultMatchers.jsonPath("ratePrice").value("1.1"))
-				.andExpect(MockMvcResultMatchers.jsonPath("flatPrice").value("1.1"))
-				.andDo(MockMvcRestDocumentation.document("Get-Item", PayloadDocumentation.requestFields(
-						PayloadDocumentation.fieldWithPath("description").description("Item description"),
-						PayloadDocumentation.fieldWithPath("rateHourBilled").description("Item quantity"),
-						PayloadDocumentation.fieldWithPath("ratePrice").description("Item rate price"),
-						PayloadDocumentation.fieldWithPath("flatPrice").description("Item flat price")
+				.andExpect(MockMvcResultMatchers.jsonPath("[0].description").value("description"))
+				.andExpect(MockMvcResultMatchers.jsonPath("[0].rateHourBilled").value(1))
+				.andExpect(MockMvcResultMatchers.jsonPath("[0].ratePrice").value(1.1))
+				.andExpect(MockMvcResultMatchers.jsonPath("[0].flatPrice").value(1.1))
+				.andDo(MockMvcRestDocumentation.document("Get-Item", PayloadDocumentation.responseFields(
+						PayloadDocumentation.fieldWithPath("[]").description("Array of Items"),
+						PayloadDocumentation.fieldWithPath("[].description").description("Item description"),
+						PayloadDocumentation.fieldWithPath("[].rateHourBilled").description("Item quantity"),
+						PayloadDocumentation.fieldWithPath("[].ratePrice").description("Item rate price"),
+						PayloadDocumentation.fieldWithPath("[].flatPrice").description("Item flat price")
 				)));
 	}
 }
