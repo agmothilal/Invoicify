@@ -21,8 +21,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -186,4 +185,14 @@ public class CompanyControllerIT {
 
     }
 
+    @Test
+    public void patchCompany_givenNoIdTest() throws Exception {
+        CompanyDto companyObject2 = new CompanyDto("DTS");
+
+        mockMvc.perform(patch("/company/1" )
+                .content(objectMapper.writeValueAsString(companyObject2))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("No Company by given Id."));
+    }
 }

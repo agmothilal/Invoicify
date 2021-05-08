@@ -43,9 +43,14 @@ public class CompanyController {
     }
 
     @PatchMapping("company/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void patchSkirt(@PathVariable Long id, @RequestBody CompanyDto companyDtoObject) {
-         companyService.patchCompany(id,companyDtoObject);
-    }
+    public ResponseEntity<?> patchCompany(@PathVariable Long id, @RequestBody CompanyDto companyDtoObject) {
 
+            boolean success = companyService.patchCompany(id,companyDtoObject);
+
+            if (success) {
+                return new ResponseEntity<>("Update successful.", HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("No Company by given Id.", HttpStatus.BAD_REQUEST);
+            }
+    }
 }
