@@ -2,7 +2,6 @@ package com.groot.invoicify.company;
 
 import com.groot.invoicify.entity.Company;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,15 +15,15 @@ public class CompanyService {
         this.companyRepos = companyRepos;
     }
 
-    public boolean create(CompanyDto companyDtoObject){
+    public boolean create(CompanyDto companyDtoObject) {
 
         if (companyRepos.findByName(companyDtoObject.getName()) != null) {
             return false;
         } else {
             companyRepos.save(
-                    new Company(companyDtoObject.getName(),companyDtoObject.getAddress(),companyDtoObject.getCity(),
-                            companyDtoObject.getState(),companyDtoObject.getZip(),companyDtoObject.getContactName(),
-                            companyDtoObject.getContactTitle(),companyDtoObject.getContactPhoneNumber()
+                    new Company(companyDtoObject.getName(), companyDtoObject.getAddress(), companyDtoObject.getCity(),
+                            companyDtoObject.getState(), companyDtoObject.getZip(), companyDtoObject.getContactName(),
+                            companyDtoObject.getContactTitle(), companyDtoObject.getContactPhoneNumber()
                     )
             );
             return true;

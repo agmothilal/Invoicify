@@ -2,7 +2,10 @@ package com.groot.invoicify.company;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -16,13 +19,12 @@ public class CompanyController {
     }
 
     @GetMapping("company")
-    public List<CompanyDto>  getAllCompany()
-    {
+    public List<CompanyDto> getAllCompany() {
         return this.companyService.fetchAll();
     }
 
     @PostMapping("company")
-    public ResponseEntity<?> addCompany(@RequestBody CompanyDto companyDtoObject){
+    public ResponseEntity<?> addCompany(@RequestBody CompanyDto companyDtoObject) {
 
         boolean success = this.companyService.create(companyDtoObject);
 
