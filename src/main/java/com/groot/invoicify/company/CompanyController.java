@@ -9,18 +9,22 @@ import java.util.List;
 @RestController
 public class CompanyController {
 
-    List<CompanyDto> companyList = new ArrayList<CompanyDto>();
+    CompanyService companyService;
+
+    public CompanyController(CompanyService companyService) {
+        this.companyService = companyService;
+    }
 
     @GetMapping("company")
     public List<CompanyDto>  getAllCompany()
     {
-        return companyList;
+        return this.companyService.fetchAll();
     }
 
     @PostMapping("company")
     @ResponseStatus(HttpStatus.CREATED)
     public void addCompany(@RequestBody CompanyDto companyDtoObject){
-        companyList.add(companyDtoObject);
+         this.companyService.create(companyDtoObject);
 
     }
 }
