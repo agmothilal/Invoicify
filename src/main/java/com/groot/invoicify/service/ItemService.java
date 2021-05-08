@@ -24,11 +24,19 @@ public class ItemService {
                 item.getFlatPrice());
     }
 
+    private static Item MapToEntity(ItemDto itemDto) {
+        return new Item(itemDto.getDescription(),
+                itemDto.getRateHourBilled(),
+                itemDto.getRatePrice(),
+                itemDto.getFlatPrice());
+    }
+
     public List<ItemDto> fetchItems() {
         var items = this.itemRepository.findAll();
         return items.stream().map(ItemService::MapToDto).collect(Collectors.toList());
     }
 
     public void saveItem(ItemDto itemDto) {
+        this.itemRepository.save(MapToEntity(itemDto));
     }
 }
