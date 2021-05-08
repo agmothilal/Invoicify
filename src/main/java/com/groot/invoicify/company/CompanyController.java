@@ -41,4 +41,11 @@ public class CompanyController {
 
         return new ResponseEntity<>("Successfully added new Company.", HttpStatus.CREATED);
     }
+
+    @PatchMapping("company/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public void patchSkirt(@PathVariable Long id, @RequestBody CompanyDto companyDtoObject) {
+         companyService.patchCompany(id,companyDtoObject);
+    }
+
 }

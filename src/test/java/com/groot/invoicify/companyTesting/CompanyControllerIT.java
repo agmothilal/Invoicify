@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import javax.transaction.Transactional;
@@ -18,6 +19,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -26,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @Transactional
-
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 
 public class CompanyControllerIT {
 
@@ -97,8 +99,8 @@ public class CompanyControllerIT {
                 .content(objectMapper.writeValueAsString(companyObject2))
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isBadRequest())
-        .andDo(print())
-        .andDo(document("Post-Company-DuplicateRequest"));
+                .andDo(print())
+                .andDo(document("Post-Company-DuplicateRequest"));
 
         mockMvc.perform(get("/company")
         ).andExpect(status().isOk())
@@ -160,4 +162,28 @@ public class CompanyControllerIT {
                 .andDo(print())
                 .andDo(document("Get-Company-ByName-NoContent"));
     }
+
+    @Test
+    public void patchCompanyTest() throws Exception {
+
+        CompanyDto companyObject1 = new CompanyDto("CTS", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+
+        mockMvc.perform(post("/company")
+                .content(objectMapper.writeValueAsString(companyObject1))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isCreated());
+
+        CompanyDto companyObject2 = new CompanyDto("DTS");
+
+        mockMvc.perform(patch("/company/1" )
+                .content(objectMapper.writeValueAsString(companyObject2))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/company/DTS")
+        ).andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("DTS"));
+
+    }
+
 }
