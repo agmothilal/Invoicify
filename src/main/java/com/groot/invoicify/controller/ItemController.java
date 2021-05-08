@@ -33,4 +33,10 @@ public class ItemController {
 	public void patchItem(@RequestParam Long itemId,@RequestBody ItemDto itemDto){
 		this.itemService.updateItem(false,itemId,itemDto);
 	}
+
+	@PutMapping
+	@ResponseStatus(HttpStatus.ACCEPTED)
+	public void putItem(@RequestParam Long itemId,@RequestBody ItemDto itemDto){
+		this.itemService.updateItem(true,itemId,itemDto);
+	}
 }

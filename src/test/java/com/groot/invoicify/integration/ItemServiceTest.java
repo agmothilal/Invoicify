@@ -143,6 +143,5 @@ public class ItemServiceTest {
 				.andExpect(MockMvcResultMatchers.jsonPath("[0].rateHourBilled").isEmpty())
 				.andExpect(MockMvcResultMatchers.jsonPath("[0].ratePrice").value(1.1))
 				.andExpect(MockMvcResultMatchers.jsonPath("[0].flatPrice").value(1.1));
-
 	}
 }
