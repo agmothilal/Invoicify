@@ -54,4 +54,15 @@ public class ItemServiceTest {
         verify(itemRepository, times(1)).findById(1L);
         verify(itemRepository, times(1)).save(item1);
     }
+
+    @Test
+    public void updateItemFailed() {
+        var itemDto = new ItemDto("Description1", 10, 14.50F, 60F);
+        when(itemRepository.findById(1L)).thenReturn(java.util.Optional.empty());
+
+        itemService.updateItem(1L, itemDto);
+
+        verify(itemRepository, times(1)).findById(1L);
+        verify(itemRepository, times(0)).save(null);
+    }
 }
