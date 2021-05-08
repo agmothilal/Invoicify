@@ -17,15 +17,18 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
 
-    public List<ItemDto> fetchItems() {
-        var items = this.itemRepository.findAll();
-        return items.stream().map(ItemService::MapToDto).collect(Collectors.toList());
-    }
-
     private static ItemDto MapToDto(Item item) {
         return new ItemDto(item.getDescription(),
                 item.getRateHourBilled(),
                 item.getRatePrice(),
                 item.getFlatPrice());
+    }
+
+    public List<ItemDto> fetchItems() {
+        var items = this.itemRepository.findAll();
+        return items.stream().map(ItemService::MapToDto).collect(Collectors.toList());
+    }
+
+    public void saveItem(ItemDto itemDto) {
     }
 }

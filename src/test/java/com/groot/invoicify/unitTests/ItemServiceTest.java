@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ItemServiceTest {
@@ -32,5 +32,14 @@ public class ItemServiceTest {
 
         assertThat(result).isEqualTo(
                 List.of(new ItemDto("Description", 10, 14.50F, 60F)));
+    }
+
+    @Test
+    public void insertItem() {
+        var itemDto = new ItemDto("Description", 10, 14.50F, 60F);
+        var item = new Item("Description", 10, 14.50F, 60F);
+        itemService.saveItem(itemDto);
+
+        verify(itemRepository, times(1)).save(item);
     }
 }
