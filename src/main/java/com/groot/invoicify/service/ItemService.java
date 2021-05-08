@@ -45,8 +45,9 @@ public class ItemService {
 		return items.stream().map(ItemService::MapToDto).collect(Collectors.toList());
 	}
 
-	public void saveItem(ItemDto itemDto) {
-		this.itemRepository.save(MapToEntity(itemDto));
+	public Long saveItem(ItemDto itemDto) {
+		var result = this.itemRepository.save(MapToEntity(itemDto));
+		return result.getItemId();
 	}
 
 	public void updateItem(boolean put, Long itemId, ItemDto itemDto) {

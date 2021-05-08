@@ -18,8 +18,8 @@ public class ItemController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public void createItem(@RequestBody ItemDto itemDto){
-		this.itemService.saveItem(itemDto);
+	public Long createItem(@RequestBody ItemDto itemDto){
+		return this.itemService.saveItem(itemDto);
 	}
 
 	@GetMapping

@@ -38,9 +38,12 @@ public class ItemServiceTest {
     public void insertItem() {
         var itemDto = new ItemDto("Description", 10, 14.50F, 60F);
         var item = new Item("Description", 10, 14.50F, 60F);
-        itemService.saveItem(itemDto);
+        var itemResult = new Item(1L,"Description", 10, 14.50F, 60F);
+        when(itemRepository.save(item)).thenReturn(itemResult);
+        var result = itemService.saveItem(itemDto);
 
         verify(itemRepository, times(1)).save(item);
+        assertThat(result).isEqualTo(itemResult.getItemId());
     }
 
     @Test
