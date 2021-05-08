@@ -3,6 +3,9 @@ package com.groot.invoicify.company;
 import com.groot.invoicify.entity.Company;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class CompanyService {
 
@@ -20,5 +23,25 @@ public class CompanyService {
                 )
         );
 
+    }
+
+    public List<CompanyDto> fetchAll() {
+
+        return companyRepos.findAll()
+                .stream()
+                .map(companyEntity -> {
+                    return new CompanyDto(
+                            companyEntity.getName(),
+                            companyEntity.getAddress(),
+                            companyEntity.getCity(),
+                            companyEntity.getState(),
+                            companyEntity.getZip(),
+                            companyEntity.getContactName(),
+                            companyEntity.getContactTitle(),
+                            companyEntity.getContactPhoneNumber()
+
+                    );
+                })
+                .collect(Collectors.toList());
     }
 }
