@@ -21,8 +21,13 @@ public class CompanyController {
     }
 
     @GetMapping("company/{companyName}")
-    public CompanyDto getAllCompany(@PathVariable String companyName) {
-        return this.companyService.findSingleCompany(companyName);
+    public ResponseEntity<?> getAllCompany(@PathVariable String companyName) {
+        CompanyDto companyDto = this.companyService.findSingleCompany(companyName);
+        if (companyDto == null) {
+            return new ResponseEntity<>("No Company by that name.", HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(companyDto, HttpStatus.OK);
+        }
     }
 
     @PostMapping("company")

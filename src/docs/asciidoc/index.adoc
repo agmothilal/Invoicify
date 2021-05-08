@@ -6,6 +6,14 @@ include::{snippets}/Get-Company-ByName/http-request.adoc[]
 .response
 include::{snippets}/Get-Company-ByName/http-response.adoc[]
 
+Get Company By Name No Content Response
+
+.request
+include::{snippets}/Get-Company-ByName-NoContent/http-request.adoc[]
+
+.response
+include::{snippets}/Get-Company-ByName-NoContent/http-response.adoc[]
+
 Get Company All Response
 
 .request

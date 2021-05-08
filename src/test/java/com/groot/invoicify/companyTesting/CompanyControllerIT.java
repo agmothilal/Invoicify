@@ -42,8 +42,6 @@ public class CompanyControllerIT {
         mockMvc.perform(get("/company"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("length()").value(0));
-
-
     }
 
     @Test
@@ -152,5 +150,14 @@ public class CompanyControllerIT {
                 .andExpect(jsonPath("$.name").value("CTS"))
                 .andDo(print())
                 .andDo(document("Get-Company-ByName"));
+    }
+
+    @Test
+    void getSingleCompanyByName_noContentTest() throws Exception {
+
+        mockMvc.perform(get("/company/Google")
+        ).andExpect(status().isNoContent())
+                .andDo(print())
+                .andDo(document("Get-Company-ByName-NoContent"));
     }
 }
