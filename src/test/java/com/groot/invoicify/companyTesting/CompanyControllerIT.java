@@ -177,7 +177,9 @@ public class CompanyControllerIT {
         mockMvc.perform(patch("/company/1" )
                 .content(objectMapper.writeValueAsString(companyObject2))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("Patch-Company"));
 
         mockMvc.perform(get("/company/DTS")
         ).andExpect(status().isOk())
