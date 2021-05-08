@@ -49,8 +49,13 @@ public class ItemServiceTest {
 
 	@Test
 	public void getItemTest() throws Exception {
+		this.mockMvc.perform(MockMvcRequestBuilders.get("/item")
+				.contentType(MediaType.APPLICATION_JSON_VALUE))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$").isEmpty());
+
 		var itemDto = new ItemDto("description", 1, 1.1f, 1.1f);
-		var items=new ArrayList<ItemDto>();
+		var items = new ArrayList<ItemDto>();
 
 		this.mockMvc.perform(MockMvcRequestBuilders.post("/item")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -58,7 +63,7 @@ public class ItemServiceTest {
 				.andExpect(MockMvcResultMatchers.status().isCreated());
 
 		this.mockMvc.perform(MockMvcRequestBuilders.get("/item")
-		.contentType(MediaType.APPLICATION_JSON_VALUE))
+				.contentType(MediaType.APPLICATION_JSON_VALUE))
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("[0].description").value("description"))
 				.andExpect(MockMvcResultMatchers.jsonPath("[0].rateHourBilled").value(1))
