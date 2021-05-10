@@ -21,7 +21,7 @@ public class Invoice {
 	@ManyToOne
 	@JoinColumn
 	private Company company;
-	private Float totalCost;
+	//private Float totalCost;
 	private String author;
 	private Boolean paid;
 	@OneToMany(cascade = CascadeType.REMOVE)
@@ -33,4 +33,11 @@ public class Invoice {
 	@LastModifiedDate
 	@Column(nullable = false, insertable = false)
 	private Timestamp modifiedDt;
+
+    public Invoice(Company company, String author, Boolean paid, List<Item> item) {
+        this.company = company;
+        this.author = author;
+        this.paid = paid;
+        this.item = item;
+    }
 }

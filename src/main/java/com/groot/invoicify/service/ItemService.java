@@ -26,7 +26,7 @@ public class ItemService {
 				item.getFlatPrice());
 	}
 
-	private static Item MapToEntity(ItemDto itemDto) {
+	public static Item MapToEntity(ItemDto itemDto) {
 		return new Item(itemDto.getDescription(),
 				itemDto.getRateHourBilled(),
 				itemDto.getRatePrice(),
