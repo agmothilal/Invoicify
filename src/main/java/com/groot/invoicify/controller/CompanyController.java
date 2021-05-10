@@ -1,5 +1,7 @@
-package com.groot.invoicify.company;
+package com.groot.invoicify.controller;
 
+import com.groot.invoicify.dto.CompanyDto;
+import com.groot.invoicify.service.CompanyService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,5 +42,17 @@ public class CompanyController {
         }
 
         return new ResponseEntity<>("Successfully added new Company.", HttpStatus.CREATED);
+    }
+
+    @PatchMapping("company/{id}")
+    public ResponseEntity<?> patchCompany(@PathVariable Long id, @RequestBody CompanyDto companyDtoObject) {
+
+            boolean success = companyService.patchCompany(id,companyDtoObject);
+
+            if (success) {
+                return new ResponseEntity<>("Update successful.", HttpStatus.ACCEPTED);
+            } else {
+                return new ResponseEntity<>("No Company by given Id.", HttpStatus.BAD_REQUEST);
+            }
     }
 }

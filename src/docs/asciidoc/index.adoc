@@ -38,6 +38,14 @@ include::{snippets}/Post-Company-DuplicateRequest/http-request.adoc[]
 .response
 include::{snippets}/Post-Company-DuplicateRequest/http-response.adoc[]
 
+Patch Company Response
+
+.request
+include::{snippets}/Patch-Company/http-request.adoc[]
+
+.response
+include::{snippets}/Patch-Company/http-response.adoc[]
+
 Post Item Endpoint
 
 .request

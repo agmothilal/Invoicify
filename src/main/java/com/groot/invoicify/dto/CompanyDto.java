@@ -1,10 +1,12 @@
-package com.groot.invoicify.company;
+package com.groot.invoicify.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class CompanyDto {
 
     private String name;
@@ -15,4 +17,8 @@ public class CompanyDto {
     private String contactName;
     private String contactTitle;
     private String contactPhoneNumber;
+
+    public CompanyDto(String dts) {
+        name = dts;
+    }
 }

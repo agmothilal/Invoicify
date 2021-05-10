@@ -1,8 +1,8 @@
-package com.groot.invoicify.companyTesting;
+package com.groot.invoicify.unitTests;
 
-import com.groot.invoicify.company.CompanyDto;
-import com.groot.invoicify.company.CompanyRepository;
-import com.groot.invoicify.company.CompanyService;
+import com.groot.invoicify.dto.CompanyDto;
+import com.groot.invoicify.repository.CompanyRepository;
+import com.groot.invoicify.service.CompanyService;
 import com.groot.invoicify.entity.Company;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -72,6 +72,19 @@ public class CompanyServiceTest {
 
         // A Assert
         assertThat(actual).isEqualTo(companyDtoList);
+
+
+    }
+
+    @Test
+    void updateCompanyDetailsByPatchTest() {
+
+        Company company1 = new Company(1L,"CTS", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+        when(mockRepository.findById(1L)).thenReturn(java.util.Optional.of(company1));
+        when(mockRepository.save(company1)).thenReturn(company1);
+        subject.patchCompany(1L,new CompanyDto("DTS"));
+        verify(mockRepository)
+                .save(new Company(1L,"DTS","Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800"));
 
 
     }

@@ -1,4 +1,4 @@
-package com.groot.invoicify.company;
+package com.groot.invoicify.repository;
 
 import com.groot.invoicify.entity.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
