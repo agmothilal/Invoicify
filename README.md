@@ -183,3 +183,105 @@ User should be able to retrieve a list of all the companies
     addresses.
 -   Must have a simple view that displays a list of company names and
     cities/states.
+
+## Installation Instruction
+Software Requirement:
+
+1. Gradle ([install](https://gradle.org/install/))
+
+2. Java (minimum java 8) ([install](https://www.oracle.com/java/technologies/javase-downloads.html))
+
+3. Docker ([install](https://docs.docker.com/get-docker/))
+
+4. Heroku CLI - Optional for Deployment. ([install](https://devcenter.heroku.com/articles/heroku-cli))
+   Follow these easy step:
+
+
+1. Clone the repository:
+     ```
+     https://github.com/Christopher-Diehl-cognizant-com/PlaylistService
+     ```
+2. Execute this on command line:
+
+     ```shell
+     $ cd Invoicify
+     $ docker build -t <your email>/invoicify_service .
+     $ docker network create --driver bridge invoicify_network
+     $ docker run -d -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=open -e POSTGRES_DB=postgres --network invoicify_network --name postgres postgres
+     $ docker run -d -p 8081:8080 -e SPRING_PROFILES_ACTIVE=localpg --network invoicify_network --name invoicify_service invoicify_service
+     ```
+3. Heroku Deployment (Heroku CLI Required.)
+
+   ```shell
+   $ heroku login
+   $ heroku create
+   $ heroku git:remote -a
+   $ heroku container:login
+   $ heroku container:push web
+   $ heroku container:release web
+   ```
+
+
+4. Enjoy
+
+## Auto-Deploy Instructions
+
+Follow these to deploy the container automatically. Files Required:
+
+- Dockerfile
+- heroku.yml Steps:
+
+1. Login into heroku.
+
+```shell
+heroku login
+```
+
+2. Add Heroku Git Remote
+
+```shell
+# playlist-service is my app name. Please use yours 
+heroku git:remote -a playlist-service 
+```
+
+3. Use Heroku Stack to set heroku.yml
+
+```shell
+heroku stack:set container
+```
+
+4. Commit and Push into heroku remote.
+
+```shell
+git add --all 
+git commit -m "heroku commit"
+git push heroku master 
+```
+
+5. Open App
+
+```shell
+heroku open
+```
+
+Hint: For auto deploy please follow step 4.
+
+## Sample Server
+
+Feel free to play with our sample server.
+
+- ([Server# 1](https://chrisdiehlcognizantplaylist.herokuapp.com))
+
+## API
+
+```text
+Base URL: /, Version: 1.1, local port: 8081
+
+Default request content-types: application/json
+
+Default response content-types: application/json
+
+Schemes: http 
+```
+
+## API Reference
