@@ -49,6 +49,5 @@ public class InvoiceServiceTest {
 						PayloadDocumentation.fieldWithPath("paid").description("If company paid the invoice."),
 						PayloadDocumentation.subsectionWithPath("itemsDto[]").description("A list of items in the invoice.")
 						)));
-		;
 	}
 }
