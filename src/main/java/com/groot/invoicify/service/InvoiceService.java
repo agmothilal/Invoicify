@@ -37,4 +37,5 @@ public class InvoiceService {
         var invoice = this.invoiceRepository.save(MapToEntity(invoiceDto, company));
         return invoice.getInvoiceId();
     }
+
 }

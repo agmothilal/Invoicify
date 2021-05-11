@@ -42,7 +42,7 @@ public class InvoiceServiceTest {
 				.content(this.objectMapper.writeValueAsString(invoiceDto)))
 				.andExpect(MockMvcResultMatchers.status().isCreated())
 				.andExpect(MockMvcResultMatchers.jsonPath("$").isNumber())
-				.andDo(MockMvcRestDocumentation.document("Post-Item", PayloadDocumentation.requestFields(
+				.andDo(MockMvcRestDocumentation.document("Post-Invoice", PayloadDocumentation.requestFields(
 						PayloadDocumentation.fieldWithPath("companyName").description("Name of company on invoice."),
 						PayloadDocumentation.fieldWithPath("totalCost").description("Total cost of invoice."),
 						PayloadDocumentation.fieldWithPath("author").description("Author of invoice."),
