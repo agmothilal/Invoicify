@@ -12,4 +12,9 @@ public class InvoiceController {
 	@Autowired
 	InvoiceService invoiceService;
 
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+	public Long createInvoice(@RequestBody InvoiceDto invoiceDto) {
+		return this.invoiceService.createInvoice(invoiceDto);
+	}
 }
