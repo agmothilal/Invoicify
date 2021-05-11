@@ -77,3 +77,11 @@ include::{snippets}/Put-Item/http-request.adoc[]
 
 .response
 include::{snippets}/Put-Item/http-response.adoc[]
+
+Post Invoice Endpoint
+
+.request
+include::{snippets}/Post-Invoice/http-request.adoc[]
+
+.response
+include::{snippets}/Post-Invoice/http-response.adoc[]
