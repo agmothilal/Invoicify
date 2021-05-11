@@ -8,6 +8,9 @@ import com.groot.invoicify.repository.CompanyRepository;
 import com.groot.invoicify.repository.InvoiceRepository;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,6 +22,12 @@ public class InvoiceService {
                           CompanyRepository companyRepository) {
         this.invoiceRepository = invoiceRepository;
         this.companyRepository = companyRepository;
+    }
+
+    private static boolean isInvoiceOlderAndPaid(Invoice invoice) {
+        var previousYear = LocalDateTime.now().minusYears(1);
+        return invoice.getPaid()
+                && invoice.getCreateDt().toLocalDateTime().isBefore(previousYear);
     }
 
     public static Invoice MapToEntity(InvoiceDto invoiceDto, Company company) {
@@ -38,4 +47,17 @@ public class InvoiceService {
         return invoice.getInvoiceId();
     }
 
+    public Long deletePaidAndOlderInvoices() {
+        var invoiceList = new ArrayList<Invoice>();
+        var invoices = this.invoiceRepository.findAll();
+        invoices.forEach(invoiceList::add);
+        var deleteInvoices = invoiceList.stream()
+                .filter(invoice -> isInvoiceOlderAndPaid(invoice))
+                .collect(Collectors.toList());
+
+        deleteInvoices.forEach(invoice -> {
+            this.invoiceRepository.delete(invoice);
+        });
+        return deleteInvoices.stream().count();
+    }
 }
