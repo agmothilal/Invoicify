@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Invoice {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "INVOICE_SEQ")
 	private Long invoiceId;
 	@ManyToOne
 	@JoinColumn
@@ -24,24 +24,25 @@ public class Invoice {
 	//private Float totalCost;
 	private String author;
 	private Boolean paid;
-	@OneToMany(cascade = CascadeType.REMOVE)
-	@JoinColumn(insertable = false,updatable = false)
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "invoice")
 	private List<Item> item;
 	@CreationTimestamp
-	@Column(nullable = false, updatable = false, insertable = false)
+	@Column(nullable = false, updatable = false, insertable = false,
+			columnDefinition = "DATE DEFAULT CURRENT_DATE"
+	)
 	private Timestamp createDt;
 	@LastModifiedDate
-	@Column(nullable = false, insertable = false)
+	@Column(nullable = false, insertable = false, columnDefinition = "DATE DEFAULT CURRENT_DATE"
+	)
 	private Timestamp modifiedDt;
 
-    public Invoice(Company company, String author, Boolean paid, List<Item> item) {
+    public Invoice(Company company, String author, Boolean paid) {
         this.company = company;
         this.author = author;
         this.paid = paid;
-        this.item = item;
     }
 
-	public Invoice( String author, Boolean paid, Timestamp createDt) {
+	public Invoice(String author, Boolean paid, Timestamp createDt) {
 		this.author = author;
 		this.paid = paid;
 		this.createDt = createDt;

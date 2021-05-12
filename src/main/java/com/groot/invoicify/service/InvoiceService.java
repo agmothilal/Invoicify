@@ -6,6 +6,7 @@ import com.groot.invoicify.entity.Invoice;
 import com.groot.invoicify.entity.Item;
 import com.groot.invoicify.repository.CompanyRepository;
 import com.groot.invoicify.repository.InvoiceRepository;
+import com.groot.invoicify.repository.ItemRepository;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -17,11 +18,14 @@ import java.util.stream.Collectors;
 public class InvoiceService {
     private final InvoiceRepository invoiceRepository;
     private final CompanyRepository companyRepository;
+    private final ItemRepository itemRepository;
 
     public InvoiceService(InvoiceRepository invoiceRepository,
-                          CompanyRepository companyRepository) {
+                          CompanyRepository companyRepository,
+                          ItemRepository itemRepository) {
         this.invoiceRepository = invoiceRepository;
         this.companyRepository = companyRepository;
+        this.itemRepository = itemRepository;
     }
 
     private static boolean isInvoiceOlderAndPaid(Invoice invoice) {
@@ -31,19 +35,28 @@ public class InvoiceService {
     }
 
     public static Invoice MapToEntity(InvoiceDto invoiceDto, Company company) {
-        var items = invoiceDto.getItemsDto().stream()
-                .map(dto -> ItemService.MapToEntity(dto))
-                .collect(Collectors.toList());
+
 
         return new Invoice(company,
                 invoiceDto.getAuthor(),
-                invoiceDto.getPaid(),
-                items);
+                invoiceDto.getPaid());
     }
 
     public Long createInvoice(InvoiceDto invoiceDto) {
         var company = this.companyRepository.findByName(invoiceDto.getCompanyName());
-        var invoice = this.invoiceRepository.save(MapToEntity(invoiceDto, company));
+        var invoiceWithItems = MapToEntity(invoiceDto, company);
+        var invoice = this.invoiceRepository.save(invoiceWithItems);
+
+        // Save all items
+        var items = invoiceDto.getItemsDto().stream()
+                .map(dto -> {
+                    var item = ItemService.MapToEntity(dto);
+                    item.setInvoice(invoice);
+                    return item;
+                })
+                .collect(Collectors.toList());
+        this.itemRepository.saveAll(items);
+
         return invoice.getInvoiceId();
     }
 
