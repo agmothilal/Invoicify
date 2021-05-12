@@ -12,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Company {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "COMPANY_SEQ")
     private Long companyId;
     @Column(unique = true)
     private String name;
