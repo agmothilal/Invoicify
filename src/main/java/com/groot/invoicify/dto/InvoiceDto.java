@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InvoiceDto {
-
+    private Long invoiceNumber;
     private String companyName;
     private Float totalCost;
     private String author;
@@ -22,5 +22,13 @@ public class InvoiceDto {
         this.author = author;
         this.paid = paid;
         this.itemsDto = itemsDto;
+    }
+
+    public InvoiceDto(Long invoiceNumber,String companyName, String author, Boolean paid, List<ItemDto> itemsDto) {
+        this.companyName = companyName;
+        this.author = author;
+        this.paid = paid;
+        this.itemsDto = itemsDto;
+        this.invoiceNumber = invoiceNumber;
     }
 }

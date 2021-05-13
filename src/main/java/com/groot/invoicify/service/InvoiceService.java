@@ -1,6 +1,7 @@
 package com.groot.invoicify.service;
 
 import com.groot.invoicify.dto.InvoiceDto;
+import com.groot.invoicify.dto.ItemDto;
 import com.groot.invoicify.entity.Company;
 import com.groot.invoicify.entity.Invoice;
 import com.groot.invoicify.entity.Item;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,5 +74,38 @@ public class InvoiceService {
             this.invoiceRepository.delete(invoice);
         });
         return deleteInvoices.stream().count();
+    }
+
+    public List<InvoiceDto> fetchAllInvoicesByCompany(String companyName) {
+
+        Company companyEntity = companyRepository.findByName(companyName);
+
+        Long compId = companyEntity.getCompanyId();
+
+        return invoiceRepository.findByCompanyCompanyId(compId)
+                .stream()
+                .map(invoiceEntity -> {
+
+                    List<Item> itemEntList = itemRepository.findByInvoiceInvoiceId(invoiceEntity.getInvoiceId());
+
+                    return new InvoiceDto(
+                            invoiceEntity.getInvoiceId(),
+                            companyName,
+                            invoiceEntity.getAuthor(),
+                            invoiceEntity.getPaid(),
+                            itemEntList
+                            .stream().map(itemEnt->
+                            {
+                                return new ItemDto(itemEnt.getDescription(),
+                                        itemEnt.getRateHourBilled(),
+                                        itemEnt.getRatePrice(),
+                                        itemEnt.getFlatPrice());
+                            }).collect(Collectors.toList())
+
+
+                    );
+                })
+                .collect(Collectors.toList());
+
     }
 }

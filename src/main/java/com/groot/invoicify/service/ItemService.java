@@ -19,7 +19,7 @@ public class ItemService {
 		this.itemRepository = itemRepository;
 	}
 
-	private static ItemDto MapToDto(Item item) {
+	public static ItemDto MapToDto(Item item) {
 		return new ItemDto(item.getDescription(),
 				item.getRateHourBilled(),
 				item.getRatePrice(),
