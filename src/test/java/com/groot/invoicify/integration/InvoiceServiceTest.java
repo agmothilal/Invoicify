@@ -1,7 +1,6 @@
 package com.groot.invoicify.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.groot.invoicify.dto.CompanyDto;
 import com.groot.invoicify.dto.InvoiceDto;
 import com.groot.invoicify.dto.ItemDto;
 import org.junit.jupiter.api.Test;
@@ -22,6 +21,8 @@ import java.util.Arrays;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
