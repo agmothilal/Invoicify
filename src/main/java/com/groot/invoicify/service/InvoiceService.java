@@ -35,8 +35,6 @@ public class InvoiceService {
     }
 
     public static Invoice MapToEntity(InvoiceDto invoiceDto, Company company) {
-
-
         return new Invoice(company,
                 invoiceDto.getAuthor(),
                 invoiceDto.getPaid());

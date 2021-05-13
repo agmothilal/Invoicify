@@ -14,10 +14,12 @@ import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.result.*;
 
 import javax.transaction.Transactional;
 import java.util.Arrays;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -45,7 +47,7 @@ public class InvoiceServiceTest {
 		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 
 		createInvoice(invoiceDto)
-				.andExpect(MockMvcResultMatchers.jsonPath("$").isNumber())
+				.andExpect(jsonPath("$").isNumber())
 				.andDo(MockMvcRestDocumentation.document("Post-Invoice", PayloadDocumentation.requestFields(
 						PayloadDocumentation.fieldWithPath("companyName").description("Name of company on invoice."),
 						PayloadDocumentation.fieldWithPath("totalCost").description("Total cost of invoice."),
@@ -57,17 +59,32 @@ public class InvoiceServiceTest {
 
 	@Test
 	public void updateInvoiceTest() throws Exception {
+		// Create Invoice
+		// Add items within invoice
 		var itemsDto = Arrays.asList(
 				new ItemDto("Description", 10, 14.50F, 60F)
 		);
 		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		var actionResult = createInvoice(invoiceDto);
 		var invoiceId = actionResult.andReturn().getResponse().getContentAsString();
+		// Modify invoice fields and items
+		invoiceDto.setCompanyName("Test1");
+		invoiceDto.setPaid(true);
+		itemsDto.get(0).setDescription("Description1");
+		itemsDto.get(0).setRatePrice(25.60F);
 
-		this.mockMvc.perform(MockMvcRequestBuilders.patch("/invoice")
+		// Perform the PUT invoice operation
+		// Verify the updated the fields
+		this.mockMvc.perform(MockMvcRequestBuilders.put("/invoice")
 				.contentType(MediaType.APPLICATION_JSON)
 				.param("invoiceId", invoiceId)
 				.content(this.objectMapper.writeValueAsString(invoiceDto)))
-				.andExpect(MockMvcResultMatchers.status().isOk());
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(jsonPath("$.companyName").value("Test1"))
+				.andExpect(jsonPath("$.paid").value(true))
+				.andExpect(jsonPath("$.itemsDto.length()").value(1))
+				.andExpect(jsonPath("$.itemsDto[0].description").value("Description1"))
+				.andExpect(jsonPath("$.itemsDto[0].ratePrice").value(25.60F));
+		// TODO: Document the request and response fields
 	}
 }
