@@ -40,7 +40,7 @@ public class InvoiceServiceTest {
 	@Test
 	public void createInvoiceTest() throws Exception {
 		var itemsDto = Arrays.asList(
-				new ItemDto("Description", 10, 14.50F, 60F)
+				new ItemDto("Description", 10, 14.50F, null)
 		);
 		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 

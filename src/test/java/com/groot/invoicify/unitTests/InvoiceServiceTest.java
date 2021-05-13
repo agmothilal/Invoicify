@@ -4,8 +4,10 @@ import com.groot.invoicify.dto.InvoiceDto;
 import com.groot.invoicify.dto.ItemDto;
 import com.groot.invoicify.entity.Company;
 import com.groot.invoicify.entity.Invoice;
+import com.groot.invoicify.entity.Item;
 import com.groot.invoicify.repository.CompanyRepository;
 import com.groot.invoicify.repository.InvoiceRepository;
+import com.groot.invoicify.repository.ItemRepository;
 import com.groot.invoicify.service.InvoiceService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +29,8 @@ public class InvoiceServiceTest {
     InvoiceRepository invoiceRepository;
     @Mock
     CompanyRepository companyRepository;
+    @Mock
+    ItemRepository itemRepository;
 
     @InjectMocks
     InvoiceService invoiceService;
@@ -34,12 +38,17 @@ public class InvoiceServiceTest {
     @Test
     public void createInvoice() {
         var itemsDto = List.of(
-                new ItemDto("Description", 10, 14.50F, 60F)
+                new ItemDto("Description", 10, 14.50F, null)
         );
         var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
         var company = new Company("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+
         var invoiceResult = new Invoice();
         invoiceResult.setInvoiceId(1L);
+        var items = List.of(
+                new Item("Description", 10, 14.50F, null, invoiceResult)
+        );
+
         var invoice = InvoiceService.MapToEntity(invoiceDto, company);
 
         when(companyRepository.findByName(invoiceDto.getCompanyName())).thenReturn(company);
@@ -48,6 +57,7 @@ public class InvoiceServiceTest {
         var invoiceId = invoiceService.createInvoice(invoiceDto);
 
         verify(companyRepository, times(1)).findByName(invoiceDto.getCompanyName());
+        verify(itemRepository, times(1)).saveAll(items);
         verify(invoiceRepository, times(1)).save(invoice);
         assertThat(invoiceId).isEqualTo(invoiceResult.getInvoiceId());
     }
