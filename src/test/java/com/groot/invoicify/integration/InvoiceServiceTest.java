@@ -20,8 +20,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import javax.transaction.Transactional;
 import java.util.Arrays;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -95,6 +97,8 @@ public class InvoiceServiceTest {
 		).andExpect(status().isOk())
 				.andExpect(jsonPath("[0].invoiceNumber").value(1L))
 				.andExpect(jsonPath("[1].invoiceNumber").value(2L))
+				.andDo(print())
+				.andDo(document("Get-InvoiceBy-Company-Name"));
 		;
 
 	}
@@ -104,7 +108,10 @@ public class InvoiceServiceTest {
 	public void fetchInvoiceByInvalidCompanyNameTest() throws Exception {
 
 		mockMvc.perform(get("/invoice/Rest")
-		).andExpect(status().isNoContent());
+		).andExpect(status().isNoContent())
+				.andDo(print())
+				.andDo(document("Get-InvoiceBy-Invalid-Company-Name"))
+		;
 
 
 	}
@@ -120,7 +127,10 @@ public class InvoiceServiceTest {
 		).andExpect(status().isCreated());
 
 		mockMvc.perform(get("/invoice/Test")
-		).andExpect(status().isNoContent());
+		).andExpect(status().isNoContent())
+				.andDo(print())
+				.andDo(document("Get-InvoiceBy-valid-Company-Name-With-No-Invoices"))
+		;
 
 
 	}
@@ -317,6 +327,8 @@ public class InvoiceServiceTest {
 				.andExpect(jsonPath("$.itemsDto[0].flatPrice").value(60F))
 				.andExpect(jsonPath("$.totalCost").value(205F))
 				.andExpect(jsonPath("$.companyName").value("Test"))
+				.andDo(print())
+				.andDo(document("Get-InvoiceBy-valid-InvoiceNumber"))
 		;
 
 	}
@@ -326,6 +338,8 @@ public class InvoiceServiceTest {
 
 		mockMvc.perform(get("/invoice/id/2")
 		).andExpect(status().isNoContent())
+				.andDo(print())
+				.andDo(document("Get-InvoiceBy-Invalid-InvoiceNumber"))
 		;
 
 	}

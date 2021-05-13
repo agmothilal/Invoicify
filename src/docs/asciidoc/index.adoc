@@ -85,3 +85,46 @@ include::{snippets}/Post-Invoice/http-request.adoc[]
 
 .response
 include::{snippets}/Post-Invoice/http-response.adoc[]
+
+Get Invoice By Company Name Endpoint
+
+.request
+include::{snippets}/Get-InvoiceBy-Company-Name/http-request.adoc[]
+
+.response
+include::{snippets}/Get-InvoiceBy-Company-Name/http-response.adoc[]
+
+Get Invoice By Invalid Company Name Endpoint
+
+.request
+include::{snippets}/Get-InvoiceBy-Invalid-Company-Name/http-request.adoc[]
+
+.response
+include::{snippets}/Get-InvoiceBy-Invalid-Company-Name/http-response.adoc[]
+
+Get Invoice By valid Company Name but with No Invoices Endpoint
+
+.request
+include::{snippets}/Get-InvoiceBy-valid-Company-Name-With-No-Invoices/http-request.adoc[]
+
+.response
+include::{snippets}/Get-InvoiceBy-valid-Company-Name-With-No-Invoices/http-response.adoc[]
+
+Get Invoice By Valid Invoice Number Endpoint
+
+.request
+include::{snippets}/Get-InvoiceBy-valid-InvoiceNumber/http-request.adoc[]
+
+.response
+include::{snippets}/Get-InvoiceBy-valid-InvoiceNumber/http-response.adoc[]
+
+Get Invoice By InValid Invoice Number Endpoint
+
+.request
+include::{snippets}/Get-InvoiceBy-Invalid-InvoiceNumber/http-request.adoc[]
+
+.response
+include::{snippets}/Get-InvoiceBy-Invalid-InvoiceNumber/http-response.adoc[]
+
+
+
