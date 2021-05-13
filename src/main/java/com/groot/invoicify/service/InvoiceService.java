@@ -82,6 +82,8 @@ public class InvoiceService {
 
         Long compId = companyEntity.getCompanyId();
 
+
+
         if (invoiceRepository.findByCompanyCompanyId(compId).isEmpty())
         {
 
@@ -93,6 +95,10 @@ public class InvoiceService {
                     .map(invoiceEntity -> {
 
                         List<Item> itemEntList = itemRepository.findByInvoiceInvoiceId(invoiceEntity.getInvoiceId());
+                        float totalInvoiceSumLocal  = (float) itemEntList.stream().
+                                mapToDouble(itemEntObject->(itemEntObject.getFlatPrice()+itemEntObject.getRatePrice()*itemEntObject.getRateHourBilled())
+                                ).sum();
+
 
                         return new InvoiceDto(
                                 invoiceEntity.getInvoiceId(),
@@ -102,11 +108,13 @@ public class InvoiceService {
                                 itemEntList
                                         .stream().map(itemEnt ->
                                 {
+
                                     return new ItemDto(itemEnt.getDescription(),
                                             itemEnt.getRateHourBilled(),
                                             itemEnt.getRatePrice(),
                                             itemEnt.getFlatPrice());
-                                }).collect(Collectors.toList())
+                                }).collect(Collectors.toList()),
+                                totalInvoiceSumLocal
 
 
                         );

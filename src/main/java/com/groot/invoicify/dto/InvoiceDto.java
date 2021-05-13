@@ -24,11 +24,12 @@ public class InvoiceDto {
         this.itemsDto = itemsDto;
     }
 
-    public InvoiceDto(Long invoiceNumber,String companyName, String author, Boolean paid, List<ItemDto> itemsDto) {
+    public InvoiceDto(Long invoiceNumber,String companyName, String author, Boolean paid, List<ItemDto> itemsDto,Float totalCost) {
         this.companyName = companyName;
         this.author = author;
         this.paid = paid;
         this.itemsDto = itemsDto;
         this.invoiceNumber = invoiceNumber;
+        this.totalCost = totalCost;
     }
 }
