@@ -103,6 +103,15 @@ public class InvoiceServiceTest {
 	@Test
 	public void fetchInvoiceByInvalidCompanyNameTest() throws Exception {
 
+		mockMvc.perform(get("/invoice/Rest")
+		).andExpect(status().isNoContent());
+
+
+	}
+
+	@Test
+	public void fetchInvoiceByCompanyNameWithNoInvoicesTest() throws Exception {
+
 		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
 
 		mockMvc.perform(post("/company")
@@ -110,29 +119,7 @@ public class InvoiceServiceTest {
 				.contentType(MediaType.APPLICATION_JSON)
 		).andExpect(status().isCreated());
 
-
-		var itemsDto = Arrays.asList(
-				new ItemDto("itemdescription", 10, 14.50F, 60F)
-		);
-		//var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
-		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
-		var invoiceDto2 = new InvoiceDto("Test", "rest", false, itemsDto);
-
-		this.mockMvc.perform(post("/invoice")
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.content(this.objectMapper.writeValueAsString(invoiceDto)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
-
-		this.mockMvc.perform(post("/invoice")
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.content(this.objectMapper.writeValueAsString(invoiceDto2)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
-
-		mockMvc.perform(get("/invoice/Rest")
+		mockMvc.perform(get("/invoice/Test")
 		).andExpect(status().isNoContent());
 
 

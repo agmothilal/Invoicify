@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/invoice")
 public class InvoiceController {
@@ -31,8 +33,14 @@ public class InvoiceController {
 			return new ResponseEntity<>("No Company by that name.", HttpStatus.NO_CONTENT);
 		}
 		else {
-
-			return new ResponseEntity<>(invoiceService.fetchAllInvoicesByCompany(companyName), HttpStatus.OK);
+			List<InvoiceDto> invoiceDtoList = invoiceService.fetchAllInvoicesByCompany(companyName);
+			if (invoiceDtoList==null)
+			{
+				return new ResponseEntity<>("Company Exists, but there is no invoice for that company.", HttpStatus.NO_CONTENT);
+			}
+			else {
+				return new ResponseEntity<>(invoiceDtoList, HttpStatus.OK);
+			}
 		}
 	}
 }

@@ -82,30 +82,36 @@ public class InvoiceService {
 
         Long compId = companyEntity.getCompanyId();
 
-        return invoiceRepository.findByCompanyCompanyId(compId)
-                .stream()
-                .map(invoiceEntity -> {
+        if (invoiceRepository.findByCompanyCompanyId(compId).isEmpty())
+        {
 
-                    List<Item> itemEntList = itemRepository.findByInvoiceInvoiceId(invoiceEntity.getInvoiceId());
+            return null;
+        }
+        else {
+            return invoiceRepository.findByCompanyCompanyId(compId)
+                    .stream()
+                    .map(invoiceEntity -> {
 
-                    return new InvoiceDto(
-                            invoiceEntity.getInvoiceId(),
-                            companyName,
-                            invoiceEntity.getAuthor(),
-                            invoiceEntity.getPaid(),
-                            itemEntList
-                            .stream().map(itemEnt->
-                            {
-                                return new ItemDto(itemEnt.getDescription(),
-                                        itemEnt.getRateHourBilled(),
-                                        itemEnt.getRatePrice(),
-                                        itemEnt.getFlatPrice());
-                            }).collect(Collectors.toList())
+                        List<Item> itemEntList = itemRepository.findByInvoiceInvoiceId(invoiceEntity.getInvoiceId());
+
+                        return new InvoiceDto(
+                                invoiceEntity.getInvoiceId(),
+                                companyName,
+                                invoiceEntity.getAuthor(),
+                                invoiceEntity.getPaid(),
+                                itemEntList
+                                        .stream().map(itemEnt ->
+                                {
+                                    return new ItemDto(itemEnt.getDescription(),
+                                            itemEnt.getRateHourBilled(),
+                                            itemEnt.getRatePrice(),
+                                            itemEnt.getFlatPrice());
+                                }).collect(Collectors.toList())
 
 
-                    );
-                })
-                .collect(Collectors.toList());
-
+                        );
+                    })
+                    .collect(Collectors.toList());
+        }
     }
 }
