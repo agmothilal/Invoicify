@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -165,6 +166,40 @@ public class InvoiceService {
                         );
                     })
                     .collect(Collectors.toList());
+        }
+    }
+
+    public InvoiceDto findInvoiceByInvoiceNumber(Long invoiceNum) {
+
+        Invoice invoiceEntity = invoiceRepository.findByInvoiceId(invoiceNum);
+        if(invoiceEntity==null)
+        {
+            return null;
+        }
+        else
+        {
+            List<Item> itemEntityList = itemRepository.findByInvoiceInvoiceId(invoiceNum);
+            float totalInvoiceSumLocal  = (float) itemEntityList.stream().
+                    mapToDouble(itemEntObject->(itemEntObject.getFlatPrice()+itemEntObject.getRatePrice()*itemEntObject.getRateHourBilled())
+                    ).sum();
+
+            List<ItemDto> itemDtoList = itemEntityList
+                    .stream().map(itemEnt ->
+            {
+
+                return new ItemDto(itemEnt.getDescription(),
+                        itemEnt.getRateHourBilled(),
+                        itemEnt.getRatePrice(),
+                        itemEnt.getFlatPrice());
+            }).collect(Collectors.toList());
+
+        return (new InvoiceDto(invoiceEntity.getInvoiceId(),
+                invoiceEntity.getCompany().getName(),
+                invoiceEntity.getAuthor(),
+                invoiceEntity.getPaid(),
+                itemDtoList,
+                totalInvoiceSumLocal)
+        );
         }
     }
 }

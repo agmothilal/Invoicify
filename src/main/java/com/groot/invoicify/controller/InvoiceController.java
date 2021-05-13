@@ -62,4 +62,17 @@ public class InvoiceController {
 			}
 		}
 	}
+
+	@GetMapping("id/{invoiceNum}")
+	public ResponseEntity<?> getAllInvoicesByInvoiceNumber(@PathVariable Long invoiceNum) {
+
+		InvoiceDto invoiceDto = this.invoiceService.findInvoiceByInvoiceNumber(invoiceNum);
+		if (invoiceDto == null) {
+			return new ResponseEntity<>("Invoice id  " + invoiceNum + " does not exist.", HttpStatus.NO_CONTENT);
+		}
+		else {
+			return new ResponseEntity<>(invoiceDto, HttpStatus.OK);
+		}
+	}
+
 }

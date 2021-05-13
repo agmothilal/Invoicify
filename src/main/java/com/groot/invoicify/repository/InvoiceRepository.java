@@ -14,4 +14,6 @@ public interface InvoiceRepository extends PagingAndSortingRepository<Invoice, L
     List<Invoice> findByCompanyCompanyId(Long compId);
 
     List<Invoice> findByCompanyCompanyIdAndPaid(Long compId, boolean b);
+
+    Invoice findByInvoiceId(Long invoiceNum);
 }
