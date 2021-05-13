@@ -122,4 +122,49 @@ public class InvoiceService {
                     .collect(Collectors.toList());
         }
     }
+
+    public List<InvoiceDto> fetchAllUnPaidInvoicesByCompany(String companyName)
+    {
+        Company companyEntity = companyRepository.findByName(companyName);
+
+        Long compId = companyEntity.getCompanyId();
+
+        if (invoiceRepository.findByCompanyCompanyIdAndPaid(compId,false).isEmpty())
+        {
+
+            return null;
+        }
+        else {
+            return invoiceRepository.findByCompanyCompanyIdAndPaid(compId, false)
+                    .stream()
+                    .map(invoiceEntity -> {
+
+                        List<Item> itemEntList = itemRepository.findByInvoiceInvoiceId(invoiceEntity.getInvoiceId());
+                        float totalInvoiceSumLocal  = (float) itemEntList.stream().
+                                mapToDouble(itemEntObject->(itemEntObject.getFlatPrice()+itemEntObject.getRatePrice()*itemEntObject.getRateHourBilled())
+                                ).sum();
+
+
+                        return new InvoiceDto(
+                                invoiceEntity.getInvoiceId(),
+                                companyName,
+                                invoiceEntity.getAuthor(),
+                                invoiceEntity.getPaid(),
+                                itemEntList
+                                        .stream().map(itemEnt ->
+                                {
+
+                                    return new ItemDto(itemEnt.getDescription(),
+                                            itemEnt.getRateHourBilled(),
+                                            itemEnt.getRatePrice(),
+                                            itemEnt.getFlatPrice());
+                                }).collect(Collectors.toList()),
+                                totalInvoiceSumLocal
+
+
+                        );
+                    })
+                    .collect(Collectors.toList());
+        }
+    }
 }

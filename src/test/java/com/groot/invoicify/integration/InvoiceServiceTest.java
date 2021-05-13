@@ -176,4 +176,116 @@ public class InvoiceServiceTest {
 		;
 
 	}
+
+
+
+	@Test
+	public void fetchUnPaidInvoiceByCompanyName() throws Exception {
+
+		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+
+		mockMvc.perform(post("/company")
+				.content(objectMapper.writeValueAsString(companyObject1))
+				.contentType(MediaType.APPLICATION_JSON)
+		).andExpect(status().isCreated());
+
+
+		var itemsDto = Arrays.asList(
+				new ItemDto("itemdescription", 10, 14.50F, 60F),
+				new ItemDto("itemdescription2", 10, 14.50F, 30F),
+				new ItemDto("itemdescription3", 10, 14.50F,0F)
+
+		);
+
+		var itemsDto2 = Arrays.asList(
+				new ItemDto("itemdescription4", 10, 50F, 60F),
+				new ItemDto("itemdescription5", 10, 50F, 30F)
+
+
+		);
+		//var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
+		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
+		var invoiceDto2 = new InvoiceDto("Test", "rest", true, itemsDto2);
+
+		this.mockMvc.perform(post("/invoice")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(this.objectMapper.writeValueAsString(invoiceDto)))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$").isNumber())
+		;
+
+		this.mockMvc.perform(post("/invoice")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(this.objectMapper.writeValueAsString(invoiceDto2)))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$").isNumber())
+		;
+
+		mockMvc.perform(get("/invoice/unpaid/Test")
+		).andExpect(status().isOk())
+				.andExpect(jsonPath("[0].invoiceNumber").value(1L))
+				.andExpect(jsonPath("[0].totalCost").value(525F))
+		;
+
+	}
+
+	@Test
+	public void fetchUnPaidInvoiceByInValidCompanyName() throws Exception {
+
+		mockMvc.perform(get("/invoice/unpaid/Test")
+		).andExpect(status().isNoContent())
+		;
+
+	}
+
+	@Test
+	public void fetchUnPaidInvoiceByCompanyNameWithEmptyData() throws Exception {
+
+		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+
+		mockMvc.perform(post("/company")
+				.content(objectMapper.writeValueAsString(companyObject1))
+				.contentType(MediaType.APPLICATION_JSON)
+		).andExpect(status().isCreated());
+
+
+		var itemsDto = Arrays.asList(
+				new ItemDto("itemdescription", 10, 14.50F, 60F),
+				new ItemDto("itemdescription2", 10, 14.50F, 30F),
+				new ItemDto("itemdescription3", 10, 14.50F,0F)
+
+		);
+
+		var itemsDto2 = Arrays.asList(
+				new ItemDto("itemdescription4", 10, 50F, 60F),
+				new ItemDto("itemdescription5", 10, 50F, 30F)
+
+
+		);
+		//var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
+		var invoiceDto = new InvoiceDto("Test", "test", true, itemsDto);
+		var invoiceDto2 = new InvoiceDto("Test", "rest", true, itemsDto2);
+
+		this.mockMvc.perform(post("/invoice")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(this.objectMapper.writeValueAsString(invoiceDto)))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$").isNumber())
+		;
+
+		this.mockMvc.perform(post("/invoice")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(this.objectMapper.writeValueAsString(invoiceDto2)))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$").isNumber())
+		;
+
+		mockMvc.perform(get("/invoice/unpaid/Test")
+		).andExpect(status().isNoContent())
+
+		;
+
+	}
+
+
 }
