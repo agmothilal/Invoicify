@@ -85,3 +85,11 @@ include::{snippets}/Post-Invoice/http-request.adoc[]
 
 .response
 include::{snippets}/Post-Invoice/http-response.adoc[]
+
+Put Invoice Endpoint
+
+.request
+include::{snippets}/Put-Invoice/http-request.adoc[]
+
+.response
+include::{snippets}/Post-Invoice/http-response.adoc[]

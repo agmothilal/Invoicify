@@ -17,4 +17,12 @@ public class InvoiceController {
 	public Long createInvoice(@RequestBody InvoiceDto invoiceDto) {
 		return this.invoiceService.createInvoice(invoiceDto);
 	}
+
+	@PutMapping
+	@ResponseStatus(HttpStatus.OK)
+	public InvoiceDto updateInvoice(@RequestParam Long invoiceId,
+									@RequestBody InvoiceDto invoiceDto){
+		// TODO: Call invoice service update method
+		return invoiceDto;
+	}
 }
