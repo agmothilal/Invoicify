@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.restdocs.payload.PayloadDocumentation;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -28,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @Transactional
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class InvoiceServiceTest {
 	@Autowired
 	MockMvc mockMvc;
@@ -94,6 +96,45 @@ public class InvoiceServiceTest {
 				.andExpect(jsonPath("[0].invoiceNumber").value(1L))
 				.andExpect(jsonPath("[1].invoiceNumber").value(2L))
 		;
+
+	}
+
+
+	@Test
+	public void fetchInvoiceByInvalidCompanyNameTest() throws Exception {
+
+		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+
+		mockMvc.perform(post("/company")
+				.content(objectMapper.writeValueAsString(companyObject1))
+				.contentType(MediaType.APPLICATION_JSON)
+		).andExpect(status().isCreated());
+
+
+		var itemsDto = Arrays.asList(
+				new ItemDto("itemdescription", 10, 14.50F, 60F)
+		);
+		//var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
+		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
+		var invoiceDto2 = new InvoiceDto("Test", "rest", false, itemsDto);
+
+		this.mockMvc.perform(post("/invoice")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(this.objectMapper.writeValueAsString(invoiceDto)))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$").isNumber())
+		;
+
+		this.mockMvc.perform(post("/invoice")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(this.objectMapper.writeValueAsString(invoiceDto2)))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$").isNumber())
+		;
+
+		mockMvc.perform(get("/invoice/Rest")
+		).andExpect(status().isNoContent());
+
 
 	}
 }
