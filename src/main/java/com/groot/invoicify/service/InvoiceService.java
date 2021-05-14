@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,5 +71,53 @@ public class InvoiceService {
             this.invoiceRepository.delete(invoice);
         });
         return deleteInvoices.stream().count();
+    }
+
+    public InvoiceDto updatedInvoice(long invoiceId, InvoiceDto invoiceDto) {
+        Optional<Invoice> invoice = invoiceRepository.findById(invoiceId);
+
+
+        if (invoice.isPresent()) {
+            if(invoice.get().getCompany().getName().equalsIgnoreCase(invoiceDto.getCompanyName())) {
+
+                var items = invoiceDto.getItemsDto().stream()
+                        .map(dto -> {
+                            var item = ItemService.MapToEntity(dto);
+                            item.setInvoice(invoice.get());
+                            return item;
+                        })
+                        .collect(Collectors.toList());
+                this.itemRepository.saveAll(items);
+
+                invoice.get().setAuthor(invoiceDto.getAuthor());
+                invoice.get().setPaid(invoiceDto.getPaid());
+
+                Invoice invoiceUpdated = invoiceRepository.save(invoice.get());
+
+                return new InvoiceDto(invoiceUpdated.getCompany().getName(),
+                        invoiceUpdated.getAuthor(),
+                        invoiceUpdated.getPaid(),
+                        invoiceUpdated.getItem().stream().map(item ->
+
+                                ItemService.MapToDto(item)
+
+                        ).collect(Collectors.toList()));
+
+            } else {
+                Company company = companyRepository.findByName(invoice.get().getCompany().getName());
+                var invoiceWithItems = MapToEntity(invoiceDto, company);
+                var invoiceUpdated = this.invoiceRepository.save(invoiceWithItems);
+
+                return new InvoiceDto(invoiceUpdated.getCompany().getName(),
+                        invoiceUpdated.getAuthor(),
+                        invoiceUpdated.getPaid(),
+                        invoiceUpdated.getItem().stream().map(item ->
+
+                             ItemService.MapToDto(item)
+
+                        ).collect(Collectors.toList()));
+            }
+        }
+        return null;
     }
 }

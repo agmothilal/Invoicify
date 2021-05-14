@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -81,5 +82,24 @@ public class InvoiceServiceTest {
         verify(invoiceRepository, times(1)).delete(invoices.get(0));
         verify(invoiceRepository, times(1)).delete(invoices.get(1));
         assertThat(result).isEqualTo(2L);
+    }
+
+    @Test
+    public void updateInvoiceTest() {
+        var itemsDto = List.of(
+                new ItemDto("Description", 10, 14.50F, null)
+        );
+        var updatedItemsDto = List.of(
+                new ItemDto("Description1", 10, 26.50F, null)
+        );
+        var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
+        var updatedInvoiceDto = new InvoiceDto("Test1", "test", true, updatedItemsDto);
+
+        when(invoiceRepository.findById(1l)).thenReturn(java.util.Optional.of(new Invoice("authorName", true,
+                Timestamp.valueOf(LocalDateTime.now().minusYears(2)))));
+
+
+
+        assertEquals(updatedInvoiceDto, invoiceService.updatedInvoice(1L, invoiceDto));
     }
 }

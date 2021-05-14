@@ -12,7 +12,7 @@ import java.util.List;
 public class InvoiceDto {
 
     private String companyName;
-    private Float totalCost;
+    private double totalCost;
     private String author;
     private Boolean paid;
     private List<ItemDto> itemsDto;
@@ -22,5 +22,18 @@ public class InvoiceDto {
         this.author = author;
         this.paid = paid;
         this.itemsDto = itemsDto;
+        //Calculate total cost
+        this.totalCost = itemsDto.stream().mapToDouble(item -> calculateItemTotal(item)).sum();
+
+    }
+    private Float calculateItemTotal(ItemDto itemDto) {
+        var itemTotal = 0F;
+        if(itemDto.getFlatPrice() != null) {
+            itemTotal = itemDto.getFlatPrice();
+        }
+        if(itemDto.getRatePrice() != null) {
+            itemTotal += itemDto.getRatePrice() * itemDto.getRateHourBilled();
+        }
+        return itemTotal;
     }
 }
