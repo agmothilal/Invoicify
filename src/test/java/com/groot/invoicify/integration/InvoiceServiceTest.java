@@ -108,7 +108,7 @@ public class InvoiceServiceTest {
 	public void fetchInvoiceByInvalidCompanyNameTest() throws Exception {
 
 		mockMvc.perform(get("/invoice/Rest")
-		).andExpect(status().isNoContent())
+		).andExpect(status().isNotFound())
 				.andDo(print())
 				.andDo(document("Get-InvoiceBy-Invalid-Company-Name"))
 		;
@@ -127,7 +127,7 @@ public class InvoiceServiceTest {
 		).andExpect(status().isCreated());
 
 		mockMvc.perform(get("/invoice/Test")
-		).andExpect(status().isNoContent())
+		).andExpect(status().isNotFound())
 				.andDo(print())
 				.andDo(document("Get-InvoiceBy-valid-Company-Name-With-No-Invoices"))
 		;
@@ -243,7 +243,7 @@ public class InvoiceServiceTest {
 	public void fetchUnPaidInvoiceByInValidCompanyName() throws Exception {
 
 		mockMvc.perform(get("/invoice/unpaid/Test")
-		).andExpect(status().isNoContent())
+		).andExpect(status().isNotFound())
 		;
 
 	}
@@ -291,7 +291,7 @@ public class InvoiceServiceTest {
 		;
 
 		mockMvc.perform(get("/invoice/unpaid/Test")
-		).andExpect(status().isNoContent())
+		).andExpect(status().isNotFound())
 
 		;
 
@@ -337,7 +337,7 @@ public class InvoiceServiceTest {
 	public void fetchUnPaidInvoiceByInValidInvoiceNumberTest() throws Exception {
 
 		mockMvc.perform(get("/invoice/id/2")
-		).andExpect(status().isNoContent())
+		).andExpect(status().isNotFound())
 				.andDo(print())
 				.andDo(document("Get-InvoiceBy-Invalid-InvoiceNumber"))
 		;

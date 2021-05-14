@@ -30,13 +30,13 @@ public class InvoiceController {
 
 		CompanyDto companyDto = this.companyService.findSingleCompany(companyName);
 		if (companyDto == null) {
-			return new ResponseEntity<>("No Company by that name.", HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>("No Company by that name.", HttpStatus.NOT_FOUND);
 		}
 		else {
 			List<InvoiceDto> invoiceDtoList = invoiceService.fetchAllInvoicesByCompany(companyName);
 			if (invoiceDtoList==null)
 			{
-				return new ResponseEntity<>("Company Exists, but there is no invoice for that company.", HttpStatus.NO_CONTENT);
+				return new ResponseEntity<>("Company Exists, but there is no invoice for that company.", HttpStatus.NOT_FOUND);
 			}
 			else {
 				return new ResponseEntity<>(invoiceDtoList, HttpStatus.OK);
@@ -49,13 +49,13 @@ public class InvoiceController {
 
 		CompanyDto companyDto = this.companyService.findSingleCompany(companyName);
 		if (companyDto == null) {
-			return new ResponseEntity<>("No Company by that name.", HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>("No Company by that name.", HttpStatus.NOT_FOUND);
 		}
 		else {
 			List<InvoiceDto> invoiceDtoList = invoiceService.fetchAllUnPaidInvoicesByCompany(companyName);
 			if (invoiceDtoList==null)
 			{
-				return new ResponseEntity<>("Company Exists, but there is no unpaid invoice for that company.", HttpStatus.NO_CONTENT);
+				return new ResponseEntity<>("Company Exists, but there is no unpaid invoice for that company.", HttpStatus.NOT_FOUND);
 			}
 			else {
 				return new ResponseEntity<>(invoiceDtoList, HttpStatus.OK);
@@ -68,7 +68,7 @@ public class InvoiceController {
 
 		InvoiceDto invoiceDto = this.invoiceService.findInvoiceByInvoiceNumber(invoiceNum);
 		if (invoiceDto == null) {
-			return new ResponseEntity<>("Invoice id  " + invoiceNum + " does not exist.", HttpStatus.NO_CONTENT);
+			return new ResponseEntity<>("Invoice id  " + invoiceNum + " does not exist.", HttpStatus.NOT_FOUND);
 		}
 		else {
 			return new ResponseEntity<>(invoiceDto, HttpStatus.OK);

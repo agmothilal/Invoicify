@@ -26,7 +26,7 @@ public class CompanyController {
     public ResponseEntity<?> getAllCompany(@PathVariable String companyName) {
         CompanyDto companyDto = this.companyService.findSingleCompany(companyName);
         if (companyDto == null) {
-            return new ResponseEntity<>("No Company by that name.", HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>("No Company by that name.", HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<>(companyDto, HttpStatus.OK);
         }

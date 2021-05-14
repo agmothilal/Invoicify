@@ -155,9 +155,11 @@ public class CompanyControllerIT {
     void getSingleCompanyByName_noContentTest() throws Exception {
 
         mockMvc.perform(get("/company/Google")
-        ).andExpect(status().isNoContent())
+        ).andExpect(status().isNotFound())
                 .andDo(print())
-                .andDo(document("Get-Company-ByName-NoContent"));
+                .andDo(document("Get-Company-ByName-NoContent"))
+                .andExpect(content().string("No Company by that name."))
+        ;
     }
 
     @Test
