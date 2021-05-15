@@ -2,6 +2,7 @@ package com.groot.invoicify.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.groot.invoicify.dto.InvoiceDto;
+import com.groot.invoicify.dto.CompanyDto;
 import com.groot.invoicify.dto.ItemDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +16,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.*;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -33,6 +35,16 @@ public class InvoiceServiceTest {
 
 	@Autowired
 	ObjectMapper objectMapper;
+	
+	private void initCompanyEntities(List<String> companyName) throws Exception {
+		for (String name: companyName) {
+			var company = new CompanyDto(name, "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+			mockMvc.perform(post("/company")
+					.content(objectMapper.writeValueAsString(company))
+					.contentType(MediaType.APPLICATION_JSON)
+			).andExpect(status().isCreated());
+		}
+	}
 
 	private ResultActions createInvoice(InvoiceDto invoiceDto) throws Exception {
 		return this.mockMvc.perform(MockMvcRequestBuilders.post("/invoice")
@@ -61,6 +73,9 @@ public class InvoiceServiceTest {
 
 	@Test
 	public void updateInvoiceTest() throws Exception {
+		// Create company before insert invoice
+		initCompanyEntities(Arrays.asList("Test", "Test1"));
+
 		// Create Invoice
 		// Add items within invoice
 		var itemsDto = Arrays.asList(
@@ -110,4 +125,8 @@ public class InvoiceServiceTest {
 						subsectionWithPath("itemsDto[].flatPrice").description("Invoice line item flat price.")
 				)));
 	}
+
+	// TODO: While updating company name make sure the company entity exist or not. If it is not exist then we throw exception
+	// TODO: Write test case for update invoice with new line item
+	// TODO: Write test case for update invoice with remove existing line item
 }
