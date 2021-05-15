@@ -42,10 +42,12 @@ public class ItemServiceTest {
 		createItem(itemDto).andExpect(MockMvcResultMatchers.status().isCreated())
 				.andExpect(jsonPath("$").isNumber())
 				.andDo(MockMvcRestDocumentation.document("Post-Item", requestFields(
+						fieldWithPath("itemId").description("Item id"),
 						fieldWithPath("description").description("Item description"),
 						fieldWithPath("rateHourBilled").description("Item quantity"),
 						fieldWithPath("ratePrice").description("Item rate price"),
-						fieldWithPath("flatPrice").description("Item flat price")
+						fieldWithPath("flatPrice").description("Item flat price"),
+						fieldWithPath("state").description("Item modified state")
 						)));
 	}
 
@@ -69,10 +71,12 @@ public class ItemServiceTest {
 				.andExpect(jsonPath("[0].flatPrice").value(1.1))
 				.andDo(MockMvcRestDocumentation.document("Get-Item", responseFields(
 						fieldWithPath("[]").description("Array of Items"),
+						fieldWithPath("[].itemId").description("Item id"),
 						fieldWithPath("[].description").description("Item description"),
 						fieldWithPath("[].rateHourBilled").description("Item quantity"),
 						fieldWithPath("[].ratePrice").description("Item rate price"),
-						fieldWithPath("[].flatPrice").description("Item flat price")
+						fieldWithPath("[].flatPrice").description("Item flat price"),
+						fieldWithPath("[].state").description("Item modified state")
 				)));
 	}
 
@@ -93,10 +97,12 @@ public class ItemServiceTest {
 				.content(this.objectMapper.writeValueAsString(itemDto)))
 				.andExpect(MockMvcResultMatchers.status().isAccepted())
 				.andDo(MockMvcRestDocumentation.document("Patch-Item", requestFields(
+						fieldWithPath("itemId").description("Item id"),
 						fieldWithPath("description").description("Item description"),
 						fieldWithPath("rateHourBilled").description("Item quantity"),
 						fieldWithPath("ratePrice").description("Item rate price"),
-						fieldWithPath("flatPrice").description("Item flat price")
+						fieldWithPath("flatPrice").description("Item flat price"),
+						fieldWithPath("state").description("Item modified state")
 				)));
 
 		this.mockMvc.perform(MockMvcRequestBuilders.get("/item")
@@ -126,10 +132,12 @@ public class ItemServiceTest {
 				.content(this.objectMapper.writeValueAsString(itemDto)))
 				.andExpect(MockMvcResultMatchers.status().isAccepted())
 				.andDo(MockMvcRestDocumentation.document("Put-Item", requestFields(
+						fieldWithPath("itemId").description("Item id"),
 						fieldWithPath("description").description("Item description"),
 						fieldWithPath("rateHourBilled").description("Item quantity"),
 						fieldWithPath("ratePrice").description("Item rate price"),
-						fieldWithPath("flatPrice").description("Item flat price")
+						fieldWithPath("flatPrice").description("Item flat price"),
+						fieldWithPath("state").description("Item modified state")
 				)));
 
 		this.mockMvc.perform(MockMvcRequestBuilders.get("/item")

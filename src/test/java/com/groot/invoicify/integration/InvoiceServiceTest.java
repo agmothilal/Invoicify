@@ -1,6 +1,7 @@
 package com.groot.invoicify.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.groot.invoicify.dto.DtoState;
 import com.groot.invoicify.dto.InvoiceDto;
 import com.groot.invoicify.dto.CompanyDto;
 import com.groot.invoicify.dto.ItemDto;
@@ -17,7 +18,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.*;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,19 +56,40 @@ public class InvoiceServiceTest {
 
 	@Test
 	public void createInvoiceTest() throws Exception {
+		initCompanyEntities(Arrays.asList("Test"));
 		var itemsDto = Arrays.asList(
-				new ItemDto("Description", 10, 14.50F, null)
+				new ItemDto("Description", 10, 14.50F, 20.50F)
 		);
 		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 
 		createInvoice(invoiceDto)
-				.andExpect(jsonPath("$").isNumber())
+				.andExpect(jsonPath("$.companyName").value("Test"))
+				.andExpect(jsonPath("$.author").value("test"))
+				.andExpect(jsonPath("$.paid").value(false))
+				.andExpect(jsonPath("$.itemsDto.length()").value(1))
+				.andExpect(jsonPath("$.itemsDto[0].description").value("Description"))
+				.andExpect(jsonPath("$.itemsDto[0].ratePrice").value(14.50F))
+				.andExpect(jsonPath("$.itemsDto[0].rateHourBilled").value(10))
+				.andExpect(jsonPath("$.itemsDto[0].flatPrice").value(20.50F))
 				.andDo(document("Post-Invoice", requestFields(
+						fieldWithPath("invoiceNumber").description("Name of company on invoice."),
 						fieldWithPath("companyName").description("Name of company on invoice."),
 						fieldWithPath("totalCost").description("Total cost of invoice."),
 						fieldWithPath("author").description("Author of invoice."),
 						fieldWithPath("paid").description("If company paid the invoice."),
 						subsectionWithPath("itemsDto[]").description("A list of items in the invoice.")
+				), responseFields(
+						fieldWithPath("invoiceNumber").description("Invoice number."),
+						fieldWithPath("companyName").description("Name of company on invoice."),
+						fieldWithPath("totalCost").description("Total cost of invoice."),
+						fieldWithPath("author").description("Author of invoice."),
+						fieldWithPath("paid").description("If company paid the invoice."),
+						subsectionWithPath("itemsDto[]").description("A list of items in the invoice."),
+						subsectionWithPath("itemsDto[].itemId").description("Invoice line item id."),
+						subsectionWithPath("itemsDto[].description").description("Invoice line item description."),
+						subsectionWithPath("itemsDto[].rateHourBilled").description("Invoice line item quantity."),
+						subsectionWithPath("itemsDto[].ratePrice").description("Invoice line item hourly price."),
+						subsectionWithPath("itemsDto[].flatPrice").description("Invoice line item flat price.")
 				)));
 	}
 
@@ -84,20 +105,22 @@ public class InvoiceServiceTest {
 		);
 		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		var actionResult = createInvoice(invoiceDto);
-		var invoiceId = actionResult.andReturn().getResponse().getContentAsString();
+		var invoiceJson = actionResult.andReturn().getResponse().getContentAsString();
+		var dbInvoice = objectMapper.readValue(invoiceJson, InvoiceDto.class);
 		// Modify invoice fields and items
-		invoiceDto.setCompanyName("Test1");
-		invoiceDto.setPaid(true);
-		itemsDto.get(0).setDescription("Description1");
-		itemsDto.get(0).setRatePrice(25.60F);
+		dbInvoice.setCompanyName("Test1");
+		dbInvoice.setPaid(true);
+		dbInvoice.getItemsDto().get(0).setDescription("Description1");
+		dbInvoice.getItemsDto().get(0).setRatePrice(25.60F);
+		dbInvoice.getItemsDto().get(0).setState(DtoState.Modified);
 
 		// Perform the PUT invoice operation
 		// Verify the updated the fields
 		// Document the request and response fields
 		this.mockMvc.perform(MockMvcRequestBuilders.put("/invoice")
 				.contentType(MediaType.APPLICATION_JSON)
-				.param("invoiceId", invoiceId)
-				.content(this.objectMapper.writeValueAsString(invoiceDto)))
+				.param("invoiceId", dbInvoice.getInvoiceNumber().toString())
+				.content(this.objectMapper.writeValueAsString(dbInvoice)))
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(jsonPath("$.companyName").value("Test1"))
 				.andExpect(jsonPath("$.paid").value(true))
@@ -105,21 +128,25 @@ public class InvoiceServiceTest {
 				.andExpect(jsonPath("$.itemsDto[0].description").value("Description1"))
 				.andExpect(jsonPath("$.itemsDto[0].ratePrice").value(25.60F))
 				.andDo(document("Put-Invoice", requestFields(
+						fieldWithPath("invoiceNumber").description("Invoice number."),
 						fieldWithPath("companyName").description("Name of company on invoice."),
 						fieldWithPath("totalCost").description("Total cost of invoice."),
 						fieldWithPath("author").description("Author of invoice."),
 						fieldWithPath("paid").description("If company paid the invoice."),
 						subsectionWithPath("itemsDto[]").description("A list of items in the invoice."),
+						subsectionWithPath("itemsDto[].itemId").description("Invoice line item id."),
 						subsectionWithPath("itemsDto[].description").description("Invoice line item description."),
 						subsectionWithPath("itemsDto[].rateHourBilled").description("Invoice line item quantity."),
 						subsectionWithPath("itemsDto[].ratePrice").description("Invoice line item hourly price."),
 						subsectionWithPath("itemsDto[].flatPrice").description("Invoice line item flat price.")
 				), responseFields(
+						fieldWithPath("invoiceNumber").description("Invoice number."),
 						fieldWithPath("companyName").description("Name of company on invoice."),
 						fieldWithPath("totalCost").description("Total cost of invoice."),
 						fieldWithPath("author").description("Author of invoice."),
 						fieldWithPath("paid").description("If company paid the invoice."),
 						subsectionWithPath("itemsDto[]").description("A list of items in the invoice."),
+						subsectionWithPath("itemsDto[].itemId").description("Invoice line item id."),
 						subsectionWithPath("itemsDto[].description").description("Invoice line item description."),
 						subsectionWithPath("itemsDto[].rateHourBilled").description("Invoice line item quantity."),
 						subsectionWithPath("itemsDto[].ratePrice").description("Invoice line item hourly price."),
@@ -140,25 +167,28 @@ public class InvoiceServiceTest {
 		);
 		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		var actionResult = createInvoice(invoiceDto);
-		var invoiceId = actionResult.andReturn().getResponse().getContentAsString();
+		var invoiceJson = actionResult.andReturn().getResponse().getContentAsString();
+		var dbInvoice = objectMapper.readValue(invoiceJson, InvoiceDto.class);
 		// Modify invoice fields and items
-		invoiceDto.setCompanyName("Test1");
+		dbInvoice.setCompanyName("Test1");
 
 		// Perform the PUT invoice operation
 		// Verify the updated the fields
 		// Document the request and response fields
 		this.mockMvc.perform(MockMvcRequestBuilders.put("/invoice")
 				.contentType(MediaType.APPLICATION_JSON)
-				.param("invoiceId", invoiceId)
-				.content(this.objectMapper.writeValueAsString(invoiceDto)))
+				.param("invoiceId", dbInvoice.getInvoiceNumber().toString())
+				.content(this.objectMapper.writeValueAsString(dbInvoice)))
 				.andExpect(MockMvcResultMatchers.status().isBadRequest())
 				.andExpect(jsonPath("$").value("The given Company or Invoice is not exist!"))
 				.andDo(document("Put-Invoice-Company-NotFound", requestFields(
+						fieldWithPath("invoiceNumber").description("Invoice number."),
 						fieldWithPath("companyName").description("Name of company on invoice."),
 						fieldWithPath("totalCost").description("Total cost of invoice."),
 						fieldWithPath("author").description("Author of invoice."),
 						fieldWithPath("paid").description("If company paid the invoice."),
 						subsectionWithPath("itemsDto[]").description("A list of items in the invoice."),
+						subsectionWithPath("itemsDto[].itemId").description("Invoice line item id."),
 						subsectionWithPath("itemsDto[].description").description("Invoice line item description."),
 						subsectionWithPath("itemsDto[].rateHourBilled").description("Invoice line item quantity."),
 						subsectionWithPath("itemsDto[].ratePrice").description("Invoice line item hourly price."),
@@ -166,6 +196,148 @@ public class InvoiceServiceTest {
 				)));
 	}
 
-	// TODO: Write test case for update invoice with new line item
-	// TODO: Write test case for update invoice with remove existing line item
+	@Test
+	@DisplayName("Update invoice failing due to the give invoice is not exist!")
+	public void updateInvoiceFailedWhenInvoiceNotExistTest() throws Exception {
+		// Create Invoice
+		// Add items within invoice
+		var itemsDto = Arrays.asList(
+				new ItemDto("Description", 10, 14.50F, 60F)
+		);
+		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
+		// Modify invoice fields and items
+		invoiceDto.setAuthor("modified author");
+
+		// Perform the PUT invoice operation
+		// Verify the updated the fields
+		// Document the request and response fields
+		this.mockMvc.perform(MockMvcRequestBuilders.put("/invoice")
+				.contentType(MediaType.APPLICATION_JSON)
+				.param("invoiceId", "123")
+				.content(this.objectMapper.writeValueAsString(invoiceDto)))
+				.andExpect(MockMvcResultMatchers.status().isBadRequest())
+				.andExpect(jsonPath("$").value("The given Company or Invoice is not exist!"))
+				.andDo(document("Put-Invoice-Invoice-NotFound", requestFields(
+						fieldWithPath("invoiceNumber").description("Invoice number."),
+						fieldWithPath("companyName").description("Name of company on invoice."),
+						fieldWithPath("totalCost").description("Total cost of invoice."),
+						fieldWithPath("author").description("Author of invoice."),
+						fieldWithPath("paid").description("If company paid the invoice."),
+						subsectionWithPath("itemsDto[]").description("A list of items in the invoice."),
+						subsectionWithPath("itemsDto[].itemId").description("Invoice line item id."),
+						subsectionWithPath("itemsDto[].description").description("Invoice line item description."),
+						subsectionWithPath("itemsDto[].rateHourBilled").description("Invoice line item quantity."),
+						subsectionWithPath("itemsDto[].ratePrice").description("Invoice line item hourly price."),
+						subsectionWithPath("itemsDto[].flatPrice").description("Invoice line item flat price.")
+				)));
+	}
+
+	@Test
+	@DisplayName("Updating invoice with new line item")
+	public void updateInvoiceWithNewLineItemTest() throws Exception {
+		// Create company before insert invoice
+		initCompanyEntities(Arrays.asList("Test"));
+
+		// Create Invoice
+		// Add items within invoice
+		var itemsDto = Arrays.asList(
+				new ItemDto("Description", 10, 14.50F, 60F)
+		);
+		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
+		var actionResult = createInvoice(invoiceDto);
+		var invoiceJson = actionResult.andReturn().getResponse().getContentAsString();
+		var dbInvoice = objectMapper.readValue(invoiceJson, InvoiceDto.class);
+		// Modify invoice with adding new line item
+		var dbItems = dbInvoice.getItemsDto();
+		dbItems.add(new ItemDto("Second item", 12, 14.50F, 70F));
+		dbInvoice.setItemsDto(dbItems);
+
+		// Perform the PUT invoice operation
+		// Verify the updated the fields
+		// Document the request and response fields
+		this.mockMvc.perform(MockMvcRequestBuilders.put("/invoice")
+				.contentType(MediaType.APPLICATION_JSON)
+				.param("invoiceId", dbInvoice.getInvoiceNumber().toString())
+				.content(this.objectMapper.writeValueAsString(dbInvoice)))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(jsonPath("$.companyName").value("Test"))
+				.andExpect(jsonPath("$.paid").value(false))
+				.andExpect(jsonPath("$.itemsDto.length()").value(2))
+				.andExpect(jsonPath("$.itemsDto[0].description").value("Description"))
+				.andExpect(jsonPath("$.itemsDto[0].rateHourBilled").value(10))
+				.andExpect(jsonPath("$.itemsDto[0].ratePrice").value(14.50F))
+				.andExpect(jsonPath("$.itemsDto[0].flatPrice").value(60F))
+				.andExpect(jsonPath("$.itemsDto[1].description").value("Second item"))
+				.andExpect(jsonPath("$.itemsDto[1].rateHourBilled").value(12))
+				.andExpect(jsonPath("$.itemsDto[1].ratePrice").value(14.50F))
+				.andExpect(jsonPath("$.itemsDto[1].flatPrice").value(70F))
+				.andDo(document("Put-Invoice-New-LineItem", requestFields(
+						fieldWithPath("invoiceNumber").description("Invoice number."),
+						fieldWithPath("companyName").description("Name of company on invoice."),
+						fieldWithPath("totalCost").description("Total cost of invoice."),
+						fieldWithPath("author").description("Author of invoice."),
+						fieldWithPath("paid").description("If company paid the invoice."),
+						subsectionWithPath("itemsDto[]").description("A list of items in the invoice.")
+				), responseFields(
+						fieldWithPath("invoiceNumber").description("Invoice number."),
+						fieldWithPath("companyName").description("Name of company on invoice."),
+						fieldWithPath("totalCost").description("Total cost of invoice."),
+						fieldWithPath("author").description("Author of invoice."),
+						fieldWithPath("paid").description("If company paid the invoice."),
+						subsectionWithPath("itemsDto[]").description("A list of items in the invoice.")
+				)));
+	}
+
+	@Test
+	@DisplayName("Updating invoice with removing existing line item")
+	public void updateInvoiceWithRemoveLineItemTest() throws Exception {
+		// Create company before insert invoice
+		initCompanyEntities(Arrays.asList("Test"));
+
+		// Create Invoice
+		// Add items within invoice
+		var itemsDto = Arrays.asList(
+				new ItemDto("Description1", 10, 14.50F, 60F),
+				new ItemDto("Description2", 10, 14.50F, 60F)
+		);
+		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
+		var actionResult = createInvoice(invoiceDto);
+		var invoiceJson = actionResult.andReturn().getResponse().getContentAsString();
+		var dbInvoice = objectMapper.readValue(invoiceJson, InvoiceDto.class);
+		// Modify invoice with adding new line item
+		var dbItems = dbInvoice.getItemsDto();
+		dbItems.get(0).setState(DtoState.Deleted);
+		dbInvoice.setItemsDto(dbItems);
+
+		// Perform the PUT invoice operation
+		// Verify the updated the fields
+		// Document the request and response fields
+		this.mockMvc.perform(MockMvcRequestBuilders.put("/invoice")
+				.contentType(MediaType.APPLICATION_JSON)
+				.param("invoiceId", dbInvoice.getInvoiceNumber().toString())
+				.content(this.objectMapper.writeValueAsString(dbInvoice)))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(jsonPath("$.companyName").value("Test"))
+				.andExpect(jsonPath("$.paid").value(false))
+				.andExpect(jsonPath("$.itemsDto.length()").value(1))
+				.andExpect(jsonPath("$.itemsDto[0].description").value("Description2"))
+				.andExpect(jsonPath("$.itemsDto[0].rateHourBilled").value(10))
+				.andExpect(jsonPath("$.itemsDto[0].ratePrice").value(14.50F))
+				.andExpect(jsonPath("$.itemsDto[0].flatPrice").value(60F))
+				.andDo(document("Put-Invoice-Delete-LineItem", requestFields(
+						fieldWithPath("invoiceNumber").description("Invoice number."),
+						fieldWithPath("companyName").description("Name of company on invoice."),
+						fieldWithPath("totalCost").description("Total cost of invoice."),
+						fieldWithPath("author").description("Author of invoice."),
+						fieldWithPath("paid").description("If company paid the invoice."),
+						subsectionWithPath("itemsDto[]").description("A list of items in the invoice.")
+				), responseFields(
+						fieldWithPath("invoiceNumber").description("Invoice number."),
+						fieldWithPath("companyName").description("Name of company on invoice."),
+						fieldWithPath("totalCost").description("Total cost of invoice."),
+						fieldWithPath("author").description("Author of invoice."),
+						fieldWithPath("paid").description("If company paid the invoice."),
+						subsectionWithPath("itemsDto[]").description("A list of items in the invoice.")
+				)));
+	}
 }
