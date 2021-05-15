@@ -2,10 +2,9 @@ package com.groot.invoicify.controller;
 
 import com.groot.invoicify.dto.InvoiceDto;
 import com.groot.invoicify.dto.ItemDto;
+import com.groot.invoicify.dto.CompanyDto;
 import com.groot.invoicify.entity.Invoice;
 import com.groot.invoicify.service.CompanyService;
-import com.groot.invoicify.dto.ItemDto;
-import com.groot.invoicify.entity.Invoice;
 import com.groot.invoicify.service.InvoiceService;
 import com.groot.invoicify.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,10 @@ import java.util.List;
 public class InvoiceController {
 	@Autowired
 	InvoiceService invoiceService;
+	@Autowired
+	CompanyService companyService;
+	@Autowired
+	ItemService itemService;
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)

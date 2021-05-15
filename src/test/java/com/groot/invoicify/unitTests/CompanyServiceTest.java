@@ -1,9 +1,9 @@
 package com.groot.invoicify.unitTests;
 
 import com.groot.invoicify.dto.CompanyDto;
+import com.groot.invoicify.entity.Company;
 import com.groot.invoicify.repository.CompanyRepository;
 import com.groot.invoicify.service.CompanyService;
-import com.groot.invoicify.entity.Company;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,7 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CompanyServiceTest {

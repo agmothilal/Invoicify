@@ -68,30 +68,30 @@ public class InvoiceServiceTest {
 				.andExpect(jsonPath("$.companyName").value("Test"))
 				.andExpect(jsonPath("$.author").value("test"))
 				.andExpect(jsonPath("$.paid").value(false))
-				.andExpect(jsonPath("$.itemsDto.length()").value(1))
-				.andExpect(jsonPath("$.itemsDto[0].description").value("Description"))
-				.andExpect(jsonPath("$.itemsDto[0].ratePrice").value(14.50F))
-				.andExpect(jsonPath("$.itemsDto[0].rateHourBilled").value(10))
-				.andExpect(jsonPath("$.itemsDto[0].flatPrice").value(20.50F))
+				.andExpect(jsonPath("$.items.length()").value(1))
+				.andExpect(jsonPath("$.items[0].description").value("Description"))
+				.andExpect(jsonPath("$.items[0].ratePrice").value(14.50F))
+				.andExpect(jsonPath("$.items[0].rateHourBilled").value(10))
+				.andExpect(jsonPath("$.items[0].flatPrice").value(20.50F))
 				.andDo(document("Post-Invoice", requestFields(
 						fieldWithPath("invoiceNumber").description("Name of company on invoice."),
 						fieldWithPath("companyName").description("Name of company on invoice."),
 						fieldWithPath("totalCost").description("Total cost of invoice."),
 						fieldWithPath("author").description("Author of invoice."),
 						fieldWithPath("paid").description("If company paid the invoice."),
-						subsectionWithPath("itemsDto[]").description("A list of items in the invoice.")
+						subsectionWithPath("items[]").description("A list of items in the invoice.")
 				), responseFields(
 						fieldWithPath("invoiceNumber").description("Invoice number."),
 						fieldWithPath("companyName").description("Name of company on invoice."),
 						fieldWithPath("totalCost").description("Total cost of invoice."),
 						fieldWithPath("author").description("Author of invoice."),
 						fieldWithPath("paid").description("If company paid the invoice."),
-						subsectionWithPath("itemsDto[]").description("A list of items in the invoice."),
-						subsectionWithPath("itemsDto[].itemId").description("Invoice line item id."),
-						subsectionWithPath("itemsDto[].description").description("Invoice line item description."),
-						subsectionWithPath("itemsDto[].rateHourBilled").description("Invoice line item quantity."),
-						subsectionWithPath("itemsDto[].ratePrice").description("Invoice line item hourly price."),
-						subsectionWithPath("itemsDto[].flatPrice").description("Invoice line item flat price.")
+						subsectionWithPath("items[]").description("A list of items in the invoice."),
+						subsectionWithPath("items[].itemId").description("Invoice line item id."),
+						subsectionWithPath("items[].description").description("Invoice line item description."),
+						subsectionWithPath("items[].rateHourBilled").description("Invoice line item quantity."),
+						subsectionWithPath("items[].ratePrice").description("Invoice line item hourly price."),
+						subsectionWithPath("items[].flatPrice").description("Invoice line item flat price.")
 				)));
 	}
 
@@ -126,33 +126,33 @@ public class InvoiceServiceTest {
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(jsonPath("$.companyName").value("Test1"))
 				.andExpect(jsonPath("$.paid").value(true))
-				.andExpect(jsonPath("$.itemsDto.length()").value(1))
-				.andExpect(jsonPath("$.itemsDto[0].description").value("Description1"))
-				.andExpect(jsonPath("$.itemsDto[0].ratePrice").value(25.60F))
+				.andExpect(jsonPath("$.items.length()").value(1))
+				.andExpect(jsonPath("$.items[0].description").value("Description1"))
+				.andExpect(jsonPath("$.items[0].ratePrice").value(25.60F))
 				.andDo(document("Put-Invoice", requestFields(
 						fieldWithPath("invoiceNumber").description("Invoice number."),
 						fieldWithPath("companyName").description("Name of company on invoice."),
 						fieldWithPath("totalCost").description("Total cost of invoice."),
 						fieldWithPath("author").description("Author of invoice."),
 						fieldWithPath("paid").description("If company paid the invoice."),
-						subsectionWithPath("itemsDto[]").description("A list of items in the invoice."),
-						subsectionWithPath("itemsDto[].itemId").description("Invoice line item id."),
-						subsectionWithPath("itemsDto[].description").description("Invoice line item description."),
-						subsectionWithPath("itemsDto[].rateHourBilled").description("Invoice line item quantity."),
-						subsectionWithPath("itemsDto[].ratePrice").description("Invoice line item hourly price."),
-						subsectionWithPath("itemsDto[].flatPrice").description("Invoice line item flat price.")
+						subsectionWithPath("items[]").description("A list of items in the invoice."),
+						subsectionWithPath("items[].itemId").description("Invoice line item id."),
+						subsectionWithPath("items[].description").description("Invoice line item description."),
+						subsectionWithPath("items[].rateHourBilled").description("Invoice line item quantity."),
+						subsectionWithPath("items[].ratePrice").description("Invoice line item hourly price."),
+						subsectionWithPath("items[].flatPrice").description("Invoice line item flat price.")
 				), responseFields(
 						fieldWithPath("invoiceNumber").description("Invoice number."),
 						fieldWithPath("companyName").description("Name of company on invoice."),
 						fieldWithPath("totalCost").description("Total cost of invoice."),
 						fieldWithPath("author").description("Author of invoice."),
 						fieldWithPath("paid").description("If company paid the invoice."),
-						subsectionWithPath("itemsDto[]").description("A list of items in the invoice."),
-						subsectionWithPath("itemsDto[].itemId").description("Invoice line item id."),
-						subsectionWithPath("itemsDto[].description").description("Invoice line item description."),
-						subsectionWithPath("itemsDto[].rateHourBilled").description("Invoice line item quantity."),
-						subsectionWithPath("itemsDto[].ratePrice").description("Invoice line item hourly price."),
-						subsectionWithPath("itemsDto[].flatPrice").description("Invoice line item flat price.")
+						subsectionWithPath("items[]").description("A list of items in the invoice."),
+						subsectionWithPath("items[].itemId").description("Invoice line item id."),
+						subsectionWithPath("items[].description").description("Invoice line item description."),
+						subsectionWithPath("items[].rateHourBilled").description("Invoice line item quantity."),
+						subsectionWithPath("items[].ratePrice").description("Invoice line item hourly price."),
+						subsectionWithPath("items[].flatPrice").description("Invoice line item flat price.")
 				)));
 	}
 
@@ -189,12 +189,12 @@ public class InvoiceServiceTest {
 						fieldWithPath("totalCost").description("Total cost of invoice."),
 						fieldWithPath("author").description("Author of invoice."),
 						fieldWithPath("paid").description("If company paid the invoice."),
-						subsectionWithPath("itemsDto[]").description("A list of items in the invoice."),
-						subsectionWithPath("itemsDto[].itemId").description("Invoice line item id."),
-						subsectionWithPath("itemsDto[].description").description("Invoice line item description."),
-						subsectionWithPath("itemsDto[].rateHourBilled").description("Invoice line item quantity."),
-						subsectionWithPath("itemsDto[].ratePrice").description("Invoice line item hourly price."),
-						subsectionWithPath("itemsDto[].flatPrice").description("Invoice line item flat price.")
+						subsectionWithPath("items[]").description("A list of items in the invoice."),
+						subsectionWithPath("items[].itemId").description("Invoice line item id."),
+						subsectionWithPath("items[].description").description("Invoice line item description."),
+						subsectionWithPath("items[].rateHourBilled").description("Invoice line item quantity."),
+						subsectionWithPath("items[].ratePrice").description("Invoice line item hourly price."),
+						subsectionWithPath("items[].flatPrice").description("Invoice line item flat price.")
 				)));
 	}
 
@@ -225,12 +225,12 @@ public class InvoiceServiceTest {
 						fieldWithPath("totalCost").description("Total cost of invoice."),
 						fieldWithPath("author").description("Author of invoice."),
 						fieldWithPath("paid").description("If company paid the invoice."),
-						subsectionWithPath("itemsDto[]").description("A list of items in the invoice."),
-						subsectionWithPath("itemsDto[].itemId").description("Invoice line item id."),
-						subsectionWithPath("itemsDto[].description").description("Invoice line item description."),
-						subsectionWithPath("itemsDto[].rateHourBilled").description("Invoice line item quantity."),
-						subsectionWithPath("itemsDto[].ratePrice").description("Invoice line item hourly price."),
-						subsectionWithPath("itemsDto[].flatPrice").description("Invoice line item flat price.")
+						subsectionWithPath("items[]").description("A list of items in the invoice."),
+						subsectionWithPath("items[].itemId").description("Invoice line item id."),
+						subsectionWithPath("items[].description").description("Invoice line item description."),
+						subsectionWithPath("items[].rateHourBilled").description("Invoice line item quantity."),
+						subsectionWithPath("items[].ratePrice").description("Invoice line item hourly price."),
+						subsectionWithPath("items[].flatPrice").description("Invoice line item flat price.")
 				)));
 	}
 
@@ -264,29 +264,29 @@ public class InvoiceServiceTest {
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(jsonPath("$.companyName").value("Test"))
 				.andExpect(jsonPath("$.paid").value(false))
-				.andExpect(jsonPath("$.itemsDto.length()").value(2))
-				.andExpect(jsonPath("$.itemsDto[0].description").value("Description"))
-				.andExpect(jsonPath("$.itemsDto[0].rateHourBilled").value(10))
-				.andExpect(jsonPath("$.itemsDto[0].ratePrice").value(14.50F))
-				.andExpect(jsonPath("$.itemsDto[0].flatPrice").value(60F))
-				.andExpect(jsonPath("$.itemsDto[1].description").value("Second item"))
-				.andExpect(jsonPath("$.itemsDto[1].rateHourBilled").value(12))
-				.andExpect(jsonPath("$.itemsDto[1].ratePrice").value(14.50F))
-				.andExpect(jsonPath("$.itemsDto[1].flatPrice").value(70F))
+				.andExpect(jsonPath("$.items.length()").value(2))
+				.andExpect(jsonPath("$.items[0].description").value("Description"))
+				.andExpect(jsonPath("$.items[0].rateHourBilled").value(10))
+				.andExpect(jsonPath("$.items[0].ratePrice").value(14.50F))
+				.andExpect(jsonPath("$.items[0].flatPrice").value(60F))
+				.andExpect(jsonPath("$.items[1].description").value("Second item"))
+				.andExpect(jsonPath("$.items[1].rateHourBilled").value(12))
+				.andExpect(jsonPath("$.items[1].ratePrice").value(14.50F))
+				.andExpect(jsonPath("$.items[1].flatPrice").value(70F))
 				.andDo(document("Put-Invoice-New-LineItem", requestFields(
 						fieldWithPath("invoiceNumber").description("Invoice number."),
 						fieldWithPath("companyName").description("Name of company on invoice."),
 						fieldWithPath("totalCost").description("Total cost of invoice."),
 						fieldWithPath("author").description("Author of invoice."),
 						fieldWithPath("paid").description("If company paid the invoice."),
-						subsectionWithPath("itemsDto[]").description("A list of items in the invoice.")
+						subsectionWithPath("items[]").description("A list of items in the invoice.")
 				), responseFields(
 						fieldWithPath("invoiceNumber").description("Invoice number."),
 						fieldWithPath("companyName").description("Name of company on invoice."),
 						fieldWithPath("totalCost").description("Total cost of invoice."),
 						fieldWithPath("author").description("Author of invoice."),
 						fieldWithPath("paid").description("If company paid the invoice."),
-						subsectionWithPath("itemsDto[]").description("A list of items in the invoice.")
+						subsectionWithPath("items[]").description("A list of items in the invoice.")
 				)));
 	}
 
@@ -321,25 +321,25 @@ public class InvoiceServiceTest {
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(jsonPath("$.companyName").value("Test"))
 				.andExpect(jsonPath("$.paid").value(false))
-				.andExpect(jsonPath("$.itemsDto.length()").value(1))
-				.andExpect(jsonPath("$.itemsDto[0].description").value("Description2"))
-				.andExpect(jsonPath("$.itemsDto[0].rateHourBilled").value(10))
-				.andExpect(jsonPath("$.itemsDto[0].ratePrice").value(14.50F))
-				.andExpect(jsonPath("$.itemsDto[0].flatPrice").value(60F))
+				.andExpect(jsonPath("$.items.length()").value(1))
+				.andExpect(jsonPath("$.items[0].description").value("Description2"))
+				.andExpect(jsonPath("$.items[0].rateHourBilled").value(10))
+				.andExpect(jsonPath("$.items[0].ratePrice").value(14.50F))
+				.andExpect(jsonPath("$.items[0].flatPrice").value(60F))
 				.andDo(document("Put-Invoice-Delete-LineItem", requestFields(
 						fieldWithPath("invoiceNumber").description("Invoice number."),
 						fieldWithPath("companyName").description("Name of company on invoice."),
 						fieldWithPath("totalCost").description("Total cost of invoice."),
 						fieldWithPath("author").description("Author of invoice."),
 						fieldWithPath("paid").description("If company paid the invoice."),
-						subsectionWithPath("itemsDto[]").description("A list of items in the invoice.")
+						subsectionWithPath("items[]").description("A list of items in the invoice.")
 				), responseFields(
 						fieldWithPath("invoiceNumber").description("Invoice number."),
 						fieldWithPath("companyName").description("Name of company on invoice."),
 						fieldWithPath("totalCost").description("Total cost of invoice."),
 						fieldWithPath("author").description("Author of invoice."),
 						fieldWithPath("paid").description("If company paid the invoice."),
-						subsectionWithPath("itemsDto[]").description("A list of items in the invoice.")
+						subsectionWithPath("items[]").description("A list of items in the invoice.")
 				)));
 	}
 
@@ -361,24 +361,20 @@ public class InvoiceServiceTest {
 		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		var invoiceDto2 = new InvoiceDto("Test", "rest", false, itemsDto);
 
-		this.mockMvc.perform(MockMvcRequestBuilders.post("/invoice")
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.content(this.objectMapper.writeValueAsString(invoiceDto)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
+		var actionResult = createInvoice(invoiceDto);
+		var invoiceJson = actionResult.andReturn().getResponse().getContentAsString();
+		var dbInvoice = objectMapper.readValue(invoiceJson, InvoiceDto.class);
+		var invoiceId = dbInvoice.getInvoiceNumber();
 
-		this.mockMvc.perform(MockMvcRequestBuilders.post("/invoice")
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.content(this.objectMapper.writeValueAsString(invoiceDto2)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
+		var actionResult2 = createInvoice(invoiceDto2);
+		var invoiceJson2 = actionResult2.andReturn().getResponse().getContentAsString();
+		var dbInvoice2 = objectMapper.readValue(invoiceJson2, InvoiceDto.class);
+		var invoiceId2 = dbInvoice2.getInvoiceNumber();
 
 		mockMvc.perform(get("/invoice/Test")
 		).andExpect(status().isOk())
-				.andExpect(jsonPath("[0].invoiceNumber").value(1L))
-				.andExpect(jsonPath("[1].invoiceNumber").value(2L))
+				.andExpect(jsonPath("[0].invoiceNumber").value(invoiceId))
+				.andExpect(jsonPath("[1].invoiceNumber").value(invoiceId2))
 				.andDo(print())
 				.andDo(document("Get-InvoiceBy-Company-Name"));
 		;
@@ -444,32 +440,23 @@ public class InvoiceServiceTest {
 		//var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		var invoiceDto2 = new InvoiceDto("Test", "rest", false, itemsDto2);
+		var actionResult = createInvoice(invoiceDto);
+		var invoiceJson = actionResult.andReturn().getResponse().getContentAsString();
+		var dbInvoice = objectMapper.readValue(invoiceJson, InvoiceDto.class);
 
-		this.mockMvc.perform(MockMvcRequestBuilders.post("/invoice")
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.content(this.objectMapper.writeValueAsString(invoiceDto)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
-
-		this.mockMvc.perform(MockMvcRequestBuilders.post("/invoice")
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.content(this.objectMapper.writeValueAsString(invoiceDto2)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
+		var actionResult2 = createInvoice(invoiceDto2);
+		var invoiceJson2 = actionResult2.andReturn().getResponse().getContentAsString();
+		var dbInvoice2 = objectMapper.readValue(invoiceJson2, InvoiceDto.class);
 
 		mockMvc.perform(get("/invoice/Test")
 		).andExpect(status().isOk())
-				.andExpect(jsonPath("[0].invoiceNumber").value(1L))
-				.andExpect(jsonPath("[1].invoiceNumber").value(2L))
-				.andExpect(jsonPath("[0].totalCost").value(525F))
-				.andExpect(jsonPath("[1].totalCost").value(1090F))
+				.andExpect(jsonPath("[0].invoiceNumber").value(dbInvoice.getInvoiceNumber()))
+				.andExpect(jsonPath("[1].invoiceNumber").value(dbInvoice2.getInvoiceNumber()))
+				.andExpect(jsonPath("[0].totalCost").value(dbInvoice.getTotalCost()))
+				.andExpect(jsonPath("[1].totalCost").value(dbInvoice2.getTotalCost()))
 		;
 
 	}
-
-
 
 	@Test
 	public void fetchUnPaidInvoiceByCompanyName() throws Exception {
@@ -498,25 +485,19 @@ public class InvoiceServiceTest {
 		//var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		var invoiceDto2 = new InvoiceDto("Test", "rest", true, itemsDto2);
+		var actionResult = createInvoice(invoiceDto);
+		var invoiceJson = actionResult.andReturn().getResponse().getContentAsString();
+		var dbInvoice = objectMapper.readValue(invoiceJson, InvoiceDto.class);
+		var invoiceId = dbInvoice.getInvoiceNumber();
 
-		this.mockMvc.perform(MockMvcRequestBuilders.post("/invoice")
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.content(this.objectMapper.writeValueAsString(invoiceDto)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
-
-		this.mockMvc.perform(MockMvcRequestBuilders.post("/invoice")
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.content(this.objectMapper.writeValueAsString(invoiceDto2)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
+		var actionResult2 = createInvoice(invoiceDto2);
+		var invoiceJson2 = actionResult2.andReturn().getResponse().getContentAsString();
+		var dbInvoice2 = objectMapper.readValue(invoiceJson2, InvoiceDto.class);
 
 		mockMvc.perform(get("/invoice/unpaid/Test")
 		).andExpect(status().isOk())
-				.andExpect(jsonPath("[0].invoiceNumber").value(1L))
-				.andExpect(jsonPath("[0].totalCost").value(525F))
+				.andExpect(jsonPath("[0].invoiceNumber").value(invoiceId))
+				.andExpect(jsonPath("[0].totalCost").value(dbInvoice.getTotalCost()))
 		;
 
 	}
@@ -557,26 +538,11 @@ public class InvoiceServiceTest {
 		//var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		var invoiceDto = new InvoiceDto("Test", "test", true, itemsDto);
 		var invoiceDto2 = new InvoiceDto("Test", "rest", true, itemsDto2);
-
-		this.mockMvc.perform(MockMvcRequestBuilders.post("/invoice")
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.content(this.objectMapper.writeValueAsString(invoiceDto)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
-
-		this.mockMvc.perform(MockMvcRequestBuilders.post("/invoice")
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.content(this.objectMapper.writeValueAsString(invoiceDto2)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
+		createInvoice(invoiceDto);
+		createInvoice(invoiceDto2);
 
 		mockMvc.perform(get("/invoice/unpaid/Test")
-		).andExpect(status().isNotFound())
-
-		;
-
+		).andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -595,17 +561,14 @@ public class InvoiceServiceTest {
 		);
 		//var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
+		var actionResult = createInvoice(invoiceDto);
+		var invoiceJson = actionResult.andReturn().getResponse().getContentAsString();
+		var dbInvoice = objectMapper.readValue(invoiceJson, InvoiceDto.class);
+		var invoiceId = dbInvoice.getInvoiceNumber();
 
-		this.mockMvc.perform(MockMvcRequestBuilders.post("/invoice")
-				.contentType(MediaType.APPLICATION_JSON_VALUE)
-				.content(this.objectMapper.writeValueAsString(invoiceDto)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
-
-		mockMvc.perform(get("/invoice/id/1")
+		mockMvc.perform(get("/invoice/id/"+invoiceId)
 		).andExpect(status().isOk())
-				.andExpect(jsonPath("$.invoiceNumber").value(1L))
+				.andExpect(jsonPath("$.invoiceNumber").value(invoiceId))
 				.andExpect(jsonPath("$.items[0].flatPrice").value(60F))
 				.andExpect(jsonPath("$.totalCost").value(205F))
 				.andExpect(jsonPath("$.companyName").value("Test"))
