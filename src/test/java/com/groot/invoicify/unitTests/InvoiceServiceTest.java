@@ -116,4 +116,29 @@ public class InvoiceServiceTest {
 
         assertEquals(updatedInvoiceDto, invoiceService.updatedInvoice(1L, invoiceDto));
     }
+
+    @Test
+    public void updateInvoice_noChangeToCompanyName() {
+        Company company = new Company("company");
+
+        Invoice invoice = new Invoice(company, "author", false);
+        Invoice updatedInvoice = new Invoice(company, "author1", true, List.of(
+                new Item("Description1", 10, 26.50F, null)
+        ));
+
+        var itemsDto = List.of(
+                new ItemDto("Description", 10, 14.50F, null)
+        );
+        var updatedItemsDto = List.of(
+                new ItemDto("Description1", 10, 26.50F, null)
+        );
+        var invoiceDto = new InvoiceDto("company", "author1", false, itemsDto);
+        var updatedInvoiceDto = new InvoiceDto("company", "author1", true, updatedItemsDto);
+
+        when(invoiceRepository.findById(1L)).thenReturn(java.util.Optional.of(invoice));
+
+        when(invoiceRepository.save(invoice)).thenReturn(updatedInvoice);
+
+        assertEquals(updatedInvoiceDto, invoiceService.updatedInvoice(1L, invoiceDto));
+    }
 }
