@@ -37,15 +37,16 @@ public class InvoiceController {
 	}
 
 	@GetMapping("{companyName}")
-	public ResponseEntity<?> getAllInvoicesByCompany(@PathVariable String companyName) {
+	public ResponseEntity<?> getAllInvoicesByCompany(@PathVariable String companyName,@RequestParam(defaultValue = "0") Integer pageNo) {
 		CompanyDto companyDto = this.companyService.findSingleCompany(companyName);
 		if (companyDto == null) {
 			return new ResponseEntity<>("No Company by that name.", HttpStatus.NOT_FOUND);
 		}
 		else {
-			List<InvoiceDto> invoiceDtoList = invoiceService.fetchAllInvoicesByCompany(companyName);
+			List<InvoiceDto> invoiceDtoList = invoiceService.fetchAllInvoicesByCompany(pageNo,companyName);
 			if (invoiceDtoList==null)
 			{
+				//TODO: Fix for page number over the number of invoices.
 				return new ResponseEntity<>("Company Exists, but there is no invoice for that company.", HttpStatus.NOT_FOUND);
 			}
 			else {

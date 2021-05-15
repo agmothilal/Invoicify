@@ -8,6 +8,10 @@ import com.groot.invoicify.entity.Item;
 import com.groot.invoicify.repository.CompanyRepository;
 import com.groot.invoicify.repository.InvoiceRepository;
 import com.groot.invoicify.repository.ItemRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -75,27 +79,25 @@ public class InvoiceService {
 		return deleteInvoices.stream().count();
 	}
 
-	public List<InvoiceDto> fetchAllInvoicesByCompany(String companyName) {
+	public List<InvoiceDto> fetchAllInvoicesByCompany(Integer pageNo,String companyName) {
 		deletePaidAndOlderInvoices();
 		Company companyEntity = companyRepository.findByName(companyName);
 
 		Long compId = companyEntity.getCompanyId();
+		Pageable paging = PageRequest.of(pageNo, 10, Sort.by("createDt"));
+//		List<Invoice> invoices=invoiceRepository.findByCompanyCompanyId(compId);
+		List<Invoice> invoices=invoiceRepository.findByCompanyCompanyId(compId,paging);
 
-
-		if (invoiceRepository.findByCompanyCompanyId(compId).isEmpty()) {
-
+		if (invoices.isEmpty()) {
 			return null;
 		} else {
-			return invoiceRepository.findByCompanyCompanyId(compId)
+			return invoices
 					.stream()
 					.map(invoiceEntity -> {
-
 						List<Item> itemEntList = itemRepository.findByInvoiceInvoiceId(invoiceEntity.getInvoiceId());
 						float totalInvoiceSumLocal = (float) itemEntList.stream().
 								mapToDouble(itemEntObject -> (itemEntObject.getFlatPrice() + itemEntObject.getRatePrice() * itemEntObject.getRateHourBilled())
 								).sum();
-
-
 						return new InvoiceDto(
 								invoiceEntity.getInvoiceId(),
 								companyName,
@@ -104,15 +106,12 @@ public class InvoiceService {
 								itemEntList
 										.stream().map(itemEnt ->
 								{
-
 									return new ItemDto(itemEnt.getDescription(),
 											itemEnt.getRateHourBilled(),
 											itemEnt.getRatePrice(),
 											itemEnt.getFlatPrice());
 								}).collect(Collectors.toList()),
 								totalInvoiceSumLocal
-
-
 						);
 					})
 					.collect(Collectors.toList());

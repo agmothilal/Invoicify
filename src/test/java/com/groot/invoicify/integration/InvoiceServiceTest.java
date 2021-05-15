@@ -66,7 +66,7 @@ public class InvoiceServiceTest {
 						PayloadDocumentation.fieldWithPath("author").description("Author of invoice."),
 						PayloadDocumentation.fieldWithPath("paid").description("If company paid the invoice."),
 						PayloadDocumentation.subsectionWithPath("items[]").description("A list of items in the invoice.")
-						)));
+				)));
 	}
 
 	@Test
@@ -153,7 +153,7 @@ public class InvoiceServiceTest {
 		var itemsDto = Arrays.asList(
 				new ItemDto("itemdescription", 10, 14.50F, 60F),
 				new ItemDto("itemdescription2", 10, 14.50F, 30F),
-				new ItemDto("itemdescription3", 10, 14.50F,0F)
+				new ItemDto("itemdescription3", 10, 14.50F, 0F)
 
 		);
 
@@ -199,7 +199,7 @@ public class InvoiceServiceTest {
 		var itemsDto = Arrays.asList(
 				new ItemDto("itemdescription", 10, 14.50F, 60F),
 				new ItemDto("itemdescription2", 10, 14.50F, 30F),
-				new ItemDto("itemdescription3", 10, 14.50F,0F)
+				new ItemDto("itemdescription3", 10, 14.50F, 0F)
 
 		);
 
@@ -254,7 +254,7 @@ public class InvoiceServiceTest {
 		var itemsDto = Arrays.asList(
 				new ItemDto("itemdescription", 10, 14.50F, 60F),
 				new ItemDto("itemdescription2", 10, 14.50F, 30F),
-				new ItemDto("itemdescription3", 10, 14.50F,0F)
+				new ItemDto("itemdescription3", 10, 14.50F, 0F)
 
 		);
 
@@ -284,7 +284,6 @@ public class InvoiceServiceTest {
 
 	@Test
 	public void fetchInvoiceByIdValidInvoiceNumberTest() throws Exception {
-
 		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
 
 		mockMvc.perform(post("/company")
@@ -316,14 +315,58 @@ public class InvoiceServiceTest {
 
 	@Test
 	public void fetchUnPaidInvoiceByInValidInvoiceNumberTest() throws Exception {
-
 		mockMvc.perform(get("/invoice/id/2")
 		).andExpect(status().isNotFound())
 				.andDo(print())
-				.andDo(document("Get-InvoiceBy-Invalid-InvoiceNumber"))
-		;
-
+				.andDo(document("Get-InvoiceBy-Invalid-InvoiceNumber"));
 	}
 
+	@Test
+	public void getPagingTest() throws Exception {
+		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+
+		mockMvc.perform(post("/company")
+				.content(objectMapper.writeValueAsString(companyObject1))
+				.contentType(MediaType.APPLICATION_JSON)
+		).andExpect(status().isCreated());
+
+
+		var itemsDto = Arrays.asList(
+				new ItemDto("itemdescription", 10, 14.50F, 60F),
+				new ItemDto("itemdescription", 10, 14.50F, 60F)
+		);
+
+		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
+
+		for (int x = 0; x < 25; x++) {
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException e) {
+				System.out.println(e);
+			}
+			this.mockMvc.perform(post("/invoice")
+					.contentType(MediaType.APPLICATION_JSON_VALUE)
+					.content(this.objectMapper.writeValueAsString(invoiceDto)))
+					.andExpect(status().isCreated());
+		}
+
+		this.mockMvc.perform(get("/invoice/Test"))
+				.andDo(print());
+		this.mockMvc.perform(get("/invoice/Test")
+				.param("pageNo", "0"))
+				.andDo(print());
+		this.mockMvc.perform(get("/invoice/Test")
+				.param("pageNo", "1"))
+				.andDo(print());
+		this.mockMvc.perform(get("/invoice/Test")
+				.param("pageNo", "2"))
+				.andDo(print());
+		this.mockMvc.perform(get("/invoice/Test")
+				.param("pageNo", "100"))
+				.andDo(print());
+		this.mockMvc.perform(get("/invoice/Test")
+				.param("pageNo", "-1"))
+				.andDo(print());
+	}
 
 }
