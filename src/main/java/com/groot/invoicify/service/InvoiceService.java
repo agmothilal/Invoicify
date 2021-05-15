@@ -202,4 +202,10 @@ public class InvoiceService {
         );
         }
     }
+
+    public Invoice findInvoiceEntityByInvoiceNumber(Long invoiceNum) {
+        return invoiceRepository.findByInvoiceId(invoiceNum);
+
+
+    }
 }
