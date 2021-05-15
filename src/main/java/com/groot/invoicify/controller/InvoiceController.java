@@ -25,14 +25,19 @@ public class InvoiceController {
 	ItemService itemService;
 
 	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public Long createInvoice(@RequestBody InvoiceDto invoiceDto) {
-		return this.invoiceService.createInvoice(invoiceDto);
+	public ResponseEntity<?> createInvoice(@RequestBody InvoiceDto invoiceDto) {
+		CompanyDto companyDto = this.companyService.findSingleCompany(invoiceDto.getCompanyName());
+		if (companyDto == null) {
+			return new ResponseEntity<>("No Company by that name.", HttpStatus.NOT_FOUND);
+		}
+		else {
+			Long id=this.invoiceService.createInvoice(invoiceDto);
+			return new ResponseEntity<>("Invoice has been created. The invoice ID is "+ id +".", HttpStatus.CREATED);
+		}
 	}
 
 	@GetMapping("{companyName}")
 	public ResponseEntity<?> getAllInvoicesByCompany(@PathVariable String companyName) {
-
 		CompanyDto companyDto = this.companyService.findSingleCompany(companyName);
 		if (companyDto == null) {
 			return new ResponseEntity<>("No Company by that name.", HttpStatus.NOT_FOUND);
