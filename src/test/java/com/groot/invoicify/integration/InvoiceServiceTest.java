@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.restdocs.payload.PayloadDocumentation;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,8 +25,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -41,16 +41,24 @@ public class InvoiceServiceTest {
 
 	@Test
 	public void createInvoiceTest() throws Exception {
+		CompanyDto companyObject1 = new CompanyDto("CTS", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+
+		mockMvc.perform(RestDocumentationRequestBuilders.post("/company")
+				.content(objectMapper.writeValueAsString(companyObject1))
+				.contentType(MediaType.APPLICATION_JSON)
+		).andExpect(status().isCreated())
+				.andExpect(content().string("Successfully added new Company.Company id is 1."));
+
 		var itemsDto = Arrays.asList(
 				new ItemDto("Description", 10, 14.50F, null)
 		);
-		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
+		var invoiceDto = new InvoiceDto("CTS", "test", false, itemsDto);
 
 		this.mockMvc.perform(post("/invoice")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(invoiceDto)))
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
+				.andExpect(content().string("Invoice has been created. The invoice ID is 1."))
 				.andDo(MockMvcRestDocumentation.document("Post-Invoice", PayloadDocumentation.requestFields(
 						PayloadDocumentation.fieldWithPath("invoiceNumber").description("Invoice Number."),
 						PayloadDocumentation.fieldWithPath("companyName").description("Name of company on invoice."),
@@ -82,16 +90,12 @@ public class InvoiceServiceTest {
 		this.mockMvc.perform(post("/invoice")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(invoiceDto)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
+				.andExpect(status().isCreated());
 
 		this.mockMvc.perform(post("/invoice")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(invoiceDto2)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
+				.andExpect(status().isCreated());
 
 		mockMvc.perform(get("/invoice/Test")
 		).andExpect(status().isOk())
@@ -166,28 +170,20 @@ public class InvoiceServiceTest {
 		this.mockMvc.perform(post("/invoice")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(invoiceDto)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
+				.andExpect(status().isCreated());
 
 		this.mockMvc.perform(post("/invoice")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(invoiceDto2)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
+				.andExpect(status().isCreated());
 
 		mockMvc.perform(get("/invoice/Test")
 		).andExpect(status().isOk())
 				.andExpect(jsonPath("[0].invoiceNumber").value(1L))
 				.andExpect(jsonPath("[1].invoiceNumber").value(2L))
 				.andExpect(jsonPath("[0].totalCost").value(525F))
-				.andExpect(jsonPath("[1].totalCost").value(1090F))
-		;
-
+				.andExpect(jsonPath("[1].totalCost").value(1090F));
 	}
-
-
 
 	@Test
 	public void fetchUnPaidInvoiceByCompanyName() throws Exception {
@@ -220,16 +216,12 @@ public class InvoiceServiceTest {
 		this.mockMvc.perform(post("/invoice")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(invoiceDto)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
+				.andExpect(status().isCreated());
 
 		this.mockMvc.perform(post("/invoice")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(invoiceDto2)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
+				.andExpect(status().isCreated());
 
 		mockMvc.perform(get("/invoice/unpaid/Test")
 		).andExpect(status().isOk())
@@ -279,22 +271,15 @@ public class InvoiceServiceTest {
 		this.mockMvc.perform(post("/invoice")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(invoiceDto)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
+				.andExpect(status().isCreated());
 
 		this.mockMvc.perform(post("/invoice")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(invoiceDto2)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
+				.andExpect(status().isCreated());
 
 		mockMvc.perform(get("/invoice/unpaid/Test")
-		).andExpect(status().isNotFound())
-
-		;
-
+		).andExpect(status().isNotFound());
 	}
 
 	@Test
@@ -317,9 +302,7 @@ public class InvoiceServiceTest {
 		this.mockMvc.perform(post("/invoice")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(invoiceDto)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
+				.andExpect(status().isCreated());
 
 		mockMvc.perform(get("/invoice/id/1")
 		).andExpect(status().isOk())
@@ -328,9 +311,7 @@ public class InvoiceServiceTest {
 				.andExpect(jsonPath("$.totalCost").value(205F))
 				.andExpect(jsonPath("$.companyName").value("Test"))
 				.andDo(print())
-				.andDo(document("Get-InvoiceBy-valid-InvoiceNumber"))
-		;
-
+				.andDo(document("Get-InvoiceBy-valid-InvoiceNumber"));
 	}
 
 	@Test
