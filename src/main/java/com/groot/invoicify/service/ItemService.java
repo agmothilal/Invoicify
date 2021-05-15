@@ -21,7 +21,8 @@ public class ItemService {
 	}
 
 	public static ItemDto MapToDto(Item item) {
-		return new ItemDto(item.getDescription(),
+		return new ItemDto(item.getItemId(),
+				item.getDescription(),
 				item.getRateHourBilled(),
 				item.getRatePrice(),
 				item.getFlatPrice());

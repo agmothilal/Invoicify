@@ -1,5 +1,6 @@
 package com.groot.invoicify.service;
 
+import com.groot.invoicify.dto.DtoState;
 import com.groot.invoicify.dto.InvoiceDto;
 import com.groot.invoicify.dto.ItemDto;
 import com.groot.invoicify.entity.Company;
@@ -10,11 +11,10 @@ import com.groot.invoicify.repository.InvoiceRepository;
 import com.groot.invoicify.repository.ItemRepository;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,8 +24,8 @@ public class InvoiceService {
 	private final ItemRepository itemRepository;
 
 	public InvoiceService(InvoiceRepository invoiceRepository,
-												CompanyRepository companyRepository,
-												ItemRepository itemRepository) {
+						  CompanyRepository companyRepository,
+						  ItemRepository itemRepository) {
 		this.invoiceRepository = invoiceRepository;
 		this.companyRepository = companyRepository;
 		this.itemRepository = itemRepository;
@@ -43,23 +43,29 @@ public class InvoiceService {
 				invoiceDto.getPaid());
 	}
 
-	public Long createInvoice(InvoiceDto invoiceDto) {
-		var company = this.companyRepository.findByName(invoiceDto.getCompanyName());
-		var invoiceWithItems = MapToEntity(invoiceDto, company);
-		var invoice = this.invoiceRepository.save(invoiceWithItems);
+    public InvoiceDto createInvoice(InvoiceDto invoiceDto) {
+        var company = this.companyRepository.findByName(invoiceDto.getCompanyName());
+        var invoiceWithItems = MapToEntity(invoiceDto, company);
+        var invoice = this.invoiceRepository.save(invoiceWithItems);
 
-		// Save all items
-		var items = invoiceDto.getItemsDto().stream()
-				.map(dto -> {
-					var item = ItemService.MapToEntity(dto);
-					item.setInvoice(invoice);
-					return item;
-				})
-				.collect(Collectors.toList());
-		this.itemRepository.saveAll(items);
+        // Save all items
+        var items = invoiceDto.getItemsDto().stream()
+                .map(dto -> {
+                    var item = ItemService.MapToEntity(dto);
+                    item.setInvoice(invoice);
+                    return item;
+                })
+                .collect(Collectors.toList());
+        var itemsEntity = this.itemRepository.saveAll(items);
 
-		return invoice.getInvoiceId();
-	}
+        return new InvoiceDto(invoice.getInvoiceId(),
+                invoice.getCompany().getName(),
+                invoice.getAuthor(),
+                invoice.getPaid(),
+                itemsEntity.stream().map(item ->
+                        ItemService.MapToDto(item)
+                ).collect(Collectors.toList()));
+    }
 
 	public Long deletePaidAndOlderInvoices() {
 		var invoiceList = new ArrayList<Invoice>();
@@ -197,4 +203,63 @@ public class InvoiceService {
 		deletePaidAndOlderInvoices();
 		return invoiceRepository.findByInvoiceId(invoiceNum);
 	}
+
+    public InvoiceDto updatedInvoice(long invoiceId, InvoiceDto invoiceDto) {
+        Optional<Invoice> invoiceEntity = invoiceRepository.findById(invoiceId);
+
+        if (invoiceEntity.isPresent()) {
+            var invoice = invoiceEntity.get();
+            // If company not match then gen company from company repo
+            var company = invoice.getCompany();
+            if (!company.getName().equalsIgnoreCase(invoiceDto.getCompanyName())) {
+                company = companyRepository.findByName(invoiceDto.getCompanyName());
+                if (company == null) {
+                    return null;
+                }
+            }
+            // Save all line items
+            var itemList = new ArrayList<Item>();
+            for (ItemDto itemDto:
+                    invoiceDto.getItemsDto()) {
+                if (itemDto.getState() == DtoState.New) {
+                    var item = ItemService.MapToEntity(itemDto);
+                    item.setInvoice(invoice);
+                    var itemEntity = this.itemRepository.save(item);
+                    itemList.add(itemEntity);
+                }
+                else {
+                    var itemEntity = this.itemRepository.findById(itemDto.getItemId());
+                    if(itemEntity.isPresent()) {
+                        var item = itemEntity.get();
+                        if(itemDto.getState() == DtoState.Modified) {
+                            item.setDescription(itemDto.getDescription());
+                            item.setFlatPrice(itemDto.getFlatPrice());
+                            item.setRatePrice(itemDto.getRatePrice());
+                            item.setRateHourBilled(itemDto.getRateHourBilled());
+                            itemList.add(this.itemRepository.save(item));
+                        }
+                        if(itemDto.getState() == DtoState.Deleted) {
+                            this.itemRepository.delete(item);
+                        }
+                    }
+                }
+            }
+
+            // Save updated invoice
+            invoice.setCompany(company);
+            invoice.setAuthor(invoiceDto.getAuthor());
+            invoice.setPaid(invoiceDto.getPaid());
+            Invoice invoiceUpdated = invoiceRepository.save(invoice);
+            // Return update invoice as DTO
+            return new InvoiceDto(
+                    invoiceUpdated.getInvoiceId(),
+                    invoiceUpdated.getCompany().getName(),
+                    invoiceUpdated.getAuthor(),
+                    invoiceUpdated.getPaid(),
+                    itemList.stream().map(item ->
+                            ItemService.MapToDto(item)
+                    ).collect(Collectors.toList()));
+        }
+        return null;
+    }
 }

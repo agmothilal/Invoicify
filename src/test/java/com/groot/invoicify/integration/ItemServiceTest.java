@@ -14,17 +14,13 @@ import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.*;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.transaction.Transactional;
-
 import java.util.Arrays;
 
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -50,11 +46,13 @@ public class ItemServiceTest {
 		createItem(itemDto).andExpect(MockMvcResultMatchers.status().isCreated())
 				.andExpect(jsonPath("$").isNumber())
 				.andDo(MockMvcRestDocumentation.document("Post-Item", requestFields(
+						fieldWithPath("itemId").description("Item id"),
 						fieldWithPath("description").description("Item description"),
 						fieldWithPath("rateHourBilled").description("Item quantity"),
 						fieldWithPath("ratePrice").description("Item rate price"),
-						fieldWithPath("flatPrice").description("Item flat price")
-						)));
+						fieldWithPath("flatPrice").description("Item flat price"),
+						fieldWithPath("state").description("Item modified state")
+				)));
 	}
 
 	@Test
@@ -77,10 +75,12 @@ public class ItemServiceTest {
 				.andExpect(jsonPath("[0].flatPrice").value(1.1))
 				.andDo(MockMvcRestDocumentation.document("Get-Item", responseFields(
 						fieldWithPath("[]").description("Array of Items"),
+						fieldWithPath("[].itemId").description("Item id"),
 						fieldWithPath("[].description").description("Item description"),
 						fieldWithPath("[].rateHourBilled").description("Item quantity"),
 						fieldWithPath("[].ratePrice").description("Item rate price"),
-						fieldWithPath("[].flatPrice").description("Item flat price")
+						fieldWithPath("[].flatPrice").description("Item flat price"),
+						fieldWithPath("[].state").description("Item modified state")
 				)));
 	}
 
@@ -101,10 +101,12 @@ public class ItemServiceTest {
 				.content(this.objectMapper.writeValueAsString(itemDto)))
 				.andExpect(MockMvcResultMatchers.status().isAccepted())
 				.andDo(MockMvcRestDocumentation.document("Patch-Item", requestFields(
+						fieldWithPath("itemId").description("Item id"),
 						fieldWithPath("description").description("Item description"),
 						fieldWithPath("rateHourBilled").description("Item quantity"),
 						fieldWithPath("ratePrice").description("Item rate price"),
-						fieldWithPath("flatPrice").description("Item flat price")
+						fieldWithPath("flatPrice").description("Item flat price"),
+						fieldWithPath("state").description("Item modified state")
 				)));
 
 		this.mockMvc.perform(MockMvcRequestBuilders.get("/item")
@@ -134,10 +136,12 @@ public class ItemServiceTest {
 				.content(this.objectMapper.writeValueAsString(itemDto)))
 				.andExpect(MockMvcResultMatchers.status().isAccepted())
 				.andDo(MockMvcRestDocumentation.document("Put-Item", requestFields(
+						fieldWithPath("itemId").description("Item id"),
 						fieldWithPath("description").description("Item description"),
 						fieldWithPath("rateHourBilled").description("Item quantity"),
 						fieldWithPath("ratePrice").description("Item rate price"),
-						fieldWithPath("flatPrice").description("Item flat price")
+						fieldWithPath("flatPrice").description("Item flat price"),
+						fieldWithPath("state").description("Item modified state")
 				)));
 
 		this.mockMvc.perform(MockMvcRequestBuilders.get("/item")
@@ -151,6 +155,7 @@ public class ItemServiceTest {
 
 	@Test
 	public void addItemExistingInvoiceTest() throws Exception {
+
 		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
 
 		mockMvc.perform(post("/company")
@@ -162,6 +167,7 @@ public class ItemServiceTest {
 				new ItemDto("itemdescription", 10, 14.50F, 60F),
 				new ItemDto("itemdescription2", 10, 14.50F, 30F),
 				new ItemDto("itemdescription3", 10, 14.50F,0F)
+
 		);
 
 		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
@@ -169,20 +175,22 @@ public class ItemServiceTest {
 		this.mockMvc.perform(post("/invoice")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(invoiceDto)))
-				.andExpect(status().isCreated())
-				.andExpect(content().string("Invoice has been created. The invoice ID is 1."));
+				.andExpect(status().isCreated());
 
 		var itemsDtoAdditional = Arrays.asList(
 				new ItemDto("itemdescription4", 10, 14.50F, 60F),
 				new ItemDto("itemdescription5", 10, 14.50F, 30F),
 				new ItemDto("itemdescription6", 10, 14.50F,0F)
+
 		);
 
 		mockMvc.perform(post("/invoice/additem/1")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(itemsDtoAdditional)))
 				.andExpect(status().isCreated())
-				.andExpect(content().string("Items Added to the given invoice number successfully"));
+				.andExpect(content().string("Items Added to the given invoice number successfully"))
+		;
+
 	}
 
 	@Test
@@ -195,12 +203,12 @@ public class ItemServiceTest {
 
 		);
 
-			mockMvc.perform(post("/invoice/additem/0")
+		mockMvc.perform(post("/invoice/additem/0")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(itemsDtoAdditional)))
 				.andExpect(status().isNotFound())
 				.andExpect(content().string("Invoice id  0 does not exist."))
-			;
+		;
 
 	}
 }
