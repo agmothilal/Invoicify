@@ -38,7 +38,7 @@ public class InvoiceServiceTest {
 
 	@Autowired
 	ObjectMapper objectMapper;
-	
+
 	private void initCompanyEntities(List<String> companyName) throws Exception {
 		for (String name: companyName) {
 			var company = new CompanyDto(name, "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");

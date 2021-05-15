@@ -1,8 +1,8 @@
 package com.groot.invoicify.controller;
 
+import com.groot.invoicify.dto.CompanyDto;
 import com.groot.invoicify.dto.InvoiceDto;
 import com.groot.invoicify.dto.ItemDto;
-import com.groot.invoicify.dto.CompanyDto;
 import com.groot.invoicify.entity.Invoice;
 import com.groot.invoicify.service.CompanyService;
 import com.groot.invoicify.service.InvoiceService;
@@ -25,9 +25,16 @@ public class InvoiceController {
 	ItemService itemService;
 
 	@PostMapping
-	@ResponseStatus(HttpStatus.CREATED)
-	public InvoiceDto createInvoice(@RequestBody InvoiceDto invoiceDto) {
-		return this.invoiceService.createInvoice(invoiceDto);
+	public ResponseEntity<?> createInvoice(@RequestBody InvoiceDto invoiceDto) {
+		CompanyDto companyDto = this.companyService.findSingleCompany(invoiceDto.getCompanyName());
+		if (companyDto == null) {
+			return new ResponseEntity<>("No Company by that name.", HttpStatus.NOT_FOUND);
+		}
+		else {
+			var resultDto =this.invoiceService.createInvoice(invoiceDto);
+			//return new ResponseEntity<>("Invoice has been created. The invoice ID is "+ id +".", HttpStatus.CREATED);
+			return new ResponseEntity<InvoiceDto>(resultDto, HttpStatus.CREATED);
+		}
 	}
 
 	@PutMapping
@@ -104,4 +111,5 @@ public class InvoiceController {
 			return new ResponseEntity<>( "Items Added to the given invoice number successfully", HttpStatus.CREATED);
 		}
 	}
+
 }

@@ -52,7 +52,7 @@ public class ItemServiceTest {
 						fieldWithPath("ratePrice").description("Item rate price"),
 						fieldWithPath("flatPrice").description("Item flat price"),
 						fieldWithPath("state").description("Item modified state")
-						)));
+				)));
 	}
 
 	@Test
@@ -203,12 +203,12 @@ public class ItemServiceTest {
 
 		);
 
-			mockMvc.perform(post("/invoice/additem/0")
+		mockMvc.perform(post("/invoice/additem/0")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(itemsDtoAdditional)))
 				.andExpect(status().isNotFound())
 				.andExpect(content().string("Invoice id  0 does not exist."))
-			;
+		;
 
 	}
 }
