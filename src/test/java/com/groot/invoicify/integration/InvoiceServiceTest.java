@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.groot.invoicify.dto.InvoiceDto;
 import com.groot.invoicify.dto.CompanyDto;
 import com.groot.invoicify.dto.ItemDto;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -127,6 +128,47 @@ public class InvoiceServiceTest {
 	}
 
 	// TODO: While updating company name make sure the company entity exist or not. If it is not exist then we throw exception
+	@Test
+	@DisplayName("Update invoice failing due to the company is not exist!")
+	public void updateInvoiceFailedWhenCompanyNotExistTest() throws Exception {
+		// Create company before insert invoice
+		initCompanyEntities(Arrays.asList("Test"));
+
+		// Create Invoice
+		// Add items within invoice
+		var itemsDto = Arrays.asList(
+				new ItemDto("Description", 10, 14.50F, 60F)
+		);
+		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
+		var actionResult = createInvoice(invoiceDto);
+		var invoiceId = actionResult.andReturn().getResponse().getContentAsString();
+		// Modify invoice fields and items
+		invoiceDto.setCompanyName("Test1");
+
+		// Perform the PUT invoice operation
+		// Verify the updated the fields
+		// Document the request and response fields
+		this.mockMvc.perform(MockMvcRequestBuilders.put("/invoice")
+				.contentType(MediaType.APPLICATION_JSON)
+				.param("invoiceId", invoiceId)
+				.content(this.objectMapper.writeValueAsString(invoiceDto)))
+				.andExpect(MockMvcResultMatchers.status().isBadRequest())
+				.andExpect(jsonPath("$").value("The given Company or Invoice is not exist!"))
+				.andDo(document("Put-Invoice-Company-NotFound", requestFields(
+						fieldWithPath("companyName").description("Name of company on invoice."),
+						fieldWithPath("totalCost").description("Total cost of invoice."),
+						fieldWithPath("author").description("Author of invoice."),
+						fieldWithPath("paid").description("If company paid the invoice."),
+						subsectionWithPath("itemsDto[]").description("A list of items in the invoice."),
+						subsectionWithPath("itemsDto[].description").description("Invoice line item description."),
+						subsectionWithPath("itemsDto[].rateHourBilled").description("Invoice line item quantity."),
+						subsectionWithPath("itemsDto[].ratePrice").description("Invoice line item hourly price."),
+						subsectionWithPath("itemsDto[].flatPrice").description("Invoice line item flat price.")
+				), responseFields(
+						fieldWithPath("$").description("Update invoice error message")
+				)));
+	}
+
 	// TODO: Write test case for update invoice with new line item
 	// TODO: Write test case for update invoice with remove existing line item
 }
