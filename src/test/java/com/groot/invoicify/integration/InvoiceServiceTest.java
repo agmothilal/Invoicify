@@ -127,7 +127,6 @@ public class InvoiceServiceTest {
 				)));
 	}
 
-	// TODO: While updating company name make sure the company entity exist or not. If it is not exist then we throw exception
 	@Test
 	@DisplayName("Update invoice failing due to the company is not exist!")
 	public void updateInvoiceFailedWhenCompanyNotExistTest() throws Exception {
@@ -164,8 +163,6 @@ public class InvoiceServiceTest {
 						subsectionWithPath("itemsDto[].rateHourBilled").description("Invoice line item quantity."),
 						subsectionWithPath("itemsDto[].ratePrice").description("Invoice line item hourly price."),
 						subsectionWithPath("itemsDto[].flatPrice").description("Invoice line item flat price.")
-				), responseFields(
-						fieldWithPath("$").description("Update invoice error message")
 				)));
 	}
 

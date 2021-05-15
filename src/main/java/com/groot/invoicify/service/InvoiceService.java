@@ -81,7 +81,7 @@ public class InvoiceService {
             // If company not match then gen company from company repo
             var company = invoice.getCompany();
             if (!company.getName().equalsIgnoreCase(invoiceDto.getCompanyName())) {
-                company = companyRepository.findByName(invoice.getCompany().getName());
+                company = companyRepository.findByName(invoiceDto.getCompanyName());
                 if (company == null) {
                     return null;
                 }
