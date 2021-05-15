@@ -1,6 +1,8 @@
 package com.groot.invoicify.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.groot.invoicify.dto.CompanyDto;
+import com.groot.invoicify.dto.InvoiceDto;
 import com.groot.invoicify.dto.ItemDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,13 @@ import org.springframework.test.web.servlet.result.*;
 
 import javax.transaction.Transactional;
 
+import java.util.Arrays;
+
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -147,5 +155,66 @@ public class ItemServiceTest {
 				.andExpect(jsonPath("[0].rateHourBilled").isEmpty())
 				.andExpect(jsonPath("[0].ratePrice").value(1.1))
 				.andExpect(jsonPath("[0].flatPrice").value(1.1));
+	}
+
+	@Test
+	public void addItemExistingInvoiceTest() throws Exception {
+
+		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+
+		mockMvc.perform(post("/company")
+				.content(objectMapper.writeValueAsString(companyObject1))
+				.contentType(MediaType.APPLICATION_JSON)
+		).andExpect(status().isCreated());
+
+		var itemsDto = Arrays.asList(
+				new ItemDto("itemdescription", 10, 14.50F, 60F),
+				new ItemDto("itemdescription2", 10, 14.50F, 30F),
+				new ItemDto("itemdescription3", 10, 14.50F,0F)
+
+		);
+
+		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
+
+		this.mockMvc.perform(post("/invoice")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(this.objectMapper.writeValueAsString(invoiceDto)))
+				.andExpect(status().isCreated())
+				.andExpect(jsonPath("$").isNumber())
+		;
+
+		var itemsDtoAdditional = Arrays.asList(
+				new ItemDto("itemdescription4", 10, 14.50F, 60F),
+				new ItemDto("itemdescription5", 10, 14.50F, 30F),
+				new ItemDto("itemdescription6", 10, 14.50F,0F)
+
+		);
+
+		mockMvc.perform(post("/invoice/additem/1")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(this.objectMapper.writeValueAsString(itemsDtoAdditional)))
+				.andExpect(status().isCreated())
+				.andExpect(content().string("Items Added to the given invoice number successfully"))
+		;
+
+	}
+
+	@Test
+	public void addItemInvalidInvoiceTest() throws Exception {
+
+		var itemsDtoAdditional = Arrays.asList(
+				new ItemDto("itemdescription4", 10, 14.50F, 60F),
+				new ItemDto("itemdescription5", 10, 14.50F, 30F),
+				new ItemDto("itemdescription6", 10, 14.50F,0F)
+
+		);
+
+			mockMvc.perform(post("/invoice/additem/0")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(this.objectMapper.writeValueAsString(itemsDtoAdditional)))
+				.andExpect(status().isNotFound())
+				.andExpect(content().string("Invoice id  0 does not exist."))
+			;
+
 	}
 }

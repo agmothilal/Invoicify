@@ -28,11 +28,11 @@ public class Invoice {
 	private List<Item> item;
 	@CreationTimestamp
 	@Column(nullable = false, updatable = false, insertable = false,
-			columnDefinition = "DATE DEFAULT CURRENT_DATE"
+			columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
 	)
 	private Timestamp createDt;
 	@LastModifiedDate
-	@Column(nullable = false, insertable = false, columnDefinition = "DATE DEFAULT CURRENT_DATE"
+	@Column(nullable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
 	)
 	private Timestamp modifiedDt;
 

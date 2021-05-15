@@ -1,6 +1,7 @@
 package com.groot.invoicify.service;
 
 import com.groot.invoicify.dto.ItemDto;
+import com.groot.invoicify.entity.Invoice;
 import com.groot.invoicify.entity.Item;
 import com.groot.invoicify.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,5 +59,11 @@ public class ItemService {
 			updatedItem.setItemId(item.get().getItemId());
 			this.itemRepository.save(updatedItem);
 		}
+	}
+
+	public void addItemsToGivenInvoiceNumber(Invoice invoiceEntityObject, List<ItemDto> itemsDtoList) {
+		List<Item> itemEntityList = itemsDtoList.stream().map(ItemService::MapToEntity).collect(Collectors.toList());
+		itemEntityList.stream().forEach(itemEntity -> {itemEntity.setInvoice(invoiceEntityObject);});
+		itemRepository.saveAll(itemEntityList);
 	}
 }

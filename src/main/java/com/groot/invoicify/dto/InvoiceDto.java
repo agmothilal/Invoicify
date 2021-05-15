@@ -1,5 +1,6 @@
 package com.groot.invoicify.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ public class InvoiceDto {
     private double totalCost;
     private String author;
     private Boolean paid;
+    @JsonProperty("items")
     private List<ItemDto> itemsDto;
 
     public InvoiceDto(Long invoiceNumber, String companyName, String author, Boolean paid, List<ItemDto> itemsDto) {
@@ -44,5 +46,14 @@ public class InvoiceDto {
             itemTotal += itemDto.getRatePrice() * itemDto.getRateHourBilled();
         }
         return itemTotal;
+    }
+
+    public InvoiceDto(Long invoiceNumber,String companyName, String author, Boolean paid, List<ItemDto> itemsDto,Float totalCost) {
+        this.companyName = companyName;
+        this.author = author;
+        this.paid = paid;
+        this.itemsDto = itemsDto;
+        this.invoiceNumber = invoiceNumber;
+        this.totalCost = totalCost;
     }
 }

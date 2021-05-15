@@ -52,7 +52,9 @@ public class CompanyControllerIT {
         mockMvc.perform(post("/company")
                 .content(objectMapper.writeValueAsString(companyObject1))
                 .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isCreated());
+        ).andExpect(status().isCreated())
+                .andExpect(content().string("Successfully added new Company.Company id is 1."))
+        ;
 
     }
 
@@ -114,7 +116,9 @@ public class CompanyControllerIT {
         mockMvc.perform(post("/company")
                 .content(objectMapper.writeValueAsString(companyObject1))
                 .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isCreated());
+        ).andExpect(status().isCreated())
+
+        ;
 
         mockMvc.perform(post("/company")
                 .content(objectMapper.writeValueAsString(companyObject2))
@@ -155,9 +159,11 @@ public class CompanyControllerIT {
     void getSingleCompanyByName_noContentTest() throws Exception {
 
         mockMvc.perform(get("/company/Google")
-        ).andExpect(status().isNoContent())
+        ).andExpect(status().isNotFound())
                 .andDo(print())
-                .andDo(document("Get-Company-ByName-NoContent"));
+                .andDo(document("Get-Company-ByName-NoContent"))
+                .andExpect(content().string("No Company by that name."))
+        ;
     }
 
     @Test

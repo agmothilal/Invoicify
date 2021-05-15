@@ -199,7 +199,7 @@ Software Requirement:
 
 1. Clone the repository:
      ```
-     https://github.com/Christopher-Diehl-cognizant-com/PlaylistService
+     https://github.com/VaradharajanThiagarajan/Invoicify
      ```
 2. Execute this on command line:
 
@@ -240,8 +240,8 @@ heroku login
 2. Add Heroku Git Remote
 
 ```shell
-# playlist-service is my app name. Please use yours 
-heroku git:remote -a playlist-service 
+# invoicify-service is my app name. Please use yours 
+heroku git:remote -a invoicify-service 
 ```
 
 3. Use Heroku Stack to set heroku.yml
@@ -270,7 +270,7 @@ Hint: For auto deploy please follow step 4.
 
 Feel free to play with our sample server.
 
-- ([Server# 1](https://chrisdiehlcognizantplaylist.herokuapp.com))
+- ([Server# 1](https://invoicifygroot.herokuapp.com))
 
 ## API
 

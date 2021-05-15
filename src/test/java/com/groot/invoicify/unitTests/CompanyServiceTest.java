@@ -14,8 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CompanyServiceTest {
@@ -30,10 +29,16 @@ public class CompanyServiceTest {
     void create() {
 
         CompanyDto companyObject1 = new CompanyDto("CTS", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+        Company companyEntity1 = new Company("CTS", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+
+        when(mockRepository.save(companyEntity1)).thenReturn(companyEntity1);
+
         subject.create(companyObject1);
         verify(mockRepository).save(
                 new Company("CTS", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800")
         );
+
+
     }
 
     @Test
