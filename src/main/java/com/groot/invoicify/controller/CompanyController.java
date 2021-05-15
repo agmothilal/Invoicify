@@ -35,13 +35,13 @@ public class CompanyController {
     @PostMapping("company")
     public ResponseEntity<?> addCompany(@RequestBody CompanyDto companyDtoObject) {
 
-        boolean success = this.companyService.create(companyDtoObject);
+        Long companyId = this.companyService.create(companyDtoObject);
 
-        if (!success) {
+        if (companyId==null) {
             return new ResponseEntity<>("Duplicate Company Name.", HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>("Successfully added new Company.", HttpStatus.CREATED);
+        return new ResponseEntity<>("Successfully added new Company.Company id is "+ companyId+".", HttpStatus.CREATED);
     }
 
     @PatchMapping("company/{id}")

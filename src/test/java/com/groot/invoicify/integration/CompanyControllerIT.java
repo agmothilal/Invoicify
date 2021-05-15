@@ -52,7 +52,9 @@ public class CompanyControllerIT {
         mockMvc.perform(post("/company")
                 .content(objectMapper.writeValueAsString(companyObject1))
                 .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isCreated());
+        ).andExpect(status().isCreated())
+                .andExpect(content().string("Successfully added new Company.Company id is 1."))
+        ;
 
     }
 
@@ -114,7 +116,9 @@ public class CompanyControllerIT {
         mockMvc.perform(post("/company")
                 .content(objectMapper.writeValueAsString(companyObject1))
                 .contentType(MediaType.APPLICATION_JSON)
-        ).andExpect(status().isCreated());
+        ).andExpect(status().isCreated())
+
+        ;
 
         mockMvc.perform(post("/company")
                 .content(objectMapper.writeValueAsString(companyObject2))

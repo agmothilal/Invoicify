@@ -18,18 +18,18 @@ public class CompanyService {
         this.companyRepos = companyRepos;
     }
 
-    public boolean create(CompanyDto companyDtoObject) {
+    public Long create(CompanyDto companyDtoObject) {
 
         if (companyRepos.findByName(companyDtoObject.getName()) != null) {
-            return false;
+            return null;
         } else {
-            companyRepos.save(
+            Company companyEntity = companyRepos.save(
                     new Company(companyDtoObject.getName(), companyDtoObject.getAddress(), companyDtoObject.getCity(),
                             companyDtoObject.getState(), companyDtoObject.getZip(), companyDtoObject.getContactName(),
                             companyDtoObject.getContactTitle(), companyDtoObject.getContactPhoneNumber()
                     )
             );
-            return true;
+            return companyEntity.getCompanyId();
         }
     }
 
