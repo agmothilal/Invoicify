@@ -66,24 +66,24 @@ public class InvoiceServiceTest {
         assertThat(invoiceId).isEqualTo(invoiceResult.getInvoiceId());
     }
 
-//    @Test
-//    public void deleteOneYearOlderAndPaidInvoices() {
-//        var invoices = List.of(
-//                new Invoice("authorName", true,
-//                        Timestamp.valueOf(LocalDateTime.now().minusYears(2))),
-//                new Invoice("authorName", true,
-//                        Timestamp.valueOf(LocalDateTime.now().minusYears(1))),
-//                new Invoice("authorName", false,
-//                        Timestamp.valueOf(LocalDateTime.now().minusYears(1))),
-//                new Invoice("authorName", false,
-//                        Timestamp.valueOf(LocalDateTime.now()))
-//        );
-//
-//        when(invoiceRepository.findAll()).thenReturn(invoices);
-//        var result = invoiceService.deletePaidAndOlderInvoices();
-//
-//        verify(invoiceRepository, times(1)).delete(invoices.get(0));
-//        verify(invoiceRepository, times(1)).delete(invoices.get(1));
-//        assertThat(result).isEqualTo(2L);
-//    }
+    @Test
+    public void deleteOneYearOlderAndPaidInvoices() {
+        var invoices = List.of(
+                new Invoice("authorName", true,
+                        Timestamp.valueOf(LocalDateTime.now().minusYears(2))),
+                new Invoice("authorName", true,
+                        Timestamp.valueOf(LocalDateTime.now().minusYears(1))),
+                new Invoice("authorName", false,
+                        Timestamp.valueOf(LocalDateTime.now().minusYears(1))),
+                new Invoice("authorName", false,
+                        Timestamp.valueOf(LocalDateTime.now()))
+        );
+
+        when(invoiceRepository.findAll()).thenReturn(invoices);
+        var result = invoiceService.deletePaidAndOlderInvoices();
+
+        verify(invoiceRepository, times(1)).delete(invoices.get(0));
+        verify(invoiceRepository, times(1)).delete(invoices.get(1));
+        assertThat(result).isEqualTo(2L);
+    }
 }
