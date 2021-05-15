@@ -127,4 +127,47 @@ include::{snippets}/Get-InvoiceBy-Invalid-InvoiceNumber/http-request.adoc[]
 include::{snippets}/Get-InvoiceBy-Invalid-InvoiceNumber/http-response.adoc[]
 
 
+Put Invoice Endpoint
+
+.request
+include::{snippets}/Put-Invoice/http-request.adoc[]
+
+.response
+include::{snippets}/Put-Invoice/http-response.adoc[]
+
+
+Put Invoice Company NotFound Endpoint
+
+.request
+include::{snippets}/Put-Invoice-Company-NotFound/http-request.adoc[]
+
+.response
+include::{snippets}/Put-Invoice-Company-NotFound/http-response.adoc[]
+
+
+Put Invoice, Invoice NotFound Endpoint
+
+.request
+include::{snippets}/Put-Invoice-Invoice-NotFound/http-request.adoc[]
+
+.response
+include::{snippets}/Put-Invoice-Invoice-NotFound/http-response.adoc[]
+
+Put Invoice New Line Item Endpoint
+
+.request
+include::{snippets}/Put-Invoice-New-LineItem/http-request.adoc[]
+
+.response
+include::{snippets}/Put-Invoice-New-LineItem/http-response.adoc[]
+
+
+Put Invoice Delete Line Item Endpoint
+
+.request
+include::{snippets}/Put-Invoice-Delete-LineItem/http-request.adoc[]
+
+.response
+include::{snippets}/Put-Invoice-Delete-LineItem/http-response.adoc[]
+
 
