@@ -151,7 +151,6 @@ public class ItemServiceTest {
 
 	@Test
 	public void addItemExistingInvoiceTest() throws Exception {
-
 		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
 
 		mockMvc.perform(post("/company")
@@ -163,7 +162,6 @@ public class ItemServiceTest {
 				new ItemDto("itemdescription", 10, 14.50F, 60F),
 				new ItemDto("itemdescription2", 10, 14.50F, 30F),
 				new ItemDto("itemdescription3", 10, 14.50F,0F)
-
 		);
 
 		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
@@ -172,23 +170,19 @@ public class ItemServiceTest {
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(invoiceDto)))
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$").isNumber())
-		;
+				.andExpect(content().string("Invoice has been created. The invoice ID is 1."));
 
 		var itemsDtoAdditional = Arrays.asList(
 				new ItemDto("itemdescription4", 10, 14.50F, 60F),
 				new ItemDto("itemdescription5", 10, 14.50F, 30F),
 				new ItemDto("itemdescription6", 10, 14.50F,0F)
-
 		);
 
 		mockMvc.perform(post("/invoice/additem/1")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(itemsDtoAdditional)))
 				.andExpect(status().isCreated())
-				.andExpect(content().string("Items Added to the given invoice number successfully"))
-		;
-
+				.andExpect(content().string("Items Added to the given invoice number successfully"));
 	}
 
 	@Test
