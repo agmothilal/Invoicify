@@ -87,6 +87,16 @@ public class InvoiceServiceTest {
 
     @Test
     public void updateInvoiceTest() {
+        Company company = new Company("Test");
+        Company updatedCompany = new Company("Test1");
+
+        Invoice invoice = new Invoice(company, "test", false);
+        Invoice updatedInvoice = new Invoice(updatedCompany, "test", true, List.of(
+                new Item("Description1", 10, 26.50F, null)
+        ));
+
+        invoice.setCompany(company);
+
         var itemsDto = List.of(
                 new ItemDto("Description", 10, 14.50F, null)
         );
@@ -96,10 +106,13 @@ public class InvoiceServiceTest {
         var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
         var updatedInvoiceDto = new InvoiceDto("Test1", "test", true, updatedItemsDto);
 
-        when(invoiceRepository.findById(1l)).thenReturn(java.util.Optional.of(new Invoice("authorName", true,
-                Timestamp.valueOf(LocalDateTime.now().minusYears(2)))));
+        when(invoiceRepository.findById(1L)).thenReturn(java.util.Optional.of(invoice));
+        when(companyRepository.findByName("Test1")).thenReturn(updatedCompany);
 
+        company.setName("Test1");
+        invoice.setCompany(company);
 
+        when(invoiceRepository.save(invoice)).thenReturn(updatedInvoice);
 
         assertEquals(updatedInvoiceDto, invoiceService.updatedInvoice(1L, invoiceDto));
     }
