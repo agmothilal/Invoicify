@@ -1,5 +1,6 @@
 package com.groot.invoicify.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ public class InvoiceDto {
     private Float totalCost;
     private String author;
     private Boolean paid;
+    @JsonProperty("items")
     private List<ItemDto> itemsDto;
 
     public InvoiceDto(String companyName, String author, Boolean paid, List<ItemDto> itemsDto) {

@@ -57,7 +57,7 @@ public class InvoiceServiceTest {
 						PayloadDocumentation.fieldWithPath("totalCost").description("Total cost of invoice."),
 						PayloadDocumentation.fieldWithPath("author").description("Author of invoice."),
 						PayloadDocumentation.fieldWithPath("paid").description("If company paid the invoice."),
-						PayloadDocumentation.subsectionWithPath("itemsDto[]").description("A list of items in the invoice.")
+						PayloadDocumentation.subsectionWithPath("items[]").description("A list of items in the invoice.")
 						)));
 	}
 
@@ -324,7 +324,7 @@ public class InvoiceServiceTest {
 		mockMvc.perform(get("/invoice/id/1")
 		).andExpect(status().isOk())
 				.andExpect(jsonPath("$.invoiceNumber").value(1L))
-				.andExpect(jsonPath("$.itemsDto[0].flatPrice").value(60F))
+				.andExpect(jsonPath("$.items[0].flatPrice").value(60F))
 				.andExpect(jsonPath("$.totalCost").value(205F))
 				.andExpect(jsonPath("$.companyName").value("Test"))
 				.andDo(print())
