@@ -34,4 +34,8 @@ public class Company {
         this.contactTitle = contactTitle;
         this.contactPhoneNumber = contactPhoneNumber;
     }
+
+    public Company(String name) {
+        this.name = name;
+    }
 }

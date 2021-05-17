@@ -1,5 +1,6 @@
 package com.groot.invoicify.unitTests;
 
+import com.groot.invoicify.dto.DtoState;
 import com.groot.invoicify.dto.InvoiceDto;
 import com.groot.invoicify.dto.ItemDto;
 import com.groot.invoicify.entity.Company;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 @Transactional
@@ -47,23 +49,24 @@ public class InvoiceServiceTest {
         var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
         var company = new Company("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
 
-        var invoiceResult = new Invoice();
-        invoiceResult.setInvoiceId(1L);
+        var invoiceEntity = new Invoice(1L, company, invoiceDto.getAuthor(), invoiceDto.getPaid(),List.of(),
+                Timestamp.valueOf(LocalDateTime.now()), Timestamp.valueOf(LocalDateTime.now()));
+        var expectedInvoiceDto = new InvoiceDto(1L,"Test", "test", false,
+                List.of());
         var items = List.of(
-                new Item("Description", 10, 14.50F, null, invoiceResult)
+                new Item("Description", 10, 14.50F, null, invoiceEntity)
         );
-
         var invoice = InvoiceService.MapToEntity(invoiceDto, company);
 
         when(companyRepository.findByName(invoiceDto.getCompanyName())).thenReturn(company);
-        when(invoiceRepository.save(invoice)).thenReturn(invoiceResult);
+        when(invoiceRepository.save(invoice)).thenReturn(invoiceEntity);
 
-        var invoiceId = invoiceService.createInvoice(invoiceDto);
+        var result = invoiceService.createInvoice(invoiceDto);
 
         verify(companyRepository, times(1)).findByName(invoiceDto.getCompanyName());
         verify(itemRepository, times(1)).saveAll(items);
         verify(invoiceRepository, times(1)).save(invoice);
-        assertThat(invoiceId).isEqualTo(invoiceResult.getInvoiceId());
+        assertThat(result).isEqualTo(expectedInvoiceDto);
     }
 
     @Test
@@ -85,5 +88,132 @@ public class InvoiceServiceTest {
         verify(invoiceRepository, times(1)).delete(invoices.get(0));
         verify(invoiceRepository, times(1)).delete(invoices.get(1));
         assertThat(result).isEqualTo(2L);
+    }
+
+    @Test
+    public void updateInvoiceTest() {
+        var invoiceId = 1L;
+        var invoiceDto = new InvoiceDto("Test1", "Author", true, List.of());
+
+        var company = new Company("Test");
+        var invoice = new Invoice(company, "Author", false);
+        when(invoiceRepository.findById(invoiceId)).thenReturn(java.util.Optional.of(invoice));
+
+        var newCompany = new Company(invoiceDto.getCompanyName());
+        when(companyRepository.findByName(invoiceDto.getCompanyName())).thenReturn(newCompany);
+
+        var updatedInvoice = new Invoice(newCompany, invoiceDto.getAuthor(), invoiceDto.getPaid());
+        var mockInvoice = new Invoice(newCompany, invoiceDto.getAuthor(), invoiceDto.getPaid());
+        mockInvoice.setInvoiceId(invoiceId);
+        when(invoiceRepository.save(updatedInvoice)).thenReturn(mockInvoice);
+
+        var result = invoiceService.updatedInvoice(invoiceId, invoiceDto);
+
+        verify(invoiceRepository, times(1)).findById(invoiceId);
+        verify(companyRepository, times(1)).findByName(invoiceDto.getCompanyName());
+        verify(invoiceRepository, times(1)).save(updatedInvoice);
+        var expectedInvoiceDto = new InvoiceDto(mockInvoice.getInvoiceId(),
+                mockInvoice.getCompany().getName(),
+                mockInvoice.getAuthor(),
+                mockInvoice.getPaid(),
+                List.of());
+        assertEquals(expectedInvoiceDto, result);
+    }
+
+    @Test
+    public void updateInvoice_noChangeToCompanyName() {
+        var invoiceId = 1L;
+        var invoiceDto = new InvoiceDto("Test", "Author", true, List.of());
+
+        var company = new Company("Test");
+        var invoice = new Invoice(company, "Author", false);
+        when(invoiceRepository.findById(invoiceId)).thenReturn(java.util.Optional.of(invoice));
+
+        var updatedInvoice = new Invoice(company, invoiceDto.getAuthor(), invoiceDto.getPaid());
+        var mockInvoice = new Invoice(company, invoiceDto.getAuthor(), invoiceDto.getPaid());
+        mockInvoice.setInvoiceId(invoiceId);
+        when(invoiceRepository.save(updatedInvoice)).thenReturn(mockInvoice);
+
+        var result = invoiceService.updatedInvoice(invoiceId, invoiceDto);
+
+        verify(invoiceRepository, times(1)).findById(invoiceId);
+        verify(companyRepository, times(0)).findByName(invoiceDto.getCompanyName());
+        verify(invoiceRepository, times(1)).save(updatedInvoice);
+        var expectedInvoiceDto = new InvoiceDto(mockInvoice.getInvoiceId(),
+                mockInvoice.getCompany().getName(),
+                mockInvoice.getAuthor(),
+                mockInvoice.getPaid(),
+                List.of());
+        assertEquals(expectedInvoiceDto, result);
+    }
+
+    @Test
+    public void updateInvoice_modifiedItem() {
+        ItemDto itemDto = new ItemDto("Description", 10, 14.50F, null);
+        Item itemEntity = new Item("Description", 10, 14.50F, null);
+
+        var invoiceId = 1L;
+        var invoiceDto = new InvoiceDto("Test", "Author", true, List.of(itemDto));
+
+        var company = new Company("Test");
+        var invoice = new Invoice(company, "Author", false);
+        when(invoiceRepository.findById(invoiceId)).thenReturn(java.util.Optional.of(invoice));
+
+        var updatedInvoice = new Invoice(company, invoiceDto.getAuthor(), invoiceDto.getPaid());
+        var mockInvoice = new Invoice(company, invoiceDto.getAuthor(), invoiceDto.getPaid());
+        mockInvoice.setInvoiceId(invoiceId);
+        itemEntity.setInvoice(updatedInvoice);
+        when(invoiceRepository.save(updatedInvoice)).thenReturn(mockInvoice);
+
+        when(itemRepository.save(new Item("Description", 10, 14.50F, null, invoice))).thenReturn(itemEntity);
+
+        var result = invoiceService.updatedInvoice(invoiceId, invoiceDto);
+
+        verify(invoiceRepository, times(1)).findById(invoiceId);
+        verify(companyRepository, times(0)).findByName(invoiceDto.getCompanyName());
+        verify(invoiceRepository, times(1)).save(updatedInvoice);
+        var expectedInvoiceDto = new InvoiceDto(mockInvoice.getInvoiceId(),
+                mockInvoice.getCompany().getName(),
+                mockInvoice.getAuthor(),
+                mockInvoice.getPaid(),
+                List.of(new ItemDto(null, "Description", 10, 14.50F, null)));
+        assertEquals(expectedInvoiceDto, result);
+    }
+
+
+    @Test
+    public void updateInvoice_deleteItem() {
+        ItemDto itemDto = new ItemDto(1L, "Description", 10, 14.50F, null);
+        itemDto.setState(DtoState.Deleted);
+        Item itemEntity = new Item(1L, "Description", 10, 14.50F, null);
+
+        var invoiceId = 1L;
+        var invoiceDto = new InvoiceDto("Test", "Author", true, List.of(itemDto));
+
+        var company = new Company("Test");
+        var invoice = new Invoice(company, "Author", false);
+        when(invoiceRepository.findById(invoiceId)).thenReturn(java.util.Optional.of(invoice));
+
+        var updatedInvoice = new Invoice(company, invoiceDto.getAuthor(), invoiceDto.getPaid());
+        var mockInvoice = new Invoice(company, invoiceDto.getAuthor(), invoiceDto.getPaid());
+        mockInvoice.setInvoiceId(invoiceId);
+        itemEntity.setInvoice(updatedInvoice);
+        when(invoiceRepository.save(updatedInvoice)).thenReturn(mockInvoice);
+
+        when(itemRepository.findById(1L)).thenReturn(java.util.Optional.of(itemEntity));
+
+
+        var result = invoiceService.updatedInvoice(invoiceId, invoiceDto);
+
+        verify(invoiceRepository, times(1)).findById(invoiceId);
+        verify(companyRepository, times(0)).findByName(invoiceDto.getCompanyName());
+        verify(invoiceRepository, times(1)).save(updatedInvoice);
+        verify(itemRepository, times(1)).delete(itemEntity);
+        var expectedInvoiceDto = new InvoiceDto(mockInvoice.getInvoiceId(),
+                mockInvoice.getCompany().getName(),
+                mockInvoice.getAuthor(),
+                mockInvoice.getPaid(),
+                List.of());
+        assertEquals(expectedInvoiceDto, result);
     }
 }

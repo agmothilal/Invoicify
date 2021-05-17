@@ -31,7 +31,7 @@ public class ItemServiceTest {
         var result = itemService.fetchItems();
 
         assertThat(result).isEqualTo(
-                List.of(new ItemDto("Description", 10, 14.50F, 60F)));
+                List.of(new ItemDto(null,"Description", 10, 14.50F, 60F)));
     }
 
     @Test

@@ -47,4 +47,11 @@ public class Invoice {
 		this.paid = paid;
 		this.createDt = createDt;
 	}
+
+	public Invoice(Company company, String author, Boolean paid, List<Item> item) {
+		this.company = company;
+		this.author = author;
+		this.paid = paid;
+		this.item = item;
+	}
 }

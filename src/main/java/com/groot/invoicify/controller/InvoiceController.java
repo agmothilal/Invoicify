@@ -31,8 +31,20 @@ public class InvoiceController {
 			return new ResponseEntity<>("No Company by that name.", HttpStatus.NOT_FOUND);
 		}
 		else {
-			Long id=this.invoiceService.createInvoice(invoiceDto);
-			return new ResponseEntity<>("Invoice has been created. The invoice ID is "+ id +".", HttpStatus.CREATED);
+			var resultDto =this.invoiceService.createInvoice(invoiceDto);
+			//return new ResponseEntity<>("Invoice has been created. The invoice ID is "+ id +".", HttpStatus.CREATED);
+			return new ResponseEntity<InvoiceDto>(resultDto, HttpStatus.CREATED);
+		}
+	}
+
+	@PutMapping
+	public ResponseEntity<?> updateInvoice(@RequestParam Long invoiceId,
+										   @RequestBody InvoiceDto invoiceDto){
+		var invoice = this.invoiceService.updatedInvoice(invoiceId, invoiceDto);
+		if (invoice == null) {
+			return new ResponseEntity<>("The given Company or Invoice is not exist!", HttpStatus.BAD_REQUEST);
+		} else {
+			return new ResponseEntity<>(invoice, HttpStatus.OK);
 		}
 	}
 
