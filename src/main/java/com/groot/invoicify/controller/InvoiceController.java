@@ -38,8 +38,11 @@ public class InvoiceController {
 	}
 
 	@PutMapping
-	public ResponseEntity<?> updateInvoice(@RequestParam Long invoiceId,
-										   @RequestBody InvoiceDto invoiceDto){
+	public ResponseEntity<?> updateInvoice(@RequestParam Long invoiceId, @RequestBody InvoiceDto invoiceDto){
+		var isPaid = this.invoiceService.isInvoicePaid(invoiceId);
+		if (isPaid) {
+			return new ResponseEntity<>("The invoice can't update since it was already paid status!", HttpStatus.BAD_REQUEST);
+		}
 		var invoice = this.invoiceService.updatedInvoice(invoiceId, invoiceDto);
 		if (invoice == null) {
 			return new ResponseEntity<>("The given Company or Invoice is not exist!", HttpStatus.BAD_REQUEST);
