@@ -103,7 +103,10 @@ public class InvoiceController {
 
 	@PostMapping ("additem/{invoiceNum}")
 	public ResponseEntity<?> addItemsToExistingInvoice(@PathVariable Long invoiceNum,@RequestBody List<ItemDto> itemsDtoList) {
-
+		var isPaid = this.invoiceService.isInvoicePaid(invoiceNum);
+		if (isPaid) {
+			return new ResponseEntity<>("The invoice can't update since it was already paid status!", HttpStatus.BAD_REQUEST);
+		}
 		Invoice invoiceEntity = this.invoiceService.findInvoiceEntityByInvoiceNumber(invoiceNum);
 
 		if (invoiceEntity == null) {
@@ -114,5 +117,4 @@ public class InvoiceController {
 			return new ResponseEntity<>( "Items Added to the given invoice number successfully", HttpStatus.CREATED);
 		}
 	}
-
 }
