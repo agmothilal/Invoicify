@@ -170,4 +170,12 @@ include::{snippets}/Put-Invoice-Delete-LineItem/http-request.adoc[]
 .response
 include::{snippets}/Put-Invoice-Delete-LineItem/http-response.adoc[]
 
+Put Invoice Already Paid
+
+.request
+include::{snippets}/Put-Invoice-Already-Paid/http-request.adoc[]
+
+.response
+include::{snippets}/Put-Invoice-Already-Paid/http-response.adoc[]
+
 

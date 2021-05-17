@@ -262,4 +262,9 @@ public class InvoiceService {
         }
         return null;
     }
+
+    public boolean isInvoicePaid(Long invoiceId) {
+		Optional<Invoice> invoiceEntity = invoiceRepository.findById(invoiceId);
+		return invoiceEntity.isPresent() ? invoiceEntity.get().getPaid() : false;
+	}
 }

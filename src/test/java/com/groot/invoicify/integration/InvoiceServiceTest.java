@@ -580,12 +580,53 @@ public class InvoiceServiceTest {
 
 	@Test
 	public void fetchUnPaidInvoiceByInValidInvoiceNumberTest() throws Exception {
-
 		mockMvc.perform(get("/invoice/id/2")
 		).andExpect(status().isNotFound())
 				.andDo(print())
-				.andDo(document("Get-InvoiceBy-Invalid-InvoiceNumber"))
-		;
+				.andDo(document("Get-InvoiceBy-Invalid-InvoiceNumber"));
+	}
 
+	@Test
+	@DisplayName("Updating invoice failed when invoice already paid")
+	public void updateInvoiceFailedWhenItWasPaidTest() throws Exception {
+		// Create company before insert invoice
+		initCompanyEntities(Arrays.asList("Test"));
+
+		// Create Invoice
+		// Add items within invoice
+		var itemsDto = Arrays.asList(
+				new ItemDto("Description1", 10, 14.50F, 60F),
+				new ItemDto("Description2", 10, 14.50F, 60F)
+		);
+		var invoiceDto = new InvoiceDto("Test", "test", true, itemsDto);
+		var actionResult = createInvoice(invoiceDto);
+		var invoiceJson = actionResult.andReturn().getResponse().getContentAsString();
+		var dbInvoice = objectMapper.readValue(invoiceJson, InvoiceDto.class);
+		// Modify invoice author and line item
+		dbInvoice.setAuthor("test author");
+		dbInvoice.getItemsDto().get(0).setFlatPrice(80F);
+
+		// Perform the PUT invoice operation
+		// Verify the updated the fields
+		// Document the request and response fields
+		this.mockMvc.perform(MockMvcRequestBuilders.put("/invoice")
+				.contentType(MediaType.APPLICATION_JSON)
+				.param("invoiceId", dbInvoice.getInvoiceNumber().toString())
+				.content(this.objectMapper.writeValueAsString(dbInvoice)))
+				.andExpect(MockMvcResultMatchers.status().isBadRequest())
+				.andExpect(jsonPath("$").value("The invoice can't update since it was already paid status!"))
+				.andDo(document("Put-Invoice-Already-Paid", requestFields(
+						fieldWithPath("invoiceNumber").description("Invoice number."),
+						fieldWithPath("companyName").description("Name of company on invoice."),
+						fieldWithPath("totalCost").description("Total cost of invoice."),
+						fieldWithPath("author").description("Author of invoice."),
+						fieldWithPath("paid").description("If company paid the invoice."),
+						subsectionWithPath("items[]").description("A list of items in the invoice."),
+						subsectionWithPath("items[].itemId").description("Invoice line item id."),
+						subsectionWithPath("items[].description").description("Invoice line item description."),
+						subsectionWithPath("items[].rateHourBilled").description("Invoice line item quantity."),
+						subsectionWithPath("items[].ratePrice").description("Invoice line item hourly price."),
+						subsectionWithPath("items[].flatPrice").description("Invoice line item flat price.")
+				)));
 	}
 }
