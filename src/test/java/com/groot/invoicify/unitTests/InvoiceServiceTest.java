@@ -75,7 +75,7 @@ public class InvoiceServiceTest {
                 new Invoice("authorName", true,
                         Timestamp.valueOf(LocalDateTime.now().minusYears(2))),
                 new Invoice("authorName", true,
-                        Timestamp.valueOf(LocalDateTime.now().minusYears(1))),
+                        Timestamp.valueOf(LocalDateTime.now().minusYears(2))),
                 new Invoice("authorName", false,
                         Timestamp.valueOf(LocalDateTime.now().minusYears(1))),
                 new Invoice("authorName", false,
@@ -85,8 +85,8 @@ public class InvoiceServiceTest {
         when(invoiceRepository.findAll()).thenReturn(invoices);
         var result = invoiceService.deletePaidAndOlderInvoices();
 
-        verify(invoiceRepository, times(1)).delete(invoices.get(0));
-        verify(invoiceRepository, times(1)).delete(invoices.get(1));
+        verify(invoiceRepository, times(2)).delete(invoices.get(0));
+        verify(invoiceRepository, times(2)).delete(invoices.get(1));
         assertThat(result).isEqualTo(2L);
     }
 
