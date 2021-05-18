@@ -38,8 +38,11 @@ public class InvoiceController {
 	}
 
 	@PutMapping
-	public ResponseEntity<?> updateInvoice(@RequestParam Long invoiceId,
-										   @RequestBody InvoiceDto invoiceDto){
+	public ResponseEntity<?> updateInvoice(@RequestParam Long invoiceId, @RequestBody InvoiceDto invoiceDto){
+		var isPaid = this.invoiceService.isInvoicePaid(invoiceId);
+		if (isPaid) {
+			return new ResponseEntity<>("The invoice can't update since it was already paid status!", HttpStatus.BAD_REQUEST);
+		}
 		var invoice = this.invoiceService.updatedInvoice(invoiceId, invoiceDto);
 		if (invoice == null) {
 			return new ResponseEntity<>("The given Company or Invoice is not exist!", HttpStatus.BAD_REQUEST);
@@ -100,7 +103,10 @@ public class InvoiceController {
 
 	@PostMapping ("additem/{invoiceNum}")
 	public ResponseEntity<?> addItemsToExistingInvoice(@PathVariable Long invoiceNum,@RequestBody List<ItemDto> itemsDtoList) {
-
+		var isPaid = this.invoiceService.isInvoicePaid(invoiceNum);
+		if (isPaid) {
+			return new ResponseEntity<>("The invoice can't update since it was already paid status!", HttpStatus.BAD_REQUEST);
+		}
 		Invoice invoiceEntity = this.invoiceService.findInvoiceEntityByInvoiceNumber(invoiceNum);
 
 		if (invoiceEntity == null) {
@@ -111,5 +117,4 @@ public class InvoiceController {
 			return new ResponseEntity<>( "Items Added to the given invoice number successfully", HttpStatus.CREATED);
 		}
 	}
-
 }

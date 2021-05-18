@@ -17,8 +17,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import javax.transaction.Transactional;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -196,20 +196,40 @@ public class ItemServiceTest {
 
 	@Test
 	public void addItemInvalidInvoiceTest() throws Exception {
-
 		var itemsDtoAdditional = Arrays.asList(
 				new ItemDto("itemdescription4", 10, 14.50F, 60F),
 				new ItemDto("itemdescription5", 10, 14.50F, 30F),
 				new ItemDto("itemdescription6", 10, 14.50F,0F)
 
 		);
-
 		mockMvc.perform(post("/invoice/additem/0")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(itemsDtoAdditional)))
 				.andExpect(status().isNotFound())
-				.andExpect(content().string("Invoice id  0 does not exist."))
-		;
+				.andExpect(content().string("Invoice id  0 does not exist."));
+	}
 
+	@Test
+	public void addItemToInvoiceFailedWhenItWasPaidTest() throws Exception {
+		var companyDto = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+		mockMvc.perform(post("/company")
+				.content(objectMapper.writeValueAsString(companyDto))
+				.contentType(MediaType.APPLICATION_JSON)
+		).andExpect(status().isCreated());
+
+		var invoiceDto = new InvoiceDto("Test", "test", true, List.of());
+		this.mockMvc.perform(post("/invoice")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(this.objectMapper.writeValueAsString(invoiceDto)))
+				.andExpect(status().isCreated());
+
+		var itemsDtoAdditional = Arrays.asList(
+				new ItemDto("item description 4", 10, 14.50F, 60F)
+		);
+		mockMvc.perform(post("/invoice/additem/1")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(this.objectMapper.writeValueAsString(itemsDtoAdditional)))
+				.andExpect(status().isBadRequest())
+				.andExpect(jsonPath("$").value("The invoice can't update since it was already paid status!"));
 	}
 }

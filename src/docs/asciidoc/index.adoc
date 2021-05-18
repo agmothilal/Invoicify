@@ -218,4 +218,12 @@ include::{snippets}/Get-Unpaid-InvoiceBy-Company-Name-Paging-Invalid/http-reques
 .response
 include::{snippets}/Get-Unpaid-InvoiceBy-Company-Name-Paging-Invalid/http-response.adoc[]
 
+Put Invoice Already Paid
+
+.request
+include::{snippets}/Put-Invoice-Already-Paid/http-request.adoc[]
+
+.response
+include::{snippets}/Put-Invoice-Already-Paid/http-response.adoc[]
+
 

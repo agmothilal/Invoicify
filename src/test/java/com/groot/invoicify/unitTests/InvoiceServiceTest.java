@@ -216,4 +216,38 @@ public class InvoiceServiceTest {
                 List.of());
         assertEquals(expectedInvoiceDto, result);
     }
+
+    @Test
+    public void isInvoicePaidReturnTrueTest() {
+        var invoiceId = 1L;
+        var company = new Company("Test");
+        var invoice = new Invoice(company, "Author", true);
+        when(invoiceRepository.findById(invoiceId)).thenReturn(java.util.Optional.of(invoice));
+
+        var result = invoiceService.isInvoicePaid(invoiceId);
+
+        verify(invoiceRepository, times(1)).findById(invoiceId);
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void isInvoicePaidReturnFalse() {
+        var invoiceId = 1L;
+        var company = new Company("Test");
+        var invoice = new Invoice(company, "Author", false);
+        when(invoiceRepository.findById(invoiceId)).thenReturn(java.util.Optional.of(invoice));
+
+        var result = invoiceService.isInvoicePaid(invoiceId);
+
+        verify(invoiceRepository, times(1)).findById(invoiceId);
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void isInvoicePaidReturnFalseWhenInvoiceNotFound() {
+        var invoiceId = 1L;
+        var result = invoiceService.isInvoicePaid(invoiceId);
+        verify(invoiceRepository, times(1)).findById(invoiceId);
+        assertThat(result).isFalse();
+    }
 }
