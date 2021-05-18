@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -86,19 +88,38 @@ public class InvoiceService {
 		return deleteInvoices.stream().count();
 	}
 
-	public List<InvoiceDto> fetchAllInvoicesByCompany(Integer pageNo,String companyName) {
-		deletePaidAndOlderInvoices();
+	public String invoicePagingTest(Integer pageNo,String companyName)
+	{
 		Company companyEntity = companyRepository.findByName(companyName);
 
 		Long compId = companyEntity.getCompanyId();
 		Pageable paging = PageRequest.of(pageNo, 10, Sort.by("createDt"));
-//		List<Invoice> invoices=invoiceRepository.findByCompanyCompanyId(compId);
+		Pageable paging0 = PageRequest.of(0, 10, Sort.by("createDt"));
+
+		List<Invoice> invoices2=invoiceRepository.findByCompanyCompanyId(compId,paging0);
+
 		List<Invoice> invoices=invoiceRepository.findByCompanyCompanyId(compId,paging);
+		if (invoices2.isEmpty() && invoices.isEmpty())
+		{
+			return "Company Does not have Invoice.";
+		}
 
 		if (invoices.isEmpty()) {
-			return null;
-		} else {
-			return invoices
+			return "Company has invoice but page number is invalid.";
+		}
+		return null;
+	}
+
+	public List<InvoiceDto> fetchAllInvoicesByCompany(Integer pageNo,String companyName) {
+			deletePaidAndOlderInvoices();
+		Company companyEntity = companyRepository.findByName(companyName);
+
+		Long compId = companyEntity.getCompanyId();
+		Pageable paging = PageRequest.of(pageNo, 10, Sort.by("createDt"));
+		List<Invoice> invoices=invoiceRepository.findByCompanyCompanyId(compId,paging);
+
+			return
+					invoices
 					.stream()
 					.map(invoiceEntity -> {
 						List<Item> itemEntList = itemRepository.findByInvoiceInvoiceId(invoiceEntity.getInvoiceId());
@@ -122,7 +143,7 @@ public class InvoiceService {
 						);
 					})
 					.collect(Collectors.toList());
-		}
+
 	}
 
 	public List<InvoiceDto> fetchAllUnPaidInvoicesByCompany(Integer pageNo, String companyName) {

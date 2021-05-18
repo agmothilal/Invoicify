@@ -58,15 +58,22 @@ public class InvoiceController {
 			return new ResponseEntity<>("No Company by that name.", HttpStatus.NOT_FOUND);
 		}
 		else {
-			List<InvoiceDto> invoiceDtoList = invoiceService.fetchAllInvoicesByCompany(pageNo,companyName);
-			if (invoiceDtoList==null)
+			String returnFromPaging = invoiceService.invoicePagingTest(pageNo, companyName);
+			if(returnFromPaging!=null)
 			{
-				//TODO: Fix for page number over the number of invoices.
-				return new ResponseEntity<>("Company Exists, but there is no invoice for that company.", HttpStatus.NOT_FOUND);
+				if(returnFromPaging.equals("Company has invoice but page number is invalid."))
+				{
+					return new ResponseEntity<>("Company has invoice but page number is invalid.", HttpStatus.NOT_FOUND);
+				}
+				else
+				{
+					return new ResponseEntity<>("Company Does not have Invoice.", HttpStatus.NOT_FOUND);
+				}
+
 			}
-			else {
-				return new ResponseEntity<>(invoiceDtoList, HttpStatus.OK);
-			}
+			List<InvoiceDto> invoiceDtoList = invoiceService.fetchAllInvoicesByCompany(pageNo,companyName);
+			return new ResponseEntity<>(invoiceDtoList, HttpStatus.OK);
+
 		}
 	}
 
