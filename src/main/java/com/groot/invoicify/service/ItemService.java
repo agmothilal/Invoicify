@@ -65,5 +65,6 @@ public class ItemService {
 		List<Item> itemEntityList = itemsDtoList.stream().map(ItemService::MapToEntity).collect(Collectors.toList());
 		itemEntityList.stream().forEach(itemEntity -> {itemEntity.setInvoice(invoiceEntityObject);});
 		itemRepository.saveAll(itemEntityList);
+
 	}
 }

@@ -114,6 +114,7 @@ public class InvoiceController {
 		}
 		else {
 			itemService.addItemsToGivenInvoiceNumber(invoiceEntity,itemsDtoList);
+			invoiceService.updateInvoiceModifiedDate(invoiceEntity);
 			return new ResponseEntity<>( "Items Added to the given invoice number successfully", HttpStatus.CREATED);
 		}
 	}

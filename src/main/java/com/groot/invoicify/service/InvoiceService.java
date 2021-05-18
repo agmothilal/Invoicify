@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -267,5 +268,11 @@ public class InvoiceService {
     public boolean isInvoicePaid(Long invoiceId) {
 		Optional<Invoice> invoiceEntity = invoiceRepository.findById(invoiceId);
 		return invoiceEntity.isPresent() ? invoiceEntity.get().getPaid() : false;
+	}
+
+	public void updateInvoiceModifiedDate(Invoice invoiceEntity) {
+		Timestamp localTimeStamp = Timestamp.valueOf(LocalDateTime.now());
+		invoiceEntity.setModifiedDt(localTimeStamp);
+		invoiceRepository.save(invoiceEntity);
 	}
 }
