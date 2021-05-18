@@ -124,17 +124,19 @@ public class InvoiceService {
 		}
 	}
 
-	public List<InvoiceDto> fetchAllUnPaidInvoicesByCompany(String companyName) {
+	public List<InvoiceDto> fetchAllUnPaidInvoicesByCompany(Integer pageNo, String companyName) {
 		deletePaidAndOlderInvoices();
 		Company companyEntity = companyRepository.findByName(companyName);
 
 		Long compId = companyEntity.getCompanyId();
+		Pageable paging = PageRequest.of(pageNo, 10, Sort.by("createDt"));
+		List<Invoice> invoices=invoiceRepository.findByCompanyCompanyIdAndPaid(compId,false,paging);
 
-		if (invoiceRepository.findByCompanyCompanyIdAndPaid(compId, false).isEmpty()) {
+		if (invoices.isEmpty()) {
 
 			return null;
 		} else {
-			return invoiceRepository.findByCompanyCompanyIdAndPaid(compId, false)
+			return invoices
 					.stream()
 					.map(invoiceEntity -> {
 

@@ -68,14 +68,14 @@ public class InvoiceController {
 	}
 
 	@GetMapping("unpaid/{companyName}")
-	public ResponseEntity<?> getAllUnPaidInvoicesByCompany(@PathVariable String companyName) {
+	public ResponseEntity<?> getAllUnPaidInvoicesByCompany(@PathVariable String companyName,@RequestParam(defaultValue = "0") Integer pageNo) {
 
 		CompanyDto companyDto = this.companyService.findSingleCompany(companyName);
 		if (companyDto == null) {
 			return new ResponseEntity<>("No Company by that name.", HttpStatus.NOT_FOUND);
 		}
 		else {
-			List<InvoiceDto> invoiceDtoList = invoiceService.fetchAllUnPaidInvoicesByCompany(companyName);
+			List<InvoiceDto> invoiceDtoList = invoiceService.fetchAllUnPaidInvoicesByCompany(pageNo,companyName);
 			if (invoiceDtoList==null)
 			{
 				return new ResponseEntity<>("Company Exists, but there is no unpaid invoice for that company.", HttpStatus.NOT_FOUND);

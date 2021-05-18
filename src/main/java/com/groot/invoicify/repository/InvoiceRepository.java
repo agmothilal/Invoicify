@@ -15,7 +15,7 @@ import java.util.List;
 public interface InvoiceRepository extends PagingAndSortingRepository<Invoice, Long> {
 //    List<Invoice> findByCompanyCompanyId(Long compId);
     List<Invoice> findByCompanyCompanyId(Long compId,Pageable pageable);
-    List<Invoice> findByCompanyCompanyIdAndPaid(Long compId, boolean b);
+    List<Invoice> findByCompanyCompanyIdAndPaid(Long compId, boolean b,Pageable pageable);
 
     Invoice findByInvoiceId(Long invoiceNum);
 }

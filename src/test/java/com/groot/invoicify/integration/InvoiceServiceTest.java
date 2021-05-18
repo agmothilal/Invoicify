@@ -586,7 +586,7 @@ public class InvoiceServiceTest {
 	}
 
 	@Test
-	public void getPagingTest() throws Exception {
+	public void getPagingForAllInvoicesByCompanyTest() throws Exception {
 		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
 
 		mockMvc.perform(post("/company")
@@ -614,21 +614,92 @@ public class InvoiceServiceTest {
 					.andExpect(status().isCreated());
 		}
 
-		this.mockMvc.perform(get("/invoice/Test"))
-				.andDo(print());
+
 		this.mockMvc.perform(get("/invoice/Test")
 				.param("pageNo", "0"))
-				.andDo(print());
-		this.mockMvc.perform(get("/invoice/Test")
-				.param("pageNo", "1"))
-				.andDo(print());
+				.andExpect(jsonPath("length()").value(10))
+				.andDo(print())
+				.andDo(document("Get-InvoiceBy-Company-Name-Paging"))
+		;
+
 		this.mockMvc.perform(get("/invoice/Test")
 				.param("pageNo", "2"))
-				.andDo(print());
+				.andExpect(jsonPath("length()").value(5))
+				.andDo(print())
+				.andDo(document("Get-InvoiceBy-Company-Name-Paging-Last"))
+		;
+
 		this.mockMvc.perform(get("/invoice/Test")
-				.param("pageNo", "100"))
-				.andDo(print());
+				.param("pageNo", "3"))
+				.andExpect(status().isNotFound())
+				.andDo(print())
+				.andDo(document("Get-InvoiceBy-Company-Name-Paging-Invalid"))
+
+		;
 
 	}
+
+	@Test
+	public void getPagingForAllUnPaidInvoicesByCompanyTest() throws Exception {
+		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+
+		mockMvc.perform(post("/company")
+				.content(objectMapper.writeValueAsString(companyObject1))
+				.contentType(MediaType.APPLICATION_JSON)
+		).andExpect(status().isCreated());
+
+
+		var itemsDto = Arrays.asList(
+				new ItemDto("itemdescription", 10, 14.50F, 60F),
+				new ItemDto("itemdescription", 10, 14.50F, 60F)
+		);
+
+		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
+		var invoiceDto2 = new InvoiceDto("Test", "test", true, itemsDto);
+
+		for (int x = 0; x < 25; x++) {
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException e) {
+				System.out.println(e);
+			}
+			if( x%2 == 0) {
+				this.mockMvc.perform(post("/invoice")
+						.contentType(MediaType.APPLICATION_JSON_VALUE)
+						.content(this.objectMapper.writeValueAsString(invoiceDto)))
+						.andExpect(status().isCreated());
+			}
+			else
+			{
+				this.mockMvc.perform(post("/invoice")
+						.contentType(MediaType.APPLICATION_JSON_VALUE)
+						.content(this.objectMapper.writeValueAsString(invoiceDto2)))
+						.andExpect(status().isCreated());
+			}
+		}
+
+		this.mockMvc.perform(get("/invoice/unpaid/Test")
+				.param("pageNo", "0"))
+				.andExpect(jsonPath("length()").value(10))
+				.andDo(print())
+				.andDo(document("Get-Unpaid-InvoiceBy-Company-Name-Paging"));
+
+		this.mockMvc.perform(get("/invoice/unpaid/Test")
+				.param("pageNo", "1"))
+				.andExpect(jsonPath("length()").value(3))
+				.andDo(print())
+				.andDo(document("Get-Unpaid-InvoiceBy-Company-Name-Paging-Last"))
+		;
+
+		this.mockMvc.perform(get("/invoice/unpaid/Test")
+				.param("pageNo", "2"))
+				.andExpect(status().isNotFound())
+				.andDo(print())
+				.andDo(document("Get-Unpaid-InvoiceBy-Company-Name-Paging-Invalid"))
+		;
+
+
+	}
+
 
 }
