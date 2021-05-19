@@ -296,4 +296,28 @@ public class InvoiceService {
 		invoiceEntity.setModifiedDt(localTimeStamp);
 		invoiceRepository.save(invoiceEntity);
 	}
+
+
+
+	public String invoicePagingUnPaidTest(Integer pageNo,String companyName)
+	{
+		Company companyEntity = companyRepository.findByName(companyName);
+
+		Long compId = companyEntity.getCompanyId();
+		Pageable paging = PageRequest.of(pageNo, 10, Sort.by("createDt"));
+		Pageable paging0 = PageRequest.of(0, 10, Sort.by("createDt"));
+
+		List<Invoice> invoices2=invoiceRepository.findByCompanyCompanyIdAndPaid(compId,false,paging0);
+		List<Invoice> invoices=invoiceRepository.findByCompanyCompanyIdAndPaid(compId,false,paging);
+
+		if (invoices2.isEmpty() && invoices.isEmpty())
+		{
+			return "Company Does not have any Unpaid Invoice.";
+		}
+
+		if (invoices.isEmpty()) {
+			return "Company has Unpaid invoice but page number is invalid.";
+		}
+		return null;
+	}
 }

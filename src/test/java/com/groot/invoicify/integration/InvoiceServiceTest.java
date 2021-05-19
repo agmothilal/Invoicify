@@ -542,7 +542,9 @@ public class InvoiceServiceTest {
 		createInvoice(invoiceDto2);
 
 		mockMvc.perform(get("/invoice/unpaid/Test")
-		).andExpect(status().isNotFound());
+		).andExpect(status().isNotFound())
+				.andDo(document("Get-Company-Unpaid-Invoice-ButWithAllInvoicesPaid"));
+		;
 	}
 
 	@Test

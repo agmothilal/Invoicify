@@ -226,4 +226,15 @@ include::{snippets}/Put-Invoice-Already-Paid/http-request.adoc[]
 .response
 include::{snippets}/Put-Invoice-Already-Paid/http-response.adoc[]
 
+Get Unpaid Invoice by Company but with Company has all the invoices Paid
+
+.request
+include::{snippets}/Get-Company-Unpaid-Invoice-ButWithAllInvoicesPaid/http-request.adoc[]
+
+.response
+include::{snippets}/Get-Company-Unpaid-Invoice-ButWithAllInvoicesPaid/http-response.adoc[]
+
+
+
+
 

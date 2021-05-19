@@ -85,14 +85,24 @@ public class InvoiceController {
 			return new ResponseEntity<>("No Company by that name.", HttpStatus.NOT_FOUND);
 		}
 		else {
-			List<InvoiceDto> invoiceDtoList = invoiceService.fetchAllUnPaidInvoicesByCompany(pageNo,companyName);
-			if (invoiceDtoList==null)
+
+			String returnFromPaging = invoiceService.invoicePagingUnPaidTest(pageNo, companyName);
+			if(returnFromPaging!=null)
 			{
-				return new ResponseEntity<>("Company Exists, but there is no unpaid invoice for that company.", HttpStatus.NOT_FOUND);
+				if(returnFromPaging.equals("Company has Unpaid invoice but page number is invalid."))
+				{
+					return new ResponseEntity<>("Company has Unpaid invoice but page number is invalid.", HttpStatus.NOT_FOUND);
+				}
+				else
+				{
+					return new ResponseEntity<>("Company Does not have any Unpaid Invoice.", HttpStatus.NOT_FOUND);
+				}
+
 			}
-			else {
-				return new ResponseEntity<>(invoiceDtoList, HttpStatus.OK);
-			}
+			List<InvoiceDto> invoiceDtoList = invoiceService.fetchAllUnPaidInvoicesByCompany(pageNo,companyName);
+
+			return new ResponseEntity<>(invoiceDtoList, HttpStatus.OK);
+
 		}
 	}
 
