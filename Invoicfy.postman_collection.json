@@ -1,0 +1,304 @@
+{
+	"info": {
+		"name": "Invoicfy",
+		"_postman_id": "461eb616-647d-6f8b-b7e6-5cf0e174cb1d",
+		"description": "Test suite for all invoice related api.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Company",
+			"description": "",
+			"item": [
+				{
+					"name": "Compnay (POST)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\":\"Infosys\",\"address\":\"Address1\",\"city\":\"city1\",\"state\":\"state1\",\"zip\":\"91367\",\"contactName\":\"Mike\",\"contactTitle\":\"CEO\",\"contactPhoneNumber\":\"800-800-800\"}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/company",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Compnay (GET)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"url": {
+							"raw": "http://localhost:8080/company",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Compnay (PATCH)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"name\":\"Cognizant\"}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/company/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"company",
+								"1"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Invoice",
+			"description": "",
+			"item": [
+				{
+					"name": "Invoice (POST)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"companyName\":\"Cognizant\",\"author\":\"test\",\"paid\":false,\"items\":[{\"description\":\"Description\",\"rateHourBilled\":10,\"ratePrice\":14.5,\r\n\t\"flatPrice\":20.5,\"state\":\"New\"}]}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/invoice",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"invoice"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Invoice (PUT) with New Line Items",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"companyName\":\"Cognizant\",\"author\":\"test\",\"paid\":false,\"items\":[\r\n\t{\"itemId\":1,\"description\":\"Description 123\",\"rateHourBilled\":10,\"ratePrice\":14.5,\"flatPrice\":60.0,\"state\":\"Modified\"},\r\n\t{\"description\":\"Second item\",\"rateHourBilled\":12,\"ratePrice\":14.5,\"flatPrice\":70.0,\"state\":\"New\"}]}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/invoice?invoiceId=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"invoice"
+							],
+							"query": [
+								{
+									"key": "invoiceId",
+									"value": "1",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Invoice (PUT) with Modified Line Items",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"companyName\":\"Cognizant\",\"author\":\"test\",\"paid\":false,\"items\":[\r\n\t{\"itemId\":1,\"description\":\"Description\",\"rateHourBilled\":10,\"ratePrice\":14.5,\"flatPrice\":70.0,\"state\":\"Modified\"}]}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/invoice?invoiceId=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"invoice"
+							],
+							"query": [
+								{
+									"key": "invoiceId",
+									"value": "1",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Unpaid Invoice (GET)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"companyName\":\"Cognizant\",\"author\":\"test\",\"paid\":false,\"items\":[\r\n\t{\"itemId\":1,\"description\":\"Description\",\"rateHourBilled\":10,\"ratePrice\":14.5,\"flatPrice\":70.0,\"state\":\"Modified\"}]}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/invoice/unpaid/Cognizant",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"invoice",
+								"unpaid",
+								"Cognizant"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Unpaid Invoice (GET) Pagination",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"companyName\":\"Cognizant\",\"author\":\"test\",\"paid\":false,\"items\":[\r\n\t{\"itemId\":1,\"description\":\"Description\",\"rateHourBilled\":10,\"ratePrice\":14.5,\"flatPrice\":70.0,\"state\":\"Modified\"}]}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/invoice/unpaid/Cognizant?pageNo=0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"invoice",
+								"unpaid",
+								"Cognizant"
+							],
+							"query": [
+								{
+									"key": "pageNo",
+									"value": "0",
+									"equals": true
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Invoice (GET) By Invoice Number",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"companyName\":\"Cognizant\",\"author\":\"test\",\"paid\":false,\"items\":[\r\n\t{\"itemId\":1,\"description\":\"Description\",\"rateHourBilled\":10,\"ratePrice\":14.5,\"flatPrice\":70.0,\"state\":\"Modified\"}]}"
+						},
+						"url": {
+							"raw": "http://localhost:8080//invoice/id/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"",
+								"invoice",
+								"id",
+								"1"
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
