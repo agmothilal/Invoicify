@@ -75,7 +75,7 @@ public class InvoiceServiceTest {
                 new Invoice("authorName", true,
                         Timestamp.valueOf(LocalDateTime.now().minusYears(2))),
                 new Invoice("authorName", true,
-                        Timestamp.valueOf(LocalDateTime.now().minusYears(1))),
+                        Timestamp.valueOf(LocalDateTime.now().minusYears(3))),
                 new Invoice("authorName", false,
                         Timestamp.valueOf(LocalDateTime.now().minusYears(1))),
                 new Invoice("authorName", false,

@@ -9,8 +9,15 @@ import com.groot.invoicify.entity.Item;
 import com.groot.invoicify.repository.CompanyRepository;
 import com.groot.invoicify.repository.InvoiceRepository;
 import com.groot.invoicify.repository.ItemRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,27 +88,44 @@ public class InvoiceService {
 		return deleteInvoices.stream().count();
 	}
 
-	public List<InvoiceDto> fetchAllInvoicesByCompany(String companyName) {
-		deletePaidAndOlderInvoices();
+	public String invoicePagingTest(Integer pageNo,String companyName)
+	{
 		Company companyEntity = companyRepository.findByName(companyName);
 
 		Long compId = companyEntity.getCompanyId();
+		Pageable paging = PageRequest.of(pageNo, 10, Sort.by("createDt"));
+		Pageable paging0 = PageRequest.of(0, 10, Sort.by("createDt"));
 
+		List<Invoice> invoices2=invoiceRepository.findByCompanyCompanyId(compId,paging0);
 
-		if (invoiceRepository.findByCompanyCompanyId(compId).isEmpty()) {
+		List<Invoice> invoices=invoiceRepository.findByCompanyCompanyId(compId,paging);
+		if (invoices2.isEmpty() && invoices.isEmpty())
+		{
+			return "Company Does not have Invoice.";
+		}
 
-			return null;
-		} else {
-			return invoiceRepository.findByCompanyCompanyId(compId)
+		if (invoices.isEmpty()) {
+			return "Company has invoice but page number is invalid.";
+		}
+		return null;
+	}
+
+	public List<InvoiceDto> fetchAllInvoicesByCompany(Integer pageNo,String companyName) {
+			deletePaidAndOlderInvoices();
+		Company companyEntity = companyRepository.findByName(companyName);
+
+		Long compId = companyEntity.getCompanyId();
+		Pageable paging = PageRequest.of(pageNo, 10, Sort.by("createDt"));
+		List<Invoice> invoices=invoiceRepository.findByCompanyCompanyId(compId,paging);
+
+			return
+					invoices
 					.stream()
 					.map(invoiceEntity -> {
-
 						List<Item> itemEntList = itemRepository.findByInvoiceInvoiceId(invoiceEntity.getInvoiceId());
 						float totalInvoiceSumLocal = (float) itemEntList.stream().
 								mapToDouble(itemEntObject -> (itemEntObject.getFlatPrice() + itemEntObject.getRatePrice() * itemEntObject.getRateHourBilled())
 								).sum();
-
-
 						return new InvoiceDto(
 								invoiceEntity.getInvoiceId(),
 								companyName,
@@ -110,32 +134,31 @@ public class InvoiceService {
 								itemEntList
 										.stream().map(itemEnt ->
 								{
-
 									return new ItemDto(itemEnt.getDescription(),
 											itemEnt.getRateHourBilled(),
 											itemEnt.getRatePrice(),
 											itemEnt.getFlatPrice());
 								}).collect(Collectors.toList()),
 								totalInvoiceSumLocal
-
-
 						);
 					})
 					.collect(Collectors.toList());
-		}
+
 	}
 
-	public List<InvoiceDto> fetchAllUnPaidInvoicesByCompany(String companyName) {
+	public List<InvoiceDto> fetchAllUnPaidInvoicesByCompany(Integer pageNo, String companyName) {
 		deletePaidAndOlderInvoices();
 		Company companyEntity = companyRepository.findByName(companyName);
 
 		Long compId = companyEntity.getCompanyId();
+		Pageable paging = PageRequest.of(pageNo, 10, Sort.by("createDt"));
+		List<Invoice> invoices=invoiceRepository.findByCompanyCompanyIdAndPaid(compId,false,paging);
 
-		if (invoiceRepository.findByCompanyCompanyIdAndPaid(compId, false).isEmpty()) {
+		if (invoices.isEmpty()) {
 
 			return null;
 		} else {
-			return invoiceRepository.findByCompanyCompanyIdAndPaid(compId, false)
+			return invoices
 					.stream()
 					.map(invoiceEntity -> {
 
@@ -266,5 +289,35 @@ public class InvoiceService {
     public boolean isInvoicePaid(Long invoiceId) {
 		Optional<Invoice> invoiceEntity = invoiceRepository.findById(invoiceId);
 		return invoiceEntity.isPresent() ? invoiceEntity.get().getPaid() : false;
+	}
+
+	public void updateInvoiceModifiedDate(Invoice invoiceEntity) {
+		Timestamp localTimeStamp = Timestamp.valueOf(LocalDateTime.now());
+		invoiceEntity.setModifiedDt(localTimeStamp);
+		invoiceRepository.save(invoiceEntity);
+	}
+
+
+
+	public String invoicePagingUnPaidTest(Integer pageNo,String companyName)
+	{
+		Company companyEntity = companyRepository.findByName(companyName);
+
+		Long compId = companyEntity.getCompanyId();
+		Pageable paging = PageRequest.of(pageNo, 10, Sort.by("createDt"));
+		Pageable paging0 = PageRequest.of(0, 10, Sort.by("createDt"));
+
+		List<Invoice> invoices2=invoiceRepository.findByCompanyCompanyIdAndPaid(compId,false,paging0);
+		List<Invoice> invoices=invoiceRepository.findByCompanyCompanyIdAndPaid(compId,false,paging);
+
+		if (invoices2.isEmpty() && invoices.isEmpty())
+		{
+			return "Company Does not have any Unpaid Invoice.";
+		}
+
+		if (invoices.isEmpty()) {
+			return "Company has Unpaid invoice but page number is invalid.";
+		}
+		return null;
 	}
 }

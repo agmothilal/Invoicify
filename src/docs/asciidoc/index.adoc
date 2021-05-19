@@ -170,6 +170,54 @@ include::{snippets}/Put-Invoice-Delete-LineItem/http-request.adoc[]
 .response
 include::{snippets}/Put-Invoice-Delete-LineItem/http-response.adoc[]
 
+Get Invoice By Company Name Paging First Page Endpoint
+
+.request
+include::{snippets}/Get-InvoiceBy-Company-Name-Paging/http-request.adoc[]
+
+.response
+include::{snippets}/Get-InvoiceBy-Company-Name-Paging/http-response.adoc[]
+
+Get Invoice By Company Name Paging Last Page Endpoint
+
+.request
+include::{snippets}/Get-InvoiceBy-Company-Name-Paging-Last/http-request.adoc[]
+
+.response
+include::{snippets}/Get-InvoiceBy-Company-Name-Paging-Last/http-response.adoc[]
+
+Get Invoice By Company Name Paging invalid Page Endpoint
+
+.request
+include::{snippets}/Get-InvoiceBy-Company-Name-Paging-Invalid/http-request.adoc[]
+
+.response
+include::{snippets}/Get-InvoiceBy-Company-Name-Paging-Invalid/http-response.adoc[]
+
+Get Unpaid Invoice By Company Name Paging First Page Endpoint
+
+.request
+include::{snippets}/Get-Unpaid-InvoiceBy-Company-Name-Paging/http-request.adoc[]
+
+.response
+include::{snippets}/Get-Unpaid-InvoiceBy-Company-Name-Paging/http-response.adoc[]
+
+Get Unpaid Invoice By Company Name Paging Last Page Endpoint
+
+.request
+include::{snippets}/Get-Unpaid-InvoiceBy-Company-Name-Paging-Last/http-request.adoc[]
+
+.response
+include::{snippets}/Get-Unpaid-InvoiceBy-Company-Name-Paging-Last/http-response.adoc[]
+
+Get Unpaid Invoice By Company Name Paging Invalid Page Endpoint
+
+.request
+include::{snippets}/Get-Unpaid-InvoiceBy-Company-Name-Paging-Invalid/http-request.adoc[]
+
+.response
+include::{snippets}/Get-Unpaid-InvoiceBy-Company-Name-Paging-Invalid/http-response.adoc[]
+
 Put Invoice Already Paid
 
 .request
@@ -177,5 +225,16 @@ include::{snippets}/Put-Invoice-Already-Paid/http-request.adoc[]
 
 .response
 include::{snippets}/Put-Invoice-Already-Paid/http-response.adoc[]
+
+Get Unpaid Invoice by Company but with Company has all the invoices Paid
+
+.request
+include::{snippets}/Get-Company-Unpaid-Invoice-ButWithAllInvoicesPaid/http-request.adoc[]
+
+.response
+include::{snippets}/Get-Company-Unpaid-Invoice-ButWithAllInvoicesPaid/http-response.adoc[]
+
+
+
 
 
