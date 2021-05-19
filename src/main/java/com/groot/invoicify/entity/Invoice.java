@@ -19,9 +19,8 @@ public class Invoice {
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "INVOICE_SEQ")
 	private Long invoiceId;
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name = "company_id")
 	private Company company;
-	//private Float totalCost;
 	private String author;
 	private Boolean paid;
 	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "invoice")
