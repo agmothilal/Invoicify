@@ -198,8 +198,6 @@ public class ItemServiceTest {
 						fieldWithPath("[].ratePrice").description("Item rate price"),
 						fieldWithPath("[].flatPrice").description("Item flat price"),
 						fieldWithPath("[].state").description("Item modified state")
-
-						//subsectionWithPath("items[]").description("A list of items in the invoice.")
 				)))
 
 		;
@@ -218,7 +216,17 @@ public class ItemServiceTest {
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(itemsDtoAdditional)))
 				.andExpect(status().isNotFound())
-				.andExpect(content().string("Invoice id  0 does not exist."));
+				.andExpect(content().string("Invoice id  0 does not exist."))
+				.andDo(document("add-Items-to-invalid-Invoice", requestFields(
+						fieldWithPath("[].itemId").description("Item id"),
+						fieldWithPath("[].description").description("Item description"),
+						fieldWithPath("[].rateHourBilled").description("Item quantity"),
+						fieldWithPath("[].ratePrice").description("Item rate price"),
+						fieldWithPath("[].flatPrice").description("Item flat price"),
+						fieldWithPath("[].state").description("Item modified state")
+				)))
+
+		;
 	}
 
 	@Test
@@ -242,6 +250,16 @@ public class ItemServiceTest {
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(itemsDtoAdditional)))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$").value("The invoice can't update since it was already paid status!"));
+				.andExpect(jsonPath("$").value("The invoice can't update since it was already paid status!"))
+				.andDo(document("add-Items-to-paid-Invoice", requestFields(
+						fieldWithPath("[].itemId").description("Item id"),
+						fieldWithPath("[].description").description("Item description"),
+						fieldWithPath("[].rateHourBilled").description("Item quantity"),
+						fieldWithPath("[].ratePrice").description("Item rate price"),
+						fieldWithPath("[].flatPrice").description("Item flat price"),
+						fieldWithPath("[].state").description("Item modified state")
+				)))
+
+		;
 	}
 }
