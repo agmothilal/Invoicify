@@ -317,4 +317,28 @@ public class InvoiceService {
 		}
 		return null;
 	}
+
+	public List<InvoiceDto> fetchAllInvoices(Integer pageNo) {
+
+		Pageable paging = PageRequest.of(pageNo, 10, Sort.by("createDt"));
+		var invoicePaging = invoiceRepository.findAll(paging);
+
+		return invoicePaging
+				.stream()
+				.map(invoiceEntity -> {
+					List<Item> itemEntList = itemRepository.findByInvoiceInvoiceId(invoiceEntity.getInvoiceId());
+
+					return new InvoiceDto(
+							invoiceEntity.getInvoiceId(),
+							invoiceEntity.getCompany().getName(),
+							invoiceEntity.getAuthor(),
+							invoiceEntity.getPaid(),
+							itemEntList.stream().map(itemEnt ->
+									new ItemDto(itemEnt.getDescription(),
+											itemEnt.getRateHourBilled(),
+											itemEnt.getRatePrice(),
+											itemEnt.getFlatPrice())).collect(Collectors.toList())
+					);
+				}).collect(Collectors.toList());
+	}
 }

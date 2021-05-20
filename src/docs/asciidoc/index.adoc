@@ -260,6 +260,21 @@ include::{snippets}/add-Items-to-paid-Invoice/http-request.adoc[]
 include::{snippets}/add-Items-to-paid-Invoice/http-response.adoc[]
 
 
+Get All Invoices with Paging (Valid Page Number)
+
+.request
+include::{snippets}/Get-All-Invoices/http-request.adoc[]
+
+.response
+include::{snippets}/Get-All-Invoices/http-response.adoc[]
+
+Get All Invoices with Paging (InValid Page Number)
+
+.request
+include::{snippets}/Get-All-Invoices-Invalid-Page/http-request.adoc[]
+
+.response
+include::{snippets}/Get-All-Invoices-Invalid-Page/http-response.adoc[]
 
 
 

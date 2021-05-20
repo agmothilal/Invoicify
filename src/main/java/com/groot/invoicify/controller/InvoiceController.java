@@ -142,4 +142,17 @@ public class InvoiceController {
 	public ResponseEntity<?> deletePaidAndOlderInvoices(){
 		return new ResponseEntity<List<InvoiceDto>>(this.invoiceService.deletePaidAndOlderInvoices().stream().map(i1 -> new InvoiceDto(i1.getInvoiceNumber())).collect(Collectors.toList()),HttpStatus.ACCEPTED);
 	}
-}
+
+
+	@GetMapping()
+	public ResponseEntity<?> getAllInvoices(@RequestParam(defaultValue = "0") Integer pageNo) {
+			List<InvoiceDto> invoiceDtoList = invoiceService.fetchAllInvoices(pageNo);
+			if(invoiceDtoList.isEmpty())
+			{
+				return new ResponseEntity<>("No invoice found for the given page.", HttpStatus.NOT_FOUND);
+			}
+			return new ResponseEntity<>(invoiceDtoList, HttpStatus.OK);
+
+		}
+	}
+
