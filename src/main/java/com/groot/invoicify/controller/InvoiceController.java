@@ -12,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/invoice")
@@ -134,5 +136,10 @@ public class InvoiceController {
 			invoiceService.updateInvoiceModifiedDate(invoiceEntity);
 			return new ResponseEntity<>( "Items Added to the given invoice number successfully", HttpStatus.CREATED);
 		}
+	}
+
+	@DeleteMapping("deletepaidandolderinvoices")
+	public ResponseEntity<?> deletePaidAndOlderInvoices(){
+		return new ResponseEntity<List<InvoiceDto>>(this.invoiceService.deletePaidAndOlderInvoices().stream().map(i1 -> new InvoiceDto(i1.getInvoiceNumber())).collect(Collectors.toList()),HttpStatus.ACCEPTED);
 	}
 }

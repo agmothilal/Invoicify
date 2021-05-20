@@ -687,14 +687,19 @@ public class InvoiceServiceTest {
 
 	@Test
 	@Sql("/insert_invoices.sql")
-	public void zombieDeletePaidAndOlderInvoicesTest() throws Exception{
-		this.mockMvc.perform(delete("/deletepaidandolderinvoices"))
+	public void deletePaidAndOlderInvoicesTest() throws Exception{
+		this.mockMvc.perform(delete("/invoice/deletepaidandolderinvoices"))
 				.andExpect(status().isAccepted())
 				.andExpect(jsonPath("length()").value(1))
 				.andExpect(jsonPath("[0].invoiceNumber").value(1))
 				.andDo(document("Delete-Paid-Older-Invoices",responseFields(
-						subsectionWithPath("invoices[]").description("A list of invoices being deleted."),
-						subsectionWithPath("items[].invoiceNumber").description("Invoice id.")
+						subsectionWithPath("[]").description("A list of invoices being deleted."),
+						subsectionWithPath("[].invoiceNumber").description("Invoice id."),
+						subsectionWithPath("[].companyName").description("Invoice company name should be null."),
+						subsectionWithPath("[].totalCost").description("Invoice total cost should be null."),
+						subsectionWithPath("[].author").description("Invoice author should be null."),
+						subsectionWithPath("[].paid").description("Invoice paid should be null."),
+						subsectionWithPath("[].items").description("Invoice items should be null.")
 						)));
 	}
 

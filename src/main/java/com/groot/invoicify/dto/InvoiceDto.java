@@ -19,6 +19,10 @@ public class InvoiceDto {
     @JsonProperty("items")
     private List<ItemDto> itemsDto;
 
+    public InvoiceDto(Long invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
+
     public InvoiceDto(Long invoiceNumber, String companyName, String author, Boolean paid, List<ItemDto> itemsDto) {
         this.invoiceNumber = invoiceNumber;
         this.companyName = companyName;

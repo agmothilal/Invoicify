@@ -36,7 +36,11 @@ public class Invoice {
 	)
 	private Timestamp modifiedDt;
 
-    public Invoice(Company company, String author, Boolean paid) {
+	public Invoice(Long invoiceId) {
+		this.invoiceId = invoiceId;
+	}
+
+	public Invoice(Company company, String author, Boolean paid) {
         this.company = company;
         this.author = author;
         this.paid = paid;
