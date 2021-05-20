@@ -170,6 +170,16 @@ include::{snippets}/Put-Invoice-Delete-LineItem/http-request.adoc[]
 .response
 include::{snippets}/Put-Invoice-Delete-LineItem/http-response.adoc[]
 
+
+Delete Paid And Year Old Invoices
+
+.request
+include::{snippets}/Delete-Paid-Older-Invoices/http-request.adoc[]
+
+.response
+include::{snippets}/Delete-Paid-Older-Invoices/http-response.adoc[]
+
+
 Get Invoice By Company Name Paging First Page Endpoint
 
 .request
