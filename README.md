@@ -271,6 +271,7 @@ Hint: For auto deploy please follow step 4.
 Feel free to play with our sample server.
 
 - ([Server# 1](https://invoicifygroot.herokuapp.com))
+- ([Server# 1 endpoints docs](https://invoicifygroot.herokuapp.com/docs/index.html))
 
 ## API
 
