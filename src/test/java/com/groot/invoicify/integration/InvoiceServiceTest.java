@@ -379,7 +379,6 @@ public class InvoiceServiceTest {
 				.andExpect(jsonPath("[1].invoiceNumber").value(invoiceId))
 				.andDo(print())
 				.andDo(document("Get-InvoiceBy-Company-Name"));
-		;
 
 	}
 
@@ -544,7 +543,6 @@ public class InvoiceServiceTest {
 		mockMvc.perform(get("/invoice/unpaid/Test")
 		).andExpect(status().isNotFound())
 				.andDo(document("Get-Company-Unpaid-Invoice-ButWithAllInvoicesPaid"));
-		;
 	}
 
 	@Test
