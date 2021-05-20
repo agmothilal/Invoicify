@@ -39,6 +39,7 @@ public class CompanyService {
                 .stream()
                 .map(companyEntity -> {
                     return new CompanyDto(
+                            companyEntity.getCompanyId(),
                             companyEntity.getName(),
                             companyEntity.getAddress(),
                             companyEntity.getCity(),
@@ -61,7 +62,8 @@ public class CompanyService {
             return null;
         }
 
-        return new CompanyDto(companyFound.getName(), companyFound.getAddress(), companyFound.getCity(),
+        return new CompanyDto(companyFound.getCompanyId(), companyFound.getName(),
+                companyFound.getAddress(), companyFound.getCity(),
                 companyFound.getState(), companyFound.getZip(), companyFound.getContactName(),
                 companyFound.getContactTitle(), companyFound.getContactPhoneNumber());
     }

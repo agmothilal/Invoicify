@@ -66,6 +66,7 @@ public class CompanyControllerIT {
                 .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isCreated())
                 .andDo(document("Post-Company", requestFields(
+                        fieldWithPath("companyId").description("Company Id"),
                         fieldWithPath("name").description("Company name"),
                         fieldWithPath("address").description("Company address"),
                         fieldWithPath("city").description("Company city"),

@@ -44,7 +44,7 @@ address, contact(name, title, phone number)
 -   have contact title ("Accounts Payable")
 -   have contact phone number
 
-### Acceptance Tests {#acceptance-tests-2}
+### Acceptance Tests 
 
 -   Company is unique
 -   Company has 5 properties: name, address, contact name, contact
@@ -64,7 +64,7 @@ current information without loosing its relationship to invoices
 -   update contact title ("Accounts Payable")
 -   update contact phone number
 
-### Acceptance Tests {#acceptance-tests-3}
+### Acceptance Tests 
 
 -   update all fields without loosing relationship to invoices
 -   update company name without loosing relationship to invoices
@@ -82,7 +82,7 @@ As a user, I can view a list of unpaid invoices by company
 An invoice is an itemized billable list of products and services that a
 company has purchased.
 
-### Acceptance Tests {#acceptance-tests-4}
+### Acceptance Tests
 
 -   Must have a list view which contains a creation date, total and paid
     status for the company.
