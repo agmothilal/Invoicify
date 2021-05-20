@@ -234,6 +234,15 @@ include::{snippets}/Get-Company-Unpaid-Invoice-ButWithAllInvoicesPaid/http-reque
 .response
 include::{snippets}/Get-Company-Unpaid-Invoice-ButWithAllInvoicesPaid/http-response.adoc[]
 
+Add Items to Existing Valid Invoice ( invoice number passed as parameter)
+
+.request
+include::{snippets}/add-Items-to-Existing-Invoice/http-request.adoc[]
+
+.response
+include::{snippets}/add-Items-to-Existing-Invoice/http-response.adoc[]
+
+
 
 
 

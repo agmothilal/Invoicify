@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -190,6 +191,17 @@ public class ItemServiceTest {
 				.content(this.objectMapper.writeValueAsString(itemsDtoAdditional)))
 				.andExpect(status().isCreated())
 				.andExpect(content().string("Items Added to the given invoice number successfully"))
+				.andDo(document("add-Items-to-Existing-Invoice", requestFields(
+						fieldWithPath("[].itemId").description("Item id"),
+						fieldWithPath("[].description").description("Item description"),
+						fieldWithPath("[].rateHourBilled").description("Item quantity"),
+						fieldWithPath("[].ratePrice").description("Item rate price"),
+						fieldWithPath("[].flatPrice").description("Item flat price"),
+						fieldWithPath("[].state").description("Item modified state")
+
+						//subsectionWithPath("items[]").description("A list of items in the invoice.")
+				)))
+
 		;
 
 	}
