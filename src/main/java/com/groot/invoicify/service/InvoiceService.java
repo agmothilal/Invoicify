@@ -268,6 +268,7 @@ public class InvoiceService {
             invoice.setCompany(company);
             invoice.setAuthor(invoiceDto.getAuthor());
             invoice.setPaid(invoiceDto.getPaid());
+            invoice.setModifiedDt(Timestamp.valueOf(LocalDateTime.now()));
             Invoice invoiceUpdated = invoiceRepository.save(invoice);
             // Return update invoice as DTO
             return new InvoiceDto(
