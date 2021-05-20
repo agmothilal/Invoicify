@@ -832,7 +832,6 @@ public class InvoiceServiceTest {
 				.andExpect(content().string("No invoice found for the given page."))
 				.andDo(document("Get-All-Invoices-Invalid-Page"));
 
-
 	}
 
 
