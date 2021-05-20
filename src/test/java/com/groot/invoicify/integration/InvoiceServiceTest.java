@@ -5,6 +5,7 @@ import com.groot.invoicify.dto.DtoState;
 import com.groot.invoicify.dto.InvoiceDto;
 import com.groot.invoicify.dto.CompanyDto;
 import com.groot.invoicify.dto.ItemDto;
+import org.hibernate.annotations.SQLDelete;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -23,8 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -682,6 +683,24 @@ public class InvoiceServiceTest {
 						subsectionWithPath("items[].ratePrice").description("Invoice line item hourly price."),
 						subsectionWithPath("items[].flatPrice").description("Invoice line item flat price.")
 				)));
+	}
+
+	@Test
+	@Sql("/insert_invoices.sql")
+	public void deletePaidAndOlderInvoicesTest() throws Exception{
+		this.mockMvc.perform(delete("/invoice/deletepaidandolderinvoices"))
+				.andExpect(status().isAccepted())
+				.andExpect(jsonPath("length()").value(1))
+				.andExpect(jsonPath("[0].invoiceNumber").value(1))
+				.andDo(document("Delete-Paid-Older-Invoices",responseFields(
+						subsectionWithPath("[]").description("A list of invoices being deleted."),
+						subsectionWithPath("[].invoiceNumber").description("Invoice id."),
+						subsectionWithPath("[].companyName").description("Invoice company name should be null."),
+						subsectionWithPath("[].totalCost").description("Invoice total cost should be null."),
+						subsectionWithPath("[].author").description("Invoice author should be null."),
+						subsectionWithPath("[].paid").description("Invoice paid should be null."),
+						subsectionWithPath("[].items").description("Invoice items should be null.")
+						)));
 	}
 
 	@Test

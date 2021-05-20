@@ -74,7 +74,7 @@ public class InvoiceService {
                 ).collect(Collectors.toList()));
     }
 
-	public Long deletePaidAndOlderInvoices() {
+	public List<InvoiceDto> deletePaidAndOlderInvoices() {
 		var invoiceList = new ArrayList<Invoice>();
 		var invoices = this.invoiceRepository.findAll();
 		invoices.forEach(invoiceList::add);
@@ -85,7 +85,7 @@ public class InvoiceService {
 		deleteInvoices.forEach(invoice -> {
 			this.invoiceRepository.delete(invoice);
 		});
-		return deleteInvoices.stream().count();
+		return deleteInvoices.stream().map(i1 -> new InvoiceDto(i1.getInvoiceId())).collect(Collectors.toList());
 	}
 
 	public String invoicePagingTest(Integer pageNo,String companyName)
@@ -111,7 +111,6 @@ public class InvoiceService {
 	}
 
 	public List<InvoiceDto> fetchAllInvoicesByCompany(Integer pageNo,String companyName) {
-			deletePaidAndOlderInvoices();
 		Company companyEntity = companyRepository.findByName(companyName);
 
 		Long compId = companyEntity.getCompanyId();
@@ -147,7 +146,6 @@ public class InvoiceService {
 	}
 
 	public List<InvoiceDto> fetchAllUnPaidInvoicesByCompany(Integer pageNo, String companyName) {
-		deletePaidAndOlderInvoices();
 		Company companyEntity = companyRepository.findByName(companyName);
 
 		Long compId = companyEntity.getCompanyId();
@@ -192,7 +190,6 @@ public class InvoiceService {
 	}
 
 	public InvoiceDto findInvoiceByInvoiceNumber(Long invoiceNum) {
-		deletePaidAndOlderInvoices();
 		Invoice invoiceEntity = invoiceRepository.findByInvoiceId(invoiceNum);
 		if (invoiceEntity == null) {
 			return null;
@@ -223,7 +220,6 @@ public class InvoiceService {
 	}
 
 	public Invoice findInvoiceEntityByInvoiceNumber(Long invoiceNum) {
-		deletePaidAndOlderInvoices();
 		return invoiceRepository.findByInvoiceId(invoiceNum);
 	}
 
