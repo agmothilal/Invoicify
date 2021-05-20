@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,16 +30,15 @@ public class InvoiceController {
 		CompanyDto companyDto = this.companyService.findSingleCompany(invoiceDto.getCompanyName());
 		if (companyDto == null) {
 			return new ResponseEntity<>("No Company by that name.", HttpStatus.NOT_FOUND);
-		}
-		else {
-			var resultDto =this.invoiceService.createInvoice(invoiceDto);
+		} else {
+			var resultDto = this.invoiceService.createInvoice(invoiceDto);
 			//return new ResponseEntity<>("Invoice has been created. The invoice ID is "+ id +".", HttpStatus.CREATED);
 			return new ResponseEntity<InvoiceDto>(resultDto, HttpStatus.CREATED);
 		}
 	}
 
 	@PutMapping
-	public ResponseEntity<?> updateInvoice(@RequestParam Long invoiceId, @RequestBody InvoiceDto invoiceDto){
+	public ResponseEntity<?> updateInvoice(@RequestParam Long invoiceId, @RequestBody InvoiceDto invoiceDto) {
 		var isPaid = this.invoiceService.isInvoicePaid(invoiceId);
 		if (isPaid) {
 			return new ResponseEntity<>("The invoice can't update since it was already paid status!", HttpStatus.BAD_REQUEST);
@@ -54,54 +52,44 @@ public class InvoiceController {
 	}
 
 	@GetMapping("{companyName}")
-	public ResponseEntity<?> getAllInvoicesByCompany(@PathVariable String companyName,@RequestParam(defaultValue = "0") Integer pageNo) {
+	public ResponseEntity<?> getAllInvoicesByCompany(@PathVariable String companyName, @RequestParam(defaultValue = "0") Integer pageNo) {
 		CompanyDto companyDto = this.companyService.findSingleCompany(companyName);
 		if (companyDto == null) {
 			return new ResponseEntity<>("No Company by that name.", HttpStatus.NOT_FOUND);
-		}
-		else {
+		} else {
 			String returnFromPaging = invoiceService.invoicePagingTest(pageNo, companyName);
-			if(returnFromPaging!=null)
-			{
-				if(returnFromPaging.equals("Company has invoice but page number is invalid."))
-				{
+			if (returnFromPaging != null) {
+				if (returnFromPaging.equals("Company has invoice but page number is invalid.")) {
 					return new ResponseEntity<>("Company has invoice but page number is invalid.", HttpStatus.NOT_FOUND);
-				}
-				else
-				{
+				} else {
 					return new ResponseEntity<>("Company Does not have Invoice.", HttpStatus.NOT_FOUND);
 				}
 
 			}
-			List<InvoiceDto> invoiceDtoList = invoiceService.fetchAllInvoicesByCompany(pageNo,companyName);
+			List<InvoiceDto> invoiceDtoList = invoiceService.fetchAllInvoicesByCompany(pageNo, companyName);
 			return new ResponseEntity<>(invoiceDtoList, HttpStatus.OK);
 
 		}
 	}
 
 	@GetMapping("unpaid/{companyName}")
-	public ResponseEntity<?> getAllUnPaidInvoicesByCompany(@PathVariable String companyName,@RequestParam(defaultValue = "0") Integer pageNo) {
+	public ResponseEntity<?> getAllUnPaidInvoicesByCompany(@PathVariable String companyName, @RequestParam(defaultValue = "0") Integer pageNo) {
 
 		CompanyDto companyDto = this.companyService.findSingleCompany(companyName);
 		if (companyDto == null) {
 			return new ResponseEntity<>("No Company by that name.", HttpStatus.NOT_FOUND);
-		}
-		else {
+		} else {
 
 			String returnFromPaging = invoiceService.invoicePagingUnPaidTest(pageNo, companyName);
-			if(returnFromPaging!=null)
-			{
-				if(returnFromPaging.equals("Company has Unpaid invoice but page number is invalid."))
-				{
+			if (returnFromPaging != null) {
+				if (returnFromPaging.equals("Company has Unpaid invoice but page number is invalid.")) {
 					return new ResponseEntity<>("Company has Unpaid invoice but page number is invalid.", HttpStatus.NOT_FOUND);
-				}
-				else
-				{
+				} else {
 					return new ResponseEntity<>("Company Does not have any Unpaid Invoice.", HttpStatus.NOT_FOUND);
 				}
 
 			}
-			List<InvoiceDto> invoiceDtoList = invoiceService.fetchAllUnPaidInvoicesByCompany(pageNo,companyName);
+			List<InvoiceDto> invoiceDtoList = invoiceService.fetchAllUnPaidInvoicesByCompany(pageNo, companyName);
 
 			return new ResponseEntity<>(invoiceDtoList, HttpStatus.OK);
 
@@ -114,14 +102,13 @@ public class InvoiceController {
 		InvoiceDto invoiceDto = this.invoiceService.findInvoiceByInvoiceNumber(invoiceNum);
 		if (invoiceDto == null) {
 			return new ResponseEntity<>("Invoice id  " + invoiceNum + " does not exist.", HttpStatus.NOT_FOUND);
-		}
-		else {
+		} else {
 			return new ResponseEntity<>(invoiceDto, HttpStatus.OK);
 		}
 	}
 
-	@PostMapping ("additem/{invoiceNum}")
-	public ResponseEntity<?> addItemsToExistingInvoice(@PathVariable Long invoiceNum,@RequestBody List<ItemDto> itemsDtoList) {
+	@PostMapping("additem/{invoiceNum}")
+	public ResponseEntity<?> addItemsToExistingInvoice(@PathVariable Long invoiceNum, @RequestBody List<ItemDto> itemsDtoList) {
 		var isPaid = this.invoiceService.isInvoicePaid(invoiceNum);
 		if (isPaid) {
 			return new ResponseEntity<>("The invoice can't update since it was already paid status!", HttpStatus.BAD_REQUEST);
@@ -130,16 +117,25 @@ public class InvoiceController {
 
 		if (invoiceEntity == null) {
 			return new ResponseEntity<>("Invoice id  " + invoiceNum + " does not exist.", HttpStatus.NOT_FOUND);
-		}
-		else {
-			itemService.addItemsToGivenInvoiceNumber(invoiceEntity,itemsDtoList);
+		} else {
+			itemService.addItemsToGivenInvoiceNumber(invoiceEntity, itemsDtoList);
 			invoiceService.updateInvoiceModifiedDate(invoiceEntity);
-			return new ResponseEntity<>( "Items Added to the given invoice number successfully", HttpStatus.CREATED);
+			return new ResponseEntity<>("Items Added to the given invoice number successfully", HttpStatus.CREATED);
 		}
 	}
 
 	@DeleteMapping("deletepaidandolderinvoices")
-	public ResponseEntity<?> deletePaidAndOlderInvoices(){
-		return new ResponseEntity<List<InvoiceDto>>(this.invoiceService.deletePaidAndOlderInvoices().stream().map(i1 -> new InvoiceDto(i1.getInvoiceNumber())).collect(Collectors.toList()),HttpStatus.ACCEPTED);
+	public ResponseEntity<?> deletePaidAndOlderInvoices() {
+		return new ResponseEntity<List<InvoiceDto>>(this.invoiceService.deletePaidAndOlderInvoices().stream().map(i1 -> new InvoiceDto(i1.getInvoiceNumber())).collect(Collectors.toList()), HttpStatus.ACCEPTED);
+	}
+
+	@GetMapping()
+	public ResponseEntity<?> getAllInvoices(@RequestParam(defaultValue = "0") Integer pageNo) {
+		List<InvoiceDto> invoiceDtoList = invoiceService.fetchAllInvoices(pageNo);
+		if (invoiceDtoList.isEmpty()) {
+			return new ResponseEntity<>("No invoice found for the given page.", HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(invoiceDtoList, HttpStatus.OK);
 	}
 }
+

@@ -15,6 +15,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.DirtiesContext;
 
 import javax.transaction.Transactional;
@@ -251,5 +255,24 @@ public class InvoiceServiceTest {
         var result = invoiceService.isInvoicePaid(invoiceId);
         verify(invoiceRepository, times(1)).findById(invoiceId);
         assertThat(result).isFalse();
+    }
+
+    @Test
+    public void fetchAllInvoiceTest() {
+        var pageNo = 0;
+        var paging = PageRequest.of(pageNo, 10, Sort.by("createDt"));
+        var company = new Company("Test");
+        var invoice = new Invoice(company, "Author", false);
+        var invoices = new PageImpl(List.of(invoice));
+        when(invoiceRepository.findAll(paging)).thenReturn(invoices);
+
+        var invoiceDtoList = this.invoiceService.fetchAllInvoices(pageNo);
+
+        verify(invoiceRepository, times(1)).findAll(paging);
+        assertThat(invoiceDtoList).isEqualTo(List.of(new InvoiceDto(invoice.getInvoiceId(),
+                invoice.getCompany().getName(),
+                invoice.getAuthor(),
+                invoice.getPaid(),
+                List.of())));
     }
 }

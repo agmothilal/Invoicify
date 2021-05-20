@@ -764,5 +764,60 @@ public class InvoiceServiceTest {
 
 	}
 
+	@Test
+	public void fetchAllInvoicesTest() throws Exception {
+		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+		mockMvc.perform(MockMvcRequestBuilders.post("/company")
+				.content(objectMapper.writeValueAsString(companyObject1))
+				.contentType(MediaType.APPLICATION_JSON)
+		).andExpect(status().isCreated());
 
+		var itemsDto = Arrays.asList(
+				new ItemDto("itemdescription", 10, 14.50F, 60F)
+		);
+		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
+		for (int x = 0; x < 15; x++) {
+
+			this.mockMvc.perform(post("/invoice")
+					.contentType(MediaType.APPLICATION_JSON_VALUE)
+					.content(this.objectMapper.writeValueAsString(invoiceDto)))
+					.andExpect(status().isCreated());
+		}
+
+		mockMvc.perform(get("/invoice")
+				.param("pageNo", "0")
+		).andExpect(status().isOk())
+				.andExpect(jsonPath("length()").value(10))
+				.andDo(document("Get-All-Invoices"));
+
+		mockMvc.perform(get("/invoice")
+				.param("pageNo", "1")
+		).andExpect(status().isOk())
+				.andExpect(jsonPath("length()").value(5));
+	}
+
+	@Test
+	public void fetchAllInvoicesInValidPageTest() throws Exception {
+		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
+
+		mockMvc.perform(MockMvcRequestBuilders.post("/company")
+				.content(objectMapper.writeValueAsString(companyObject1))
+				.contentType(MediaType.APPLICATION_JSON)
+		).andExpect(status().isCreated());
+
+		var itemsDto = Arrays.asList(
+				new ItemDto("itemdescription", 10, 14.50F, 60F)
+		);
+		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
+		this.mockMvc.perform(post("/invoice")
+				.contentType(MediaType.APPLICATION_JSON_VALUE)
+				.content(this.objectMapper.writeValueAsString(invoiceDto)))
+				.andExpect(status().isCreated());
+
+		mockMvc.perform(get("/invoice")
+				.param("pageNo", "1")
+		).andExpect(status().isNotFound())
+				.andExpect(content().string("No invoice found for the given page."))
+				.andDo(document("Get-All-Invoices-Invalid-Page"));
+	}
 }
