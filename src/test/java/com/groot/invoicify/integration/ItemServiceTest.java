@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.groot.invoicify.dto.CompanyDto;
 import com.groot.invoicify.dto.InvoiceDto;
 import com.groot.invoicify.dto.ItemDto;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
@@ -17,31 +19,43 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * ItemServiceTest
+ *
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class ItemServiceTest {
+
 	@Autowired
 	MockMvc mockMvc;
 
 	@Autowired
 	ObjectMapper objectMapper;
 
+	/**
+	 *
+	 * @param itemDto
+	 * @return
+	 * @throws Exception
+	 */
 	private ResultActions createItem(ItemDto itemDto) throws Exception {
 		return this.mockMvc.perform(MockMvcRequestBuilders.post("/item")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.content(this.objectMapper.writeValueAsString(itemDto)));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void createItemTest() throws Exception {
 		var itemDto = new ItemDto("description", 1, 1.1f, 1.1f);
@@ -57,6 +71,10 @@ public class ItemServiceTest {
 				)));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void getItemTest() throws Exception {
 		var itemDto = new ItemDto("description", 1, 1.1f, 1.1f);
@@ -86,6 +104,10 @@ public class ItemServiceTest {
 				)));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void patchItemTest() throws Exception {
 		var itemDto = new ItemDto("description", 1, 1.1f, 1.1f);
@@ -118,9 +140,12 @@ public class ItemServiceTest {
 				.andExpect(jsonPath("[0].rateHourBilled").value(1))
 				.andExpect(jsonPath("[0].ratePrice").value(1.1))
 				.andExpect(jsonPath("[0].flatPrice").value(1.1));
-
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void putItemTest() throws Exception {
 		var itemDto = new ItemDto("description", 1, 1.1f, 1.1f);
@@ -155,9 +180,12 @@ public class ItemServiceTest {
 				.andExpect(jsonPath("[0].flatPrice").value(1.1));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void addItemExistingInvoiceTest() throws Exception {
-
 		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
 
 		mockMvc.perform(post("/company")
@@ -168,8 +196,7 @@ public class ItemServiceTest {
 		var itemsDto = Arrays.asList(
 				new ItemDto("itemdescription", 10, 14.50F, 60F),
 				new ItemDto("itemdescription2", 10, 14.50F, 30F),
-				new ItemDto("itemdescription3", 10, 14.50F,0F)
-
+				new ItemDto("itemdescription3", 10, 14.50F, 0F)
 		);
 
 		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
@@ -182,8 +209,7 @@ public class ItemServiceTest {
 		var itemsDtoAdditional = Arrays.asList(
 				new ItemDto("itemdescription4", 10, 14.50F, 60F),
 				new ItemDto("itemdescription5", 10, 14.50F, 30F),
-				new ItemDto("itemdescription6", 10, 14.50F,0F)
-
+				new ItemDto("itemdescription6", 10, 14.50F, 0F)
 		);
 
 		mockMvc.perform(post("/invoice/additem/1")
@@ -198,19 +224,20 @@ public class ItemServiceTest {
 						fieldWithPath("[].ratePrice").description("Item rate price"),
 						fieldWithPath("[].flatPrice").description("Item flat price"),
 						fieldWithPath("[].state").description("Item modified state")
-				)))
-
-		;
+				)));
 
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void addItemInvalidInvoiceTest() throws Exception {
 		var itemsDtoAdditional = Arrays.asList(
 				new ItemDto("itemdescription4", 10, 14.50F, 60F),
 				new ItemDto("itemdescription5", 10, 14.50F, 30F),
-				new ItemDto("itemdescription6", 10, 14.50F,0F)
-
+				new ItemDto("itemdescription6", 10, 14.50F, 0F)
 		);
 		mockMvc.perform(post("/invoice/additem/0")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -224,11 +251,13 @@ public class ItemServiceTest {
 						fieldWithPath("[].ratePrice").description("Item rate price"),
 						fieldWithPath("[].flatPrice").description("Item flat price"),
 						fieldWithPath("[].state").description("Item modified state")
-				)))
-
-		;
+				)));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void addItemToInvoiceFailedWhenItWasPaidTest() throws Exception {
 		var companyDto = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
@@ -258,8 +287,6 @@ public class ItemServiceTest {
 						fieldWithPath("[].ratePrice").description("Item rate price"),
 						fieldWithPath("[].flatPrice").description("Item flat price"),
 						fieldWithPath("[].state").description("Item modified state")
-				)))
-
-		;
+				)));
 	}
 }
