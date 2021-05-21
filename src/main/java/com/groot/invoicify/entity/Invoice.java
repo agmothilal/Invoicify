@@ -1,20 +1,32 @@
 package com.groot.invoicify.entity;
 
+import java.sql.Timestamp;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.*;
-import java.sql.Timestamp;
-import java.util.List;
-
+/**
+ * Invoice
+ *
+ */
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Invoice {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "INVOICE_SEQ")
 	private Long invoiceId;
@@ -35,22 +47,45 @@ public class Invoice {
 	)
 	private Timestamp modifiedDt;
 
+	/**
+	 *
+	 * @param invoiceId
+	 */
 	public Invoice(Long invoiceId) {
 		this.invoiceId = invoiceId;
 	}
 
+	/**
+	 *
+	 * @param company
+	 * @param author
+	 * @param paid
+	 */
 	public Invoice(Company company, String author, Boolean paid) {
-        this.company = company;
-        this.author = author;
-        this.paid = paid;
-    }
+		this.company = company;
+		this.author = author;
+		this.paid = paid;
+	}
 
+	/**
+	 *
+	 * @param author
+	 * @param paid
+	 * @param createDt
+	 */
 	public Invoice(String author, Boolean paid, Timestamp createDt) {
 		this.author = author;
 		this.paid = paid;
 		this.createDt = createDt;
 	}
 
+	/**
+	 *
+	 * @param company
+	 * @param author
+	 * @param paid
+	 * @param item
+	 */
 	public Invoice(Company company, String author, Boolean paid, List<Item> item) {
 		this.company = company;
 		this.author = author;

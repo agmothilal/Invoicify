@@ -4,9 +4,18 @@ import com.groot.invoicify.entity.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+/**
+ * CompanyRepository
+ *
+ */
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
-    Company findByName(String companyName);
+	/**
+	 *
+	 * @param companyName
+	 * @return
+	 */
+	Company findByName(String companyName);
 
 }

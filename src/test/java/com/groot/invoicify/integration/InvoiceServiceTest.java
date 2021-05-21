@@ -5,6 +5,9 @@ import com.groot.invoicify.dto.DtoState;
 import com.groot.invoicify.dto.InvoiceDto;
 import com.groot.invoicify.dto.CompanyDto;
 import com.groot.invoicify.dto.ItemDto;
+import javax.transaction.Transactional;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,30 +22,36 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.*;
 
-import javax.transaction.Transactional;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * InvoiceServiceTest
+ *
+ */
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 @Transactional
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class InvoiceServiceTest {
+
 	@Autowired
 	MockMvc mockMvc;
 
 	@Autowired
 	ObjectMapper objectMapper;
 
+	/**
+	 *
+	 * @param companyName
+	 * @throws Exception
+	 */
 	private void initCompanyEntities(List<String> companyName) throws Exception {
-		for (String name: companyName) {
+		for (String name : companyName) {
 			var company = new CompanyDto(name, "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
 			mockMvc.perform(post("/company")
 					.content(objectMapper.writeValueAsString(company))
@@ -51,6 +60,12 @@ public class InvoiceServiceTest {
 		}
 	}
 
+	/**
+	 *
+	 * @param invoiceDto
+	 * @return
+	 * @throws Exception
+	 */
 	private ResultActions createInvoice(InvoiceDto invoiceDto) throws Exception {
 		return this.mockMvc.perform(MockMvcRequestBuilders.post("/invoice")
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -58,6 +73,10 @@ public class InvoiceServiceTest {
 				.andExpect(MockMvcResultMatchers.status().isCreated());
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void createInvoiceTest() throws Exception {
 		initCompanyEntities(Arrays.asList("Test"));
@@ -97,6 +116,10 @@ public class InvoiceServiceTest {
 				)));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void updateInvoiceTest() throws Exception {
 		// Create company before insert invoice
@@ -158,6 +181,10 @@ public class InvoiceServiceTest {
 				)));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	@DisplayName("Update invoice failing due to the company is not exist!")
 	public void updateInvoiceFailedWhenCompanyNotExistTest() throws Exception {
@@ -200,6 +227,10 @@ public class InvoiceServiceTest {
 				)));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	@DisplayName("Update invoice failing due to the give invoice is not exist!")
 	public void updateInvoiceFailedWhenInvoiceNotExistTest() throws Exception {
@@ -236,6 +267,10 @@ public class InvoiceServiceTest {
 				)));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	@DisplayName("Updating invoice with new line item")
 	public void updateInvoiceWithNewLineItemTest() throws Exception {
@@ -292,6 +327,10 @@ public class InvoiceServiceTest {
 				)));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	@DisplayName("Updating invoice with removing existing line item")
 	public void updateInvoiceWithRemoveLineItemTest() throws Exception {
@@ -345,6 +384,10 @@ public class InvoiceServiceTest {
 				)));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void fetchInvoiceByCompanyNameTest() throws Exception {
 
@@ -355,11 +398,9 @@ public class InvoiceServiceTest {
 				.contentType(MediaType.APPLICATION_JSON)
 		).andExpect(status().isCreated());
 
-
 		var itemsDto = Arrays.asList(
 				new ItemDto("itemdescription", 10, 14.50F, 60F)
 		);
-		//var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		var invoiceDto2 = new InvoiceDto("Test", "rest", false, itemsDto);
 
@@ -379,25 +420,26 @@ public class InvoiceServiceTest {
 				.andExpect(jsonPath("[1].invoiceNumber").value(invoiceId))
 				.andDo(print())
 				.andDo(document("Get-InvoiceBy-Company-Name"));
-
 	}
 
-
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void fetchInvoiceByInvalidCompanyNameTest() throws Exception {
-
 		mockMvc.perform(get("/invoice/Rest")
 		).andExpect(status().isNotFound())
 				.andDo(print())
-				.andDo(document("Get-InvoiceBy-Invalid-Company-Name"))
-		;
-
-
+				.andDo(document("Get-InvoiceBy-Invalid-Company-Name"));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void fetchInvoiceByCompanyNameWithNoInvoicesTest() throws Exception {
-
 		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/company")
@@ -408,15 +450,15 @@ public class InvoiceServiceTest {
 		mockMvc.perform(get("/invoice/Test")
 		).andExpect(status().isNotFound())
 				.andDo(print())
-				.andDo(document("Get-InvoiceBy-valid-Company-Name-With-No-Invoices"))
-		;
-
-
+				.andDo(document("Get-InvoiceBy-valid-Company-Name-With-No-Invoices"));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void fetchInvoiceByCompanyNameTotalCostTest() throws Exception {
-
 		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/company")
@@ -424,21 +466,16 @@ public class InvoiceServiceTest {
 				.contentType(MediaType.APPLICATION_JSON)
 		).andExpect(status().isCreated());
 
-
 		var itemsDto = Arrays.asList(
 				new ItemDto("itemdescription", 10, 14.50F, 60F),
 				new ItemDto("itemdescription2", 10, 14.50F, 30F),
 				new ItemDto("itemdescription3", 10, 14.50F, 0F)
-
 		);
 
 		var itemsDto2 = Arrays.asList(
 				new ItemDto("itemdescription4", 10, 50F, 60F),
 				new ItemDto("itemdescription5", 10, 50F, 30F)
-
-
 		);
-		//var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		var invoiceDto2 = new InvoiceDto("Test", "rest", false, itemsDto2);
 		var actionResult = createInvoice(invoiceDto);
@@ -457,9 +494,12 @@ public class InvoiceServiceTest {
 				.andExpect(jsonPath("[1].totalCost").value(525F));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void fetchUnPaidInvoiceByCompanyName() throws Exception {
-
 		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
 
 		mockMvc.perform(post("/company")
@@ -467,21 +507,16 @@ public class InvoiceServiceTest {
 				.contentType(MediaType.APPLICATION_JSON)
 		).andExpect(status().isCreated());
 
-
 		var itemsDto = Arrays.asList(
 				new ItemDto("itemdescription", 10, 14.50F, 60F),
 				new ItemDto("itemdescription2", 10, 14.50F, 30F),
 				new ItemDto("itemdescription3", 10, 14.50F, 0F)
-
 		);
 
 		var itemsDto2 = Arrays.asList(
 				new ItemDto("itemdescription4", 10, 50F, 60F),
 				new ItemDto("itemdescription5", 10, 50F, 30F)
-
-
 		);
-		//var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		var invoiceDto2 = new InvoiceDto("Test", "rest", true, itemsDto2);
 		var actionResult = createInvoice(invoiceDto);
@@ -496,23 +531,26 @@ public class InvoiceServiceTest {
 		mockMvc.perform(get("/invoice/unpaid/Test")
 		).andExpect(status().isOk())
 				.andExpect(jsonPath("[0].invoiceNumber").value(invoiceId))
-				.andExpect(jsonPath("[0].totalCost").value(dbInvoice.getTotalCost()))
-		;
-
+				.andExpect(jsonPath("[0].totalCost").value(dbInvoice.getTotalCost()));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void fetchUnPaidInvoiceByInValidCompanyName() throws Exception {
-
 		mockMvc.perform(get("/invoice/unpaid/Test")
-		).andExpect(status().isNotFound())
-		;
+		).andExpect(status().isNotFound());
 
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void fetchUnPaidInvoiceByCompanyNameWithEmptyData() throws Exception {
-
 		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
 
 		mockMvc.perform(MockMvcRequestBuilders.post("/company")
@@ -520,21 +558,16 @@ public class InvoiceServiceTest {
 				.contentType(MediaType.APPLICATION_JSON)
 		).andExpect(status().isCreated());
 
-
 		var itemsDto = Arrays.asList(
 				new ItemDto("itemdescription", 10, 14.50F, 60F),
 				new ItemDto("itemdescription2", 10, 14.50F, 30F),
 				new ItemDto("itemdescription3", 10, 14.50F, 0F)
-
 		);
 
 		var itemsDto2 = Arrays.asList(
 				new ItemDto("itemdescription4", 10, 50F, 60F),
 				new ItemDto("itemdescription5", 10, 50F, 30F)
-
-
 		);
-		//var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		var invoiceDto = new InvoiceDto("Test", "test", true, itemsDto);
 		var invoiceDto2 = new InvoiceDto("Test", "rest", true, itemsDto2);
 		createInvoice(invoiceDto);
@@ -545,6 +578,10 @@ public class InvoiceServiceTest {
 				.andDo(document("Get-Company-Unpaid-Invoice-ButWithAllInvoicesPaid"));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void fetchInvoiceByIdValidInvoiceNumberTest() throws Exception {
 		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
@@ -554,29 +591,29 @@ public class InvoiceServiceTest {
 				.contentType(MediaType.APPLICATION_JSON)
 		).andExpect(status().isCreated());
 
-
 		var itemsDto = Arrays.asList(
 				new ItemDto("itemdescription", 10, 14.50F, 60F)
 		);
-		//var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		var actionResult = createInvoice(invoiceDto);
 		var invoiceJson = actionResult.andReturn().getResponse().getContentAsString();
 		var dbInvoice = objectMapper.readValue(invoiceJson, InvoiceDto.class);
 		var invoiceId = dbInvoice.getInvoiceNumber();
 
-		mockMvc.perform(get("/invoice/id/"+invoiceId)
+		mockMvc.perform(get("/invoice/id/" + invoiceId)
 		).andExpect(status().isOk())
 				.andExpect(jsonPath("$.invoiceNumber").value(invoiceId))
 				.andExpect(jsonPath("$.items[0].flatPrice").value(60F))
 				.andExpect(jsonPath("$.totalCost").value(205F))
 				.andExpect(jsonPath("$.companyName").value("Test"))
 				.andDo(print())
-				.andDo(document("Get-InvoiceBy-valid-InvoiceNumber"))
-		;
-
+				.andDo(document("Get-InvoiceBy-valid-InvoiceNumber"));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void fetchUnPaidInvoiceByInValidInvoiceNumberTest() throws Exception {
 		mockMvc.perform(get("/invoice/id/2")
@@ -585,6 +622,10 @@ public class InvoiceServiceTest {
 				.andDo(document("Get-InvoiceBy-Invalid-InvoiceNumber"));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void getPagingForAllInvoicesByCompanyTest() throws Exception {
 		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
@@ -593,7 +634,6 @@ public class InvoiceServiceTest {
 				.content(objectMapper.writeValueAsString(companyObject1))
 				.contentType(MediaType.APPLICATION_JSON)
 		).andExpect(status().isCreated());
-
 
 		var itemsDto = Arrays.asList(
 				new ItemDto("itemdescription", 10, 14.50F, 60F),
@@ -614,30 +654,29 @@ public class InvoiceServiceTest {
 					.andExpect(status().isCreated());
 		}
 
-
 		this.mockMvc.perform(get("/invoice/Test")
 				.param("pageNo", "0"))
 				.andExpect(jsonPath("length()").value(10))
 				.andDo(print())
-				.andDo(document("Get-InvoiceBy-Company-Name-Paging"))
-		;
+				.andDo(document("Get-InvoiceBy-Company-Name-Paging"));
 
 		this.mockMvc.perform(get("/invoice/Test")
 				.param("pageNo", "2"))
 				.andExpect(jsonPath("length()").value(5))
 				.andDo(print())
-				.andDo(document("Get-InvoiceBy-Company-Name-Paging-Last"))
-		;
+				.andDo(document("Get-InvoiceBy-Company-Name-Paging-Last"));
 
 		this.mockMvc.perform(get("/invoice/Test")
 				.param("pageNo", "3"))
 				.andExpect(status().isNotFound())
 				.andDo(print())
-				.andDo(document("Get-InvoiceBy-Company-Name-Paging-Invalid"))
-
-		;
+				.andDo(document("Get-InvoiceBy-Company-Name-Paging-Invalid"));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	@DisplayName("Updating invoice failed when invoice already paid")
 	public void updateInvoiceFailedWhenItWasPaidTest() throws Exception {
@@ -682,14 +721,18 @@ public class InvoiceServiceTest {
 				)));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	@Sql("/insert_invoices.sql")
-	public void deletePaidAndOlderInvoicesTest() throws Exception{
+	public void deletePaidAndOlderInvoicesTest() throws Exception {
 		this.mockMvc.perform(delete("/invoice/deletepaidandolderinvoices"))
 				.andExpect(status().isAccepted())
 				.andExpect(jsonPath("length()").value(1))
 				.andExpect(jsonPath("[0].invoiceNumber").value(1))
-				.andDo(document("Delete-Paid-Older-Invoices",responseFields(
+				.andDo(document("Delete-Paid-Older-Invoices", responseFields(
 						subsectionWithPath("[]").description("A list of invoices being deleted."),
 						subsectionWithPath("[].invoiceNumber").description("Invoice id."),
 						subsectionWithPath("[].companyName").description("Invoice company name should be null."),
@@ -697,9 +740,13 @@ public class InvoiceServiceTest {
 						subsectionWithPath("[].author").description("Invoice author should be null."),
 						subsectionWithPath("[].paid").description("Invoice paid should be null."),
 						subsectionWithPath("[].items").description("Invoice items should be null.")
-						)));
+				)));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void getPagingForAllUnPaidInvoicesByCompanyTest() throws Exception {
 		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
@@ -708,7 +755,6 @@ public class InvoiceServiceTest {
 				.content(objectMapper.writeValueAsString(companyObject1))
 				.contentType(MediaType.APPLICATION_JSON)
 		).andExpect(status().isCreated());
-
 
 		var itemsDto = Arrays.asList(
 				new ItemDto("itemdescription", 10, 14.50F, 60F),
@@ -724,14 +770,12 @@ public class InvoiceServiceTest {
 			} catch (InterruptedException e) {
 				System.out.println(e);
 			}
-			if( x%2 == 0) {
+			if (x % 2 == 0) {
 				this.mockMvc.perform(post("/invoice")
 						.contentType(MediaType.APPLICATION_JSON_VALUE)
 						.content(this.objectMapper.writeValueAsString(invoiceDto)))
 						.andExpect(status().isCreated());
-			}
-			else
-			{
+			} else {
 				this.mockMvc.perform(post("/invoice")
 						.contentType(MediaType.APPLICATION_JSON_VALUE)
 						.content(this.objectMapper.writeValueAsString(invoiceDto2)))
@@ -749,19 +793,19 @@ public class InvoiceServiceTest {
 				.param("pageNo", "1"))
 				.andExpect(jsonPath("length()").value(3))
 				.andDo(print())
-				.andDo(document("Get-Unpaid-InvoiceBy-Company-Name-Paging-Last"))
-		;
+				.andDo(document("Get-Unpaid-InvoiceBy-Company-Name-Paging-Last"));
 
 		this.mockMvc.perform(get("/invoice/unpaid/Test")
 				.param("pageNo", "2"))
 				.andExpect(status().isNotFound())
 				.andDo(print())
-				.andDo(document("Get-Unpaid-InvoiceBy-Company-Name-Paging-Invalid"))
-		;
-
-
+				.andDo(document("Get-Unpaid-InvoiceBy-Company-Name-Paging-Invalid"));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void fetchAllInvoicesTest() throws Exception {
 		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");
@@ -775,7 +819,6 @@ public class InvoiceServiceTest {
 		);
 		var invoiceDto = new InvoiceDto("Test", "test", false, itemsDto);
 		for (int x = 0; x < 15; x++) {
-
 			this.mockMvc.perform(post("/invoice")
 					.contentType(MediaType.APPLICATION_JSON_VALUE)
 					.content(this.objectMapper.writeValueAsString(invoiceDto)))
@@ -794,6 +837,10 @@ public class InvoiceServiceTest {
 				.andExpect(jsonPath("length()").value(5));
 	}
 
+	/**
+	 *
+	 * @throws Exception
+	 */
 	@Test
 	public void fetchAllInvoicesInValidPageTest() throws Exception {
 		CompanyDto companyObject1 = new CompanyDto("Test", "Address1", "city1", "state1", "91367", "Mike", "CEO", "800-800-800");

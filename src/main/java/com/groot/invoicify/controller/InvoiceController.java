@@ -7,17 +7,29 @@ import com.groot.invoicify.entity.Invoice;
 import com.groot.invoicify.service.CompanyService;
 import com.groot.invoicify.service.InvoiceService;
 import com.groot.invoicify.service.ItemService;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+/**
+ * InvoiceController
+ *
+ */
 @RestController
 @RequestMapping("/invoice")
 public class InvoiceController {
+
 	@Autowired
 	InvoiceService invoiceService;
 	@Autowired
@@ -25,6 +37,11 @@ public class InvoiceController {
 	@Autowired
 	ItemService itemService;
 
+	/**
+	 *
+	 * @param invoiceDto
+	 * @return
+	 */
 	@PostMapping
 	public ResponseEntity<?> createInvoice(@RequestBody InvoiceDto invoiceDto) {
 		CompanyDto companyDto = this.companyService.findSingleCompany(invoiceDto.getCompanyName());
@@ -32,11 +49,16 @@ public class InvoiceController {
 			return new ResponseEntity<>("No Company by that name.", HttpStatus.NOT_FOUND);
 		} else {
 			var resultDto = this.invoiceService.createInvoice(invoiceDto);
-			//return new ResponseEntity<>("Invoice has been created. The invoice ID is "+ id +".", HttpStatus.CREATED);
 			return new ResponseEntity<InvoiceDto>(resultDto, HttpStatus.CREATED);
 		}
 	}
 
+	/**
+	 *
+	 * @param invoiceId
+	 * @param invoiceDto
+	 * @return
+	 */
 	@PutMapping
 	public ResponseEntity<?> updateInvoice(@RequestParam Long invoiceId, @RequestBody InvoiceDto invoiceDto) {
 		var isPaid = this.invoiceService.isInvoicePaid(invoiceId);
@@ -51,6 +73,12 @@ public class InvoiceController {
 		}
 	}
 
+	/**
+	 *
+	 * @param companyName
+	 * @param pageNo
+	 * @return
+	 */
 	@GetMapping("{companyName}")
 	public ResponseEntity<?> getAllInvoicesByCompany(@PathVariable String companyName, @RequestParam(defaultValue = "0") Integer pageNo) {
 		CompanyDto companyDto = this.companyService.findSingleCompany(companyName);
@@ -72,6 +100,12 @@ public class InvoiceController {
 		}
 	}
 
+	/**
+	 *
+	 * @param companyName
+	 * @param pageNo
+	 * @return
+	 */
 	@GetMapping("unpaid/{companyName}")
 	public ResponseEntity<?> getAllUnPaidInvoicesByCompany(@PathVariable String companyName, @RequestParam(defaultValue = "0") Integer pageNo) {
 
@@ -96,6 +130,11 @@ public class InvoiceController {
 		}
 	}
 
+	/**
+	 *
+	 * @param invoiceNum
+	 * @return
+	 */
 	@GetMapping("id/{invoiceNum}")
 	public ResponseEntity<?> getAllInvoicesByInvoiceNumber(@PathVariable Long invoiceNum) {
 
@@ -107,6 +146,12 @@ public class InvoiceController {
 		}
 	}
 
+	/**
+	 *
+	 * @param invoiceNum
+	 * @param itemsDtoList
+	 * @return
+	 */
 	@PostMapping("additem/{invoiceNum}")
 	public ResponseEntity<?> addItemsToExistingInvoice(@PathVariable Long invoiceNum, @RequestBody List<ItemDto> itemsDtoList) {
 		var isPaid = this.invoiceService.isInvoicePaid(invoiceNum);
@@ -124,11 +169,20 @@ public class InvoiceController {
 		}
 	}
 
+	/**
+	 *
+	 * @return
+	 */
 	@DeleteMapping("deletepaidandolderinvoices")
 	public ResponseEntity<?> deletePaidAndOlderInvoices() {
 		return new ResponseEntity<List<InvoiceDto>>(this.invoiceService.deletePaidAndOlderInvoices().stream().map(i1 -> new InvoiceDto(i1.getInvoiceNumber())).collect(Collectors.toList()), HttpStatus.ACCEPTED);
 	}
 
+	/**
+	 *
+	 * @param pageNo
+	 * @return
+	 */
 	@GetMapping()
 	public ResponseEntity<?> getAllInvoices(@RequestParam(defaultValue = "0") Integer pageNo) {
 		List<InvoiceDto> invoiceDtoList = invoiceService.fetchAllInvoices(pageNo);
@@ -138,4 +192,3 @@ public class InvoiceController {
 		return new ResponseEntity<>(invoiceDtoList, HttpStatus.OK);
 	}
 }
-
