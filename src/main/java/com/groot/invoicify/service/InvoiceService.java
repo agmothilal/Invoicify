@@ -248,7 +248,8 @@ public class InvoiceService {
 					.stream().map(itemEnt
 							-> {
 
-						return new ItemDto(itemEnt.getDescription(),
+						return new ItemDto(itemEnt.getItemId(),
+								itemEnt.getDescription(),
 								itemEnt.getRateHourBilled(),
 								itemEnt.getRatePrice(),
 								itemEnt.getFlatPrice());
