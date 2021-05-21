@@ -404,10 +404,12 @@ public class InvoiceService {
 							invoiceEntity.getAuthor(),
 							invoiceEntity.getPaid(),
 							itemEntList.stream().map(itemEnt
-									-> new ItemDto(itemEnt.getDescription(),
-									itemEnt.getRateHourBilled(),
-									itemEnt.getRatePrice(),
-									itemEnt.getFlatPrice())).collect(Collectors.toList())
+									-> new ItemDto(itemEnt.getItemId(),
+											itemEnt.getDescription(),
+											itemEnt.getRateHourBilled(),
+											itemEnt.getRatePrice(),
+											itemEnt.getFlatPrice()))
+									.collect(Collectors.toList())
 					);
 				}).collect(Collectors.toList());
 	}
