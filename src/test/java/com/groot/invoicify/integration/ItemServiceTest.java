@@ -123,7 +123,7 @@ public class ItemServiceTest {
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.param("itemId", itemId)
 				.content(this.objectMapper.writeValueAsString(itemDto)))
-				.andExpect(MockMvcResultMatchers.status().isAccepted())
+				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andDo(MockMvcRestDocumentation.document("Patch-Item", requestFields(
 						fieldWithPath("itemId").description("Item id"),
 						fieldWithPath("description").description("Item description"),
@@ -161,7 +161,7 @@ public class ItemServiceTest {
 				.contentType(MediaType.APPLICATION_JSON_VALUE)
 				.param("itemId", itemId)
 				.content(this.objectMapper.writeValueAsString(itemDto)))
-				.andExpect(MockMvcResultMatchers.status().isAccepted())
+				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andDo(MockMvcRestDocumentation.document("Put-Item", requestFields(
 						fieldWithPath("itemId").description("Item id"),
 						fieldWithPath("description").description("Item description"),

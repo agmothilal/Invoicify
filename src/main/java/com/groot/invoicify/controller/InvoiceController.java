@@ -175,7 +175,7 @@ public class InvoiceController {
 	 */
 	@DeleteMapping("deletepaidandolderinvoices")
 	public ResponseEntity<?> deletePaidAndOlderInvoices() {
-		return new ResponseEntity<List<InvoiceDto>>(this.invoiceService.deletePaidAndOlderInvoices().stream().map(i1 -> new InvoiceDto(i1.getInvoiceNumber())).collect(Collectors.toList()), HttpStatus.ACCEPTED);
+		return new ResponseEntity<List<InvoiceDto>>(this.invoiceService.deletePaidAndOlderInvoices().stream().map(i1 -> new InvoiceDto(i1.getInvoiceNumber())).collect(Collectors.toList()), HttpStatus.OK);
 	}
 
 	/**
