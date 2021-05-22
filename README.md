@@ -286,3 +286,8 @@ Schemes: http
 ```
 
 ## API Reference
+
+- Local endpoints docs: ${Invoicify_HOME}/build/asciidoc/html5/index.html
+- To create JavaDoc API at terminal: ${Invoicify_HOME}/gradlew javadoc
+    - JavaDoc can be found at: ${Invoicify_HOME}/build/docs/javadoc/index.html
+
