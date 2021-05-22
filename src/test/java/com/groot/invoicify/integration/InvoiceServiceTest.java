@@ -729,7 +729,7 @@ public class InvoiceServiceTest {
 	@Sql("/insert_invoices.sql")
 	public void deletePaidAndOlderInvoicesTest() throws Exception {
 		this.mockMvc.perform(delete("/invoice/deletepaidandolderinvoices"))
-				.andExpect(status().isAccepted())
+				.andExpect(status().isOk())
 				.andExpect(jsonPath("length()").value(1))
 				.andExpect(jsonPath("[0].invoiceNumber").value(1))
 				.andDo(document("Delete-Paid-Older-Invoices", responseFields(

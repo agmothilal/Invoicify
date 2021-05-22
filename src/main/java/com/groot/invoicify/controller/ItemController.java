@@ -53,7 +53,7 @@ public class ItemController {
    * @param itemDto
    */
   @PatchMapping
-  @ResponseStatus(HttpStatus.ACCEPTED)
+  @ResponseStatus(HttpStatus.OK)
   public void patchItem(@RequestParam Long itemId, @RequestBody ItemDto itemDto) {
     this.itemService.updateItem(false, itemId, itemDto);
   }
@@ -64,7 +64,7 @@ public class ItemController {
    * @param itemDto
    */
   @PutMapping
-  @ResponseStatus(HttpStatus.ACCEPTED)
+  @ResponseStatus(HttpStatus.OK)
   public void putItem(@RequestParam Long itemId, @RequestBody ItemDto itemDto) {
     this.itemService.updateItem(true, itemId, itemDto);
   }
