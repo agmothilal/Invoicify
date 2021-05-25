@@ -28,7 +28,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 public class Invoice {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "INVOICE_SEQ")
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long invoiceId;
 	@ManyToOne
 	@JoinColumn(name = "company_id")

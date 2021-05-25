@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 public class Item {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "ITEM_SEQ")
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long itemId;
 	private String description;
 	private Integer rateHourBilled;
