@@ -22,7 +22,7 @@ public class Company {
 			allocationSize=1)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COMPANY_SEQ")
 	private Long companyId;
-	@Column(unique = true)
+	@Column(name="Company_Name", unique = true)
 	private String name;
 	private String address;
 	private String city;
