@@ -2,15 +2,8 @@ package com.groot.invoicify.entity;
 
 import java.sql.Timestamp;
 import java.util.List;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -28,7 +21,10 @@ import org.springframework.data.annotation.LastModifiedDate;
 public class Invoice {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@SequenceGenerator(name="INVOICE_SEQ",
+			sequenceName="INVOICE_SEQ",
+			allocationSize=1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "INVOICE_SEQ")
 	private Long invoiceId;
 	@ManyToOne
 	@JoinColumn(name = "company_id")

@@ -1,12 +1,7 @@
 package com.groot.invoicify.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,7 +17,10 @@ import lombok.NoArgsConstructor;
 public class Item {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@SequenceGenerator(name="ITEM_SEQ",
+			sequenceName="ITEM_SEQ",
+			allocationSize=1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ITEM_SEQ")
 	private Long itemId;
 	private String description;
 	private Integer rateHourBilled;
