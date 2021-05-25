@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class Company {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "COMPANY_SEQ")
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long companyId;
 	@Column(unique = true)
 	private String name;
